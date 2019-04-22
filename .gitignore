@@ -36,3 +36,7 @@ yarn-debug.log*
 .yarn-integrity
 
 .env.*
+
+# Ignore project files
+*.sublime-project
+*.sublime-workspace

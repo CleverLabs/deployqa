@@ -10,7 +10,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_03_104731) do
+ActiveRecord::Schema.define(version: 2019_04_22_112752) do
+
+  create_table "build_actions", force: :cascade do |t|
+    t.bigint "author_id", null: false
+    t.bigint "project_instance_id", null: false
+    t.integer "action", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_build_actions_on_author_id"
+    t.index ["project_instance_id"], name: "index_build_actions_on_project_instance_id"
+  end
+
+  create_table "deployment_configurations", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_deployment_configurations_on_project_id"
+  end
+
+  create_table "project_instances", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "deployment_configuration_id", null: false
+    t.string "deployment_status", null: false
+    t.integer "git_reference", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_project_instances_on_project_id"
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "owner_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_id"], name: "index_projects_on_owner_id"
+  end
+
   create_table "repos", force: :cascade do |t|
     t.string "path", null: false
     t.integer "user_id", null: false
@@ -30,4 +67,5 @@ ActiveRecord::Schema.define(version: 2019_01_03_104731) do
     t.string "full_name"
     t.string "token"
   end
+
 end
