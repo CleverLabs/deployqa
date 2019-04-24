@@ -307,6 +307,7 @@ DEPENDENCIES
   puma (~> 3.11)
   rails (~> 5.2.3)
   rspec-rails (~> 3.8)
+  rubocop
   sass-rails (~> 5.0)
   selenium-webdriver
   slim
