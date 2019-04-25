@@ -1,1 +1,37 @@
 inherit_from: .rubocop_todo.yml
+require: rubocop-rspec
+
+AllCops:
+  UseCache: true
+  Exclude:
+    - 'vendor/bundle/**/*'
+    - 'node_modules/**/*'
+    - 'db/**/*'
+    - 'bin/**/*'
+    - 'config/environments/**/*'
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 120
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'config/**/*.rb'
+
+RSpec/ExpectInHook:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Max: 3
+
+RSpec/MessageSpies:
+  EnforcedStyle: receive

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Github
   class PullRequest
     def initialize(path, number)

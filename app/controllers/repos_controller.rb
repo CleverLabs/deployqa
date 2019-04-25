@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReposController < ApplicationController
   def create
     redirect_to root_path if Repo.exists?(path: params[:repo])

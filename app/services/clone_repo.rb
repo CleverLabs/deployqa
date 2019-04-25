@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "fileutils"
 
 class CloneRepo
@@ -23,7 +25,7 @@ class CloneRepo
   def call
     with_env do |key|
       Open3.capture3(
-        {SSH_ENV => format(SSH_COMMAND, keypath: key)},
+        { SSH_ENV => format(SSH_COMMAND, keypath: key) },
         format(CLONE_COMMAND, git_path: ssh_url, dest: repo_dir)
       )
     end
@@ -32,7 +34,7 @@ class CloneRepo
   def repo_dir
     @_repo_dir ||= File.join(TEMP_FOLDER, [
       *@repo.path.split("/"),
-      SecureRandom.hex(4),
+      SecureRandom.hex(4)
     ].join("-"))
   end
 

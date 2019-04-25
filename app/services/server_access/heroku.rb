@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ServerAccess
   class Heroku
     def initialize
@@ -8,9 +10,7 @@ module ServerAccess
       @heroku.app.create(name: name)
     end
 
-    def update
-      
-    end
+    def update; end
 
     def restart(name:)
       heroku.dyno.restart_all(name)

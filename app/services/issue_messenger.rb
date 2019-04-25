@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IssueMessenger
   STRATEGIES = %i[add_new replace_last add_to_first].freeze
 
@@ -8,6 +10,7 @@ class IssueMessenger
 
   def comment(text, strategy: STRATEGIES.first)
     raise "Unknown messaging strategy" unless STRATEGIES.include?(strategy)
+
     method(strategy).call(text)
   end
 
@@ -20,6 +23,7 @@ class IssueMessenger
   def replace_last(text)
     original_comment = find_last_user_comment
     return add_new(text) unless original_comment
+
     client.update_comment(@repo.full_name, original_comment.id, text)
   end
 
@@ -31,8 +35,8 @@ class IssueMessenger
 
   def find_last_user_comment
     @login ||= client.login
-    client.issue_comments(@repo.full_name, @issue_id).
-      reverse.find { |issue| issue.user.login == @login }
+    client.issue_comments(@repo.full_name, @issue_id)
+          .reverse.find { |issue| issue.user.login == @login }
   end
 
   def client

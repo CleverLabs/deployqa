@@ -3,9 +3,9 @@
 require "rails_helper"
 
 describe Github::PullRequest do
-  subject { described_class.new("rails/rails", 4) }
+  subject(:pull_request) { described_class.new("rails/rails", 4) }
 
-  around(:each) do |example|
+  around do |example|
     VCR.use_cassette("github_pullrequest") do
       example.run
     end
@@ -13,7 +13,7 @@ describe Github::PullRequest do
 
   describe "#title" do
     it "receives title from octokit object" do
-      expect(subject.title).to eql("This change fixes to_json serialization")
+      expect(pull_request.title).to eql("This change fixes to_json serialization")
     end
   end
 end

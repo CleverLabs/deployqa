@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Github
   class User
-    TOKEN_PATH = %w[credentials token]
-    NAME_PATH = %w[info name]
+    TOKEN_PATH = %w[credentials token].freeze
+    NAME_PATH = %w[info name].freeze
     PROVIDER = "github"
 
     def initialize(omniauth_user)
@@ -26,7 +28,7 @@ module Github
     end
 
     def user_uniq_id
-      {auth_provider: PROVIDER, auth_uid: Integer(@omniauth_user["uid"])}
+      { auth_provider: PROVIDER, auth_uid: Integer(@omniauth_user["uid"]) }
     end
   end
 end

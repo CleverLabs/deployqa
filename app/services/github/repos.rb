@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Github
   class Repos
     GithubRepo = Struct.new(:name, :url, :private, :id)
@@ -18,7 +20,7 @@ module Github
         repo.full_name,
         repo.html_url,
         repo.private,
-        user_repos[repo.full_name],
+        user_repos[repo.full_name]
       )
     end
 

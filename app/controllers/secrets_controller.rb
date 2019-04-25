@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SecretsController < ApplicationController
   def index
     render json: secrets

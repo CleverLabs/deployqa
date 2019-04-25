@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Secret < ApplicationRecord
   belongs_to :repo
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Application
   def initialize(repo, pull_id)
     @repo = repo
@@ -13,7 +15,7 @@ class Application
   end
 
   def secrets
-    @repo.secrets.map { |secret| {secret.key => secret.value} }.inject(:merge)
+    @repo.secrets.map { |secret| { secret.key => secret.value } }.inject(:merge)
   end
 
   private
