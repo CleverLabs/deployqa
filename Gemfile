@@ -7,7 +7,7 @@ ruby "2.5.1"
 
 gem "dotenv-rails", groups: %i[development test]
 
-gem "bootsnap", ">= 1.1.0", require: false
+gem "bootsnap", ">= 1.4.4", require: false
 gem "git"
 gem "heroku-api-postgres"
 gem "jbuilder", "~> 2.5"

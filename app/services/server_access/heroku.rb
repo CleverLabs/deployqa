@@ -5,8 +5,8 @@ module ServerAccess
     COMMAND_CHECK_DELAY = 10
 
     def initialize(name:)
-      @heroku = PlatformAPI.connect_oauth(ENV["HEROKU_TOKEN"])
-      @heroku_for_db = ::Heroku::Api::Postgres.connect_oauth(ENV["HEROKU_TOKEN"])
+      @heroku = PlatformAPI.connect_oauth(ENV["HEROKU_API_KEY"])
+      @heroku_for_db = ::Heroku::Api::Postgres.connect_oauth(ENV["HEROKU_API_KEY"])
       @name = name
     end
 
