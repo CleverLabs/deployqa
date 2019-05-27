@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_10_145941) do
+ActiveRecord::Schema.define(version: 2019_05_27_122319) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "build_action_logs", force: :cascade do |t|
+    t.bigint "build_action_id", null: false
+    t.text "message", null: false
+    t.integer "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["build_action_id"], name: "index_build_action_logs_on_build_action_id"
+  end
 
   create_table "build_actions", force: :cascade do |t|
     t.bigint "author_id", null: false
@@ -75,4 +84,5 @@ ActiveRecord::Schema.define(version: 2019_05_10_145941) do
     t.string "token"
   end
 
+  add_foreign_key "build_action_logs", "build_actions"
 end
