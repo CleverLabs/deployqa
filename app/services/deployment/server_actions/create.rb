@@ -3,20 +3,27 @@
 module Deployment
   module ServerActions
     class Create
-      def initialize(configurations)
+      def initialize(configurations, build_action)
         @configurations = configurations
+        @build_action = build_action
       end
 
       def call
         @configurations.map do |configuration|
-          create_server(configuration)
-          push_code_to_server(configuration)
+          logger.info("Create server", context: configuration.application_name) && create_server(configuration)
+          logger.info("Push code to the server", context: configuration.application_name) && push_code_to_server(configuration)
         rescue Excon::Error::UnprocessableEntity => error
           puts JSON.parse(error.response.data[:body])
         end
       end
 
       private
+
+      attr_reader :build_action
+
+      def logger
+        @_logger ||= BuildActionLogger.new(build_action)
+      end
 
       def create_server(configuration)
         server = ServerAccess::Heroku.new(name: configuration.application_name)
