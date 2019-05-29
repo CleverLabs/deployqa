@@ -34,6 +34,14 @@ module ServerAccess
       execute_command("RAILS_ENV=production rails db:migrate", {})
     end
 
+    def setup_db
+      execute_command("rails db:schema:load", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1)
+    end
+
+    def setup_worker
+      @heroku.formation.update(@name, "worker", quantity: 1)
+    end
+
     private
 
     def execute_command(command, env)

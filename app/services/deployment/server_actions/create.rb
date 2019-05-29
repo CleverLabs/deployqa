@@ -34,13 +34,12 @@ module Deployment
         server.create
         server.build_addons
         server.update_env_variables(configuration.env_variables)
+        server.setup_db
+        server.setup_worker
       end
 
       def push_code_to_server(configuration)
-        git = GitWrapper.clone(configuration.repo_path, configuration.private_key)
-        git.add_remote_heroku(configuration.application_name)
-        git.push_heroku("master")
-        git.remove_dir
+        Deployment::Helpers::PushCodeToServer.new(configuration).call
       end
     end
   end

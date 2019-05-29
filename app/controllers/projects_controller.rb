@@ -18,10 +18,11 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = Project.new(project_params.merge(owner: current_user))
+    # TODO: change github_secret_token
+    @project = Project.new(project_params.merge(owner: current_user, github_secret_token: "12345"))
 
     if @project.save
-      redirect_to project_project_instances_path(@project)
+      redirect_to project_path(@project)
     else
       render :new
     end

@@ -48,6 +48,7 @@ class ProjectInstancesController < ApplicationController
   end
 
   def destroy_instance(project_instance)
-    ServerActionsCallJob.perform_later(Deployment::ServerActions::Destroy.to_s, Deployment::Configuration.build_from_project_instance(project_instance).map(&:to_h))
+    configurations = Deployment::ConfigurationBuilder.new.by_project_instance(project_instance)
+    ServerActionsCallJob.perform_later(Deployment::ServerActions::Destroy.to_s, configurations.map(&:to_h))
   end
 end

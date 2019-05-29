@@ -3,13 +3,13 @@
 module Deployment
   module ServerActions
     class Update
-      def initialize(configurations)
+      def initialize(configurations, _logger)
         @configurations = configurations
       end
 
       def call
         @configurations.each do |configuration|
-          DeploymentProcesses::Helpers::PushCodeToServer.new(configuration).call
+          Deployment::Helpers::PushCodeToServer.new(configuration).call
           ServerAccess::Heroku.new(name: configuration.application_name).migrate_db
         end
       end

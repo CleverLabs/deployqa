@@ -39,3 +39,6 @@ RSpec/MessageSpies:
 
 Layout/AlignHash:
   Enabled: false
+
+Naming/RescuedExceptionsVariableName:
+  Enabled: false

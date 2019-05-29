@@ -10,8 +10,12 @@ Rails.application.routes.draw do
   end
 
   resources :projects do
+    namespace :webhooks do
+      resources :github, only: %i[create]
+    end
     resources :project_instances do
       resource :reload, only: %i[create], module: :project_instances
+      resource :update, only: %i[create], module: :project_instances
       resources :database_dumps, only: %i[index show create update], module: :project_instances
       resources :build_actions, only: %i[show], module: :project_instances
     end

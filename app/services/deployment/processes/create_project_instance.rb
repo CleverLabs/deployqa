@@ -8,12 +8,12 @@ module Deployment
         @current_user = current_user
       end
 
-      def call(project_instance_name:)
-        configurations = Deployment::Configuration.build_from_project(@project, project_instance_name)
-        creation_result = Deployment::Repositories::ProjectInstanceRepository.new(@project).create(project_instance_name, "master", configurations_for_project_instance(configurations))
+      def call(project_instance_name:, branches: {}, deploy: true)
+        configurations = Deployment::ConfigurationBuilder.new.by_project(@project, project_instance_name, branches: branches)
+        creation_result = Deployment::Repositories::ProjectInstanceRepository.new(@project).create(project_instance_name, configurations_for_project_instance(configurations))
         return creation_result unless creation_result.status == :ok
 
-        deploy_instance(creation_result.object, configurations)
+        deploy_instance(creation_result.object, configurations) if deploy
         creation_result
       end
 
@@ -28,7 +28,9 @@ module Deployment
       end
 
       def configurations_for_project_instance(configurations)
-        configurations.map { |configuration| configuration.to_h.slice(:application_name, :deployment_configuration_id) }
+        configurations.map do |configuration|
+          configuration.to_h.slice(:application_name, :deployment_configuration_id, :git_reference, :repo_path)
+        end
       end
     end
   end

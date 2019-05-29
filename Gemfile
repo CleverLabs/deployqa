@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "2.5.1"
+ruby "2.6.3"
 
 gem "dotenv-rails", groups: %i[development test]
 
@@ -39,7 +39,7 @@ end
 
 group :development do
   gem "listen", ">= 3.0.5", "< 3.2"
-  gem "rubocop", require: false
+  gem "rubocop", "~> 0.71", require: false
   gem "rubocop-rspec", require: false
   gem "spring"
   gem "spring-watcher-listen", "~> 2.0.0"
