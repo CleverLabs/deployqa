@@ -18,7 +18,7 @@ class BuildActionLogger
   attr_reader :build_action
 
   def create_log(message, status:, context:)
-    message_with_info = context.present? ? "[#{context}] #{message}" : message
-    BuildActionLog.create(build_action: build_action, message: message_with_info, status: status)
+    message_with_context = context.present? ? "[#{context}] #{message}" : message
+    BuildActionLog.create(build_action: build_action, message: message_with_context, status: status)
   end
 end

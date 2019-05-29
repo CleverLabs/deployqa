@@ -9,10 +9,10 @@ module Deployment
       end
 
       def call
-        @configurations.map do |configuration|
-          logger.info("Create server", context: configuration.application_name) && create_server(configuration)
-          logger.info("Push code to the server", context: configuration.application_name) && push_code_to_server(configuration)
+        @configurations.each do |configuration|
+          deploy_configuration(configuration)
         rescue Excon::Error::UnprocessableEntity => error
+          logger.error(error.response.data[:body], context: configuration.application_name)
           puts JSON.parse(error.response.data[:body])
         end
       end
@@ -20,6 +20,13 @@ module Deployment
       private
 
       attr_reader :build_action
+
+      def deploy_configuration(configuration)
+        app_name = configuration.application_name
+
+        create_server(configuration) && logger.info("Create server", context: app_name)
+        push_code_to_server(configuration) && logger.info("Push code to the server", context: app_name)
+      end
 
       def logger
         @_logger ||= BuildActionLogger.new(build_action)
