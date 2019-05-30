@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class BuildActionLogger
+  def self.deserialize(serialized_instance)
+    new(serialized_instance[:build_action])
+  end
+
   def initialize(build_action)
     @build_action = build_action
   end
@@ -13,7 +17,7 @@ class BuildActionLogger
     create_log(message, status: Constants::BuildAction::Log::ERROR, context: context)
   end
 
-  def to_h
+  def serialize
     { build_action: build_action }
   end
 
