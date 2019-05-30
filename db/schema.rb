@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2019_05_27_122319) do
   create_table "build_action_logs", force: :cascade do |t|
     t.bigint "build_action_id", null: false
     t.text "message", null: false
+    t.string "context", null: false
     t.integer "status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
