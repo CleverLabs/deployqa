@@ -2,10 +2,10 @@
 
 module Deployment
   module ServerActions
-    class Create
-      def initialize(configurations, build_action)
+    class  Create
+      def initialize(configurations, logger)
         @configurations = configurations
-        @build_action = build_action
+        @logger = logger
       end
 
       def call
@@ -19,17 +19,13 @@ module Deployment
 
       private
 
-      attr_reader :build_action
+      attr_reader :logger
 
       def deploy_configuration(configuration)
         app_name = configuration.application_name
 
         create_server(configuration) && logger.info("Create server", context: app_name)
         push_code_to_server(configuration) && logger.info("Push code to the server", context: app_name)
-      end
-
-      def logger
-        @_logger ||= BuildActionLogger.new(build_action)
       end
 
       def create_server(configuration)

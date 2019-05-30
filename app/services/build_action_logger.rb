@@ -6,11 +6,15 @@ class BuildActionLogger
   end
 
   def info(message, context: nil)
-    create_log(message, status: Constants::BuildAction::INFO, context: context)
+    create_log(message, status: Constants::BuildAction::Log::INFO, context: context)
   end
 
   def error(message, context: nil)
-    create_log(message, status: Constants::BuildAction::ERROR, context: context)
+    create_log(message, status: Constants::BuildAction::Log::ERROR, context: context)
+  end
+
+  def to_h
+    { build_action: build_action }
   end
 
   private
