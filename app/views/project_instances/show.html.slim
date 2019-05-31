@@ -11,7 +11,12 @@
   h1.mt-4 = @project_instance.project.name
   h3 = @project_instance.name
   .mt-4
-    div class=["alert", status_alert_class(@project_instance.deployment_status)] role="alert"
+    .application-links.mt-4
+      - @project_instance.configurations.each do |configuration|
+        h5.app-link
+          = link_to configuration["application_name"], configuration["application_url"], target: "_blank", rel: "noopener noreferrer"
+
+    div class=["mt-4 alert", status_alert_class(@project_instance.deployment_status)] role="alert"
       = "Status is: "
       = Constants::ProjectInstance::DEPLOYMENT_STATUSES_HUMANISED.fetch(@project_instance.deployment_status.to_sym)
 

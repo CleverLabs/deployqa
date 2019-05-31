@@ -13,7 +13,9 @@ module Deployment
           deploy_configuration(configuration)
         rescue Excon::Error::UnprocessableEntity => error
           logger.error(error.response.data[:body], context: configuration.application_name)
+          return Constants::ProjectInstance::FAILURE
         end
+        Constants::ProjectInstance::RUNNING_INSTANCES
       end
 
       private

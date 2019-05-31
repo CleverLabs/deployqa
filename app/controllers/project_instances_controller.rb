@@ -6,6 +6,11 @@ class ProjectInstancesController < ApplicationController
     @project_instances = @project.project_instances
   end
 
+  def show
+    @project = find_project
+    @project_instance = @project.project_instances.find(params[:id])
+  end
+
   def new
     @project = find_project
     @project_instance = @project.project_instances.build
@@ -21,11 +26,6 @@ class ProjectInstancesController < ApplicationController
       @project_instance = result.object
       render :new
     end
-  end
-
-  def show
-    @project = find_project
-    @project_instance = @project.project_instances.find(params[:id])
   end
 
   def destroy
