@@ -15,6 +15,10 @@ module Github
         payload.dig("pull_request", "head", "repo", "name")
       end
 
+      def full_repo_name
+        payload.dig("pull_request", "head", "repo", "full_name")
+      end
+
       def branch
         payload.dig("pull_request", "head", "ref")
       end

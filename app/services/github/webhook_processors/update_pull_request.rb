@@ -7,6 +7,8 @@ module Github
         @body = body
         @project = project
       end
+
+      def call; end
     end
   end
 end

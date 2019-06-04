@@ -11,7 +11,7 @@ module ServerAccess
     end
 
     def create
-      @heroku.organization_app.create(name: @name, organization: "deployqa")
+      @heroku.app.create(name: @name)
     end
 
     def build_addons

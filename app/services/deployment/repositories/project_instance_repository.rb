@@ -12,11 +12,11 @@ module Deployment
 
       def create(name, configurations)
         object = @project.project_instances.create(deployment_status: :scheduled, name: name, configurations: configurations)
-        Result.new(object, object.errors.any? ? :error : :ok)
+        ReturnValue.new(object: object, status: object.errors.any? ? :error : :ok)
       end
 
       def update(deployment_status:)
-        Result.new(@project_instance, @project_instance.update(deployment_status: deployment_status) ? :error : :ok)
+        ReturnValue.new(object: @project_instance, status: @project_instance.update(deployment_status: deployment_status) ? :error : :ok)
       end
     end
   end

@@ -2,18 +2,14 @@
 
 module Webhooks
   class GithubController < ApplicationController
+    protect_from_forgery with: :null_session
     skip_before_action :login_if_not
 
     def create
       project = Project.find_by(id: params[:project_id])
-      result = Github::WebhookResolver.new(request, project).call
+      WebhookResolverJob.perform_later(Github::WebhookRequestWrapper.build(request).serialize, project)
 
-      if result && result.status != :ok
-        puts result.errors.full_messages
-        head :unprocessable_entity
-      else
-        head :ok
-      end
+      head :ok
     end
   end
 end

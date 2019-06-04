@@ -15,20 +15,20 @@ module Github
     }.freeze
 
     def initialize(request, project)
-      @request  = request
-      @raw_body = request.body.read
-      @body = JSON.parse(@raw_body)
+      @request = request
+      @body = @request.parse_body
       @project = project
     end
 
     def call
-      return if github_event == PING_EVENT
+      return if @request.github_event == PING_EVENT
       raise Errors::General, "Invalid signature" unless valid_signature?
       raise Errors::General, "Invalid github event" unless valid_message?
 
-      event_mapping = EVENTS_MAPPING.fetch(github_event)
+      event_mapping = EVENTS_MAPPING.fetch(@request.github_event)
       action_key = @body.fetch("action", DEFAULT_ACTION)
-      event_mapping.fetch(action_key).new(@body, @project).call
+      processor_class = event_mapping[action_key]
+      processor_class ? processor_class.new(@body, @project).call : ReturnValue.new(status: :no_action)
     end
 
     private
@@ -36,16 +36,12 @@ module Github
     def valid_signature?
       return false unless @project
 
-      signature = "sha1=" + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha1"), @project.github_secret_token, @raw_body)
-      Rack::Utils.secure_compare(signature, @request.env["HTTP_X_HUB_SIGNATURE"])
+      signature = "sha1=" + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha1"), @project.github_secret_token, @request.raw_body)
+      Rack::Utils.secure_compare(signature, @request.hub_signature)
     end
 
     def valid_message?
-      EVENTS_MAPPING.key?(github_event)
-    end
-
-    def github_event
-      @request.env["HTTP_X_GITHUB_EVENT"]
+      EVENTS_MAPPING.key?(@request.github_event)
     end
   end
 end
