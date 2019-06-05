@@ -8,19 +8,6 @@ class ServerActionsCallJob < ApplicationJob
     project_instance.update(deployment_status: performing_status)
     result_status = class_name.constantize.new(deserialized_configurations, deserialized_logger).call
 
-    update_project_instance(project_instance, result_status)
-  end
-
-  private
-
-  def update_project_instance(instance, status)
-    instance.configurations.each { |conf| conf["application_url"] = heroku_app_url(conf["application_name"]) } if status != ProjectInstanceConstants::FAILURE
-
-    instance.deployment_status = status
-    instance.save!
-  end
-
-  def heroku_app_url(app_name)
-    "https://#{app_name}.herokuapp.com"
+    project_instance.update!(deployment_status: result_status)
   end
 end

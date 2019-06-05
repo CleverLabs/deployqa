@@ -8,8 +8,8 @@ module ProjectInstanceConstants
     RUNNING_INSTANCES = :running_instances,
     FAILURE = :failure,
     CANCELED = :canceled,
-    DESTROYING_INSTANCES = :destroying_instances,
-    INSTANCES_DESTROYED = :instances_destroyed
+    DESTROYING = :destroying_instances,
+    DESTROYED = :instances_destroyed
   ].freeze
 
   DEPLOYMENT_STATUSES_HUMANISED = {
@@ -19,7 +19,7 @@ module ProjectInstanceConstants
     RUNNING_INSTANCES => "running",
     FAILURE => "failed",
     CANCELED => "canceled",
-    DESTROYING_INSTANCES => "destroying",
-    INSTANCES_DESTROYED => "destroyed"
+    DESTROYING => "destroying",
+    DESTROYED => "destroyed"
   }.freeze
 end

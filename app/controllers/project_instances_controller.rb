@@ -32,8 +32,7 @@ class ProjectInstancesController < ApplicationController
     @project = find_project
     @project_instance = @project.project_instances.find(params[:id])
 
-    Deployment::Repositories::ProjectInstanceRepository.new(@project, @project_instance).update(deployment_status: :destroying_instances)
-    destroy_instance(@project_instance)
+    Deployment::Processes::DestroyProjectInstance.new(@project_instance, current_user).call
     redirect_to project_project_instances_path(@project)
   end
 
@@ -45,10 +44,5 @@ class ProjectInstancesController < ApplicationController
 
   def project_instance_name
     params.require(:project_instance).fetch(:name)
-  end
-
-  def destroy_instance(project_instance)
-    configurations = Deployment::ConfigurationBuilder.new.by_project_instance(project_instance)
-    ServerActionsCallJob.perform_later(Deployment::ServerActions::Destroy.to_s, configurations.map(&:to_h))
   end
 end

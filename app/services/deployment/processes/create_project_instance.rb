@@ -11,7 +11,7 @@ module Deployment
       def call(project_instance_name:, branches: {}, pull_request_number: nil, deploy: true)
         configurations = Deployment::ConfigurationBuilder.new.by_project(@project, project_instance_name, branches: branches)
         creation_result = Deployment::Repositories::ProjectInstanceRepository.new(@project).create(project_instance_name, pull_request_number, configurations.map(&:to_project_instance_configuration))
-        return creation_result unless creation_result.status == :ok
+        return creation_result unless creation_result.ok?
 
         deploy_instance(creation_result.object, configurations) if deploy
         creation_result

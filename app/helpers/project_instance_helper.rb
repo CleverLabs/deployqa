@@ -8,8 +8,8 @@ module ProjectInstanceHelper
       ProjectInstanceConstants::RUNNING_INSTANCES => "alert-success",
       ProjectInstanceConstants::FAILURE => "alert-danger",
       ProjectInstanceConstants::CANCELED => "alert-warning",
-      ProjectInstanceConstants::DESTROYING_INSTANCES => "alert-secondary",
-      ProjectInstanceConstants::INSTANCES_DESTROYED => "alert-dark"
+      ProjectInstanceConstants::DESTROYING => "alert-secondary",
+      ProjectInstanceConstants::DESTROYED => "alert-dark"
     }
 
     alert_class_mapping.fetch(status.to_sym, "alert-info")

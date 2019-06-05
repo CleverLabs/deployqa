@@ -25,7 +25,7 @@
         = link_to "Dumps", project_project_instance_database_dumps_path(@project, @project_instance), class: "btn btn-secondary"
         = link_to "Reload", project_project_instance_reload_path(@project, @project_instance), method: :post, class: "btn btn-info ml-2"
         = link_to "Update", project_project_instance_update_path(@project, @project_instance), method: :post, class: "btn btn-info ml-2"
-      = link_to "Terminate instance", project_project_instance_path(@project, @project_instance), method: :delete, class: "btn btn-danger"
+      = link_to "Terminate", project_project_instance_path(@project, @project_instance), method: :delete, class: "btn btn-danger"
 
     .build-actions.mt-5
       table.table.table-hover.table-clickable
