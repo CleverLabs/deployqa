@@ -28,6 +28,7 @@ module Deployment
         logger.info("Creating a server", context: app_name) && create_server(configuration)
         logger.info("Pushing the code to the server", context: app_name) && push_code_to_server(configuration)
         logger.info("Creating infrastructure", context: app_name) && creating_infrastructure(configuration)
+        logger.info("Deployed!", context: app_name)
       end
 
       def create_server(configuration)

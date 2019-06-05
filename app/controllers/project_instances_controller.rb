@@ -20,7 +20,7 @@ class ProjectInstancesController < ApplicationController
     @project = find_project
     result = Deployment::Processes::CreateProjectInstance.new(@project, current_user).call(project_instance_name: project_instance_name)
 
-    if result.status == :ok
+    if result.ok?
       redirect_to project_project_instance_path(@project, result.object)
     else
       @project_instance = result.object

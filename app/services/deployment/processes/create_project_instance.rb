@@ -10,7 +10,7 @@ module Deployment
 
       def call(project_instance_name:, branches: {}, deploy: true)
         configurations = Deployment::ConfigurationBuilder.new.by_project(@project, project_instance_name, branches: branches)
-        creation_result = Deployment::Repositories::ProjectInstanceRepository.new(@project).create(project_instance_name, configurations_for_project_instance(configurations))
+        creation_result = Deployment::Repositories::ProjectInstanceRepository.new(@project).create(project_instance_name, configurations.map(&:to_project_instance_configuration))
         return creation_result unless creation_result.status == :ok
 
         deploy_instance(creation_result.object, configurations) if deploy
@@ -25,12 +25,6 @@ module Deployment
         build_action = BuildAction.create!(project_instance: instance, author: current_user, action: BuildActionConstants::CREATE_INSTANCE)
         logger = ::BuildActionLogger.new(build_action)
         ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, configurations.map(&:to_h), logger.serialize, instance, ProjectInstanceConstants::DEPLOYING.to_s)
-      end
-
-      def configurations_for_project_instance(configurations)
-        configurations.map do |configuration|
-          configuration.to_h.slice(:application_name, :deployment_configuration_id, :git_reference, :repo_path)
-        end
       end
     end
   end

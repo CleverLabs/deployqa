@@ -20,8 +20,8 @@ module Notifications
     def header
       format(
         FIRST_COMMENT_TEXT,
-        deploy_url: deploy_url(no_dialog: true),
-        custom_deploy_url: deploy_url(custom: true),
+        deploy_url: deploy_url,
+        custom_deploy_url: deploy_url(custom_deploy: true),
         project_instance_url: project_instance_url
       )
     end
@@ -40,7 +40,7 @@ module Notifications
 
     private
 
-    def deploy_url(options)
+    def deploy_url(options = {})
       Rails.application.routes.url_helpers.project_project_instance_deploy_url(@project_instance.project_id, @project_instance.id, options)
     end
 

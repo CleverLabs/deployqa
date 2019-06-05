@@ -10,6 +10,8 @@ module ProjectInstances
       redirect_to project_project_instance_path(project, project_instance)
     end
 
+    private
+
     def find_project
       Project.find(params[:project_id])
     end

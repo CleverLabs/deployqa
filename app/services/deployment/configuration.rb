@@ -10,5 +10,9 @@ module Deployment
     attribute :env_variables, Hash
     attribute :git_reference, String
     attribute :deployment_configuration_id, Integer
+
+    def to_project_instance_configuration
+      to_h.slice(:application_name, :deployment_configuration_id, :git_reference, :repo_path)
+    end
   end
 end
