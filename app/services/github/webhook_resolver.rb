@@ -7,10 +7,8 @@ module Github
     EVENTS_MAPPING = {
       "pull_request" => {
         "opened" => Github::WebhookProcessors::CreatePullRequest,
-        "closed" => Github::WebhookProcessors::ClosePullRequest
-      },
-      "push" => {
-        DEFAULT_ACTION => Github::WebhookProcessors::UpdatePullRequest
+        "closed" => Github::WebhookProcessors::ClosePullRequest,
+        "synchronize" => Github::WebhookProcessors::UpdatePullRequest
       }
     }.freeze
 

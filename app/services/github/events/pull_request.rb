@@ -2,7 +2,7 @@
 
 module Github
   module Events
-    class CreatePullRequest
+    class PullRequest
       include ShallowAttributes
 
       attribute :payload, Hash

@@ -4,14 +4,14 @@ module Github
   module WebhookProcessors
     class CreatePullRequest
       def initialize(body, project)
-        @wrapped_body = Github::Events::CreatePullRequest.new(payload: body)
+        @wrapped_body = Github::Events::PullRequest.new(payload: body)
         @project = project
       end
 
       def call
         name = "pr#{@wrapped_body.number}"
         branches = { @wrapped_body.repo_name => @wrapped_body.branch }
-        Deployment::Processes::CreateProjectInstance.new(@project, nil).call(project_instance_name: name, branches: branches, deploy: false).tap do |result|
+        Deployment::Processes::CreateProjectInstance.new(@project, nil).call(project_instance_name: name, branches: branches, pull_request_number: @wrapped_body.number, deploy: false).tap do |result|
           create_deployment_links(result)
         end
       end
