@@ -8,6 +8,7 @@ ruby "2.6.3"
 gem "dotenv-rails", groups: %i[development test]
 
 gem "bootsnap", ">= 1.4.4", require: false
+gem "enumerize"
 gem "git"
 gem "heroku-api-postgres"
 gem "jbuilder", "~> 2.5"
@@ -20,6 +21,7 @@ gem "omniauth-github"
 gem "pg"
 gem "platform-api"
 gem "puma", "~> 3.11"
+gem "pundit", "~> 2.0", ">= 2.0.1"
 gem "rails", "~> 5.2.3"
 gem "sass-rails", "~> 5.0"
 gem "shallow_attributes"

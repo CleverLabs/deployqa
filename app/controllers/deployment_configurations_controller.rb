@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class DeploymentConfigurationsController < ApplicationController
+  before_action :authorize_project_admin
+
   def new
     @project = find_project
     @deployment_configuration = @project.deployment_configurations.build
@@ -45,7 +47,7 @@ class DeploymentConfigurationsController < ApplicationController
   private
 
   def find_project
-    Project.find(params[:project_id])
+    @_project ||= Project.find(params[:project_id])
   end
 
   def deployment_configuration_params
@@ -53,5 +55,9 @@ class DeploymentConfigurationsController < ApplicationController
       result[:env_variables] = Hash[result[:env_variables].split("\n").map { |line| line.tr("\r", "").split(": ") }]
       result[:name] = result[:repo_path].split("/").last
     end
+  end
+
+  def authorize_project_admin
+    authorize find_project, :edit?, policy_class: ProjectPolicy
   end
 end

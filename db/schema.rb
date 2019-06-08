@@ -58,13 +58,22 @@ ActiveRecord::Schema.define(version: 2019_06_10_160857) do
     t.index ["project_id"], name: "index_project_instances_on_project_id"
   end
 
+  create_table "project_user_roles", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "user_id", null: false
+    t.string "role", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id", "user_id"], name: "index_project_user_roles_on_project_id_and_user_id", unique: true
+    t.index ["project_id"], name: "index_project_user_roles_on_project_id"
+    t.index ["user_id"], name: "index_project_user_roles_on_user_id"
+  end
+
   create_table "projects", force: :cascade do |t|
     t.string "name", null: false
-    t.string "owner_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "github_secret_token"
-    t.index ["owner_id"], name: "index_projects_on_owner_id"
   end
 
   create_table "repos", force: :cascade do |t|
@@ -88,4 +97,6 @@ ActiveRecord::Schema.define(version: 2019_06_10_160857) do
   end
 
   add_foreign_key "build_action_logs", "build_actions"
+  add_foreign_key "project_user_roles", "projects"
+  add_foreign_key "project_user_roles", "users"
 end

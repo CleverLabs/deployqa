@@ -14,14 +14,15 @@ class ProjectsController < ApplicationController
 
   def show
     @project = find_project
+    authorize @project, :edit?, policy_class: ProjectPolicy
     @deployment_configurations = @project.deployment_configurations
   end
 
   def create
-    # TODO: change github_secret_token
-    @project = Project.new(project_params.merge(owner: current_user, github_secret_token: "12345"))
+    result = ProjectCreator.new(project_params, current_user).call
+    @project = result.object
 
-    if @project.save
+    if result.ok?
       redirect_to project_path(@project)
     else
       render :new

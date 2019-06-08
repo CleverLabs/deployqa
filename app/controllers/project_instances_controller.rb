@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ProjectInstancesController < ApplicationController
+  before_action :authorize_project_member
+
   def index
     @project = find_project
     @project_instances = @project.project_instances
@@ -39,10 +41,14 @@ class ProjectInstancesController < ApplicationController
   private
 
   def find_project
-    Project.find(params[:project_id])
+    @_project ||= Project.find(params[:project_id])
   end
 
   def project_instance_name
     params.require(:project_instance).fetch(:name)
+  end
+
+  def authorize_project_member
+    authorize find_project, :show?, policy_class: ProjectPolicy
   end
 end
