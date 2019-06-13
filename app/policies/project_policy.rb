@@ -6,7 +6,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def show?
-    project_member_or_admin?
+    project_member?
   end
 
   private

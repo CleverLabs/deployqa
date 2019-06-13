@@ -5,7 +5,7 @@ class ProjectInstancesController < ApplicationController
 
   def index
     @project = find_project
-    @project_instances = @project.project_instances
+    @project_instances = @project.project_instances.order(created_at: :desc)
   end
 
   def show

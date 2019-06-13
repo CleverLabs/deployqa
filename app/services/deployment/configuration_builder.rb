@@ -4,7 +4,7 @@ module Deployment
   class ConfigurationBuilder
     def by_project_instance(project_instance)
       with_deployment_configuration(project_instance).map do |deployment_configuration, configuration|
-        Deployment::Configuration.new(hash_by_project_instance(deployment_configuration, configuration))
+        Deployment::Configuration.new(hash_by_project_instance(deployment_configuration, configuration, project_instance.project))
       end
     end
 
@@ -16,23 +16,23 @@ module Deployment
 
     private
 
-    def hash_by_project_instance(deployment_configuration, configuration)
+    def hash_by_project_instance(deployment_configuration, configuration, project)
       {
         application_name: configuration.fetch("application_name"),
         repo_path: configuration.fetch("repo_path"),
         git_reference: configuration.fetch("git_reference"),
-        private_key: deployment_configuration.private_key,
+        installation_id: project.github_installation_id,
         env_variables: deployment_configuration.env_variables,
         deployment_configuration_id: deployment_configuration.id,
-        application_url: heroku_url(configuration.fetch("application_name"))
+        application_url: configuration.fetch("application_url")
       }
     end
 
-    def hash_by_project(deployment_configuration, project, instance_name, branches: {})
+    def hash_by_project(deployment_configuration, project, instance_name, branches)
       {
         application_name: build_name(project.name, deployment_configuration.name, instance_name),
         repo_path: deployment_configuration.repo_path,
-        private_key: deployment_configuration.private_key,
+        installation_id: project.github_installation_id,
         env_variables: deployment_configuration.env_variables,
         git_reference: branches.fetch(deployment_configuration.name, "master"),
         deployment_configuration_id: deployment_configuration.id,

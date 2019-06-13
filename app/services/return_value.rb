@@ -12,6 +12,14 @@ class ReturnValue
 
   alias _status= status=
 
+  def self.ok(object)
+    new(status: :ok, object: object)
+  end
+
+  def self.error(object)
+    new(status: :error, object: object)
+  end
+
   def status=(value)
     raise ArgumentError, value unless value.in?(STATUSES)
 

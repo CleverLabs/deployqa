@@ -7,6 +7,10 @@ module Github
 
       attribute :payload, Hash
 
+      def installation_id
+        payload.dig("installation", "id")
+      end
+
       def number
         payload.fetch("number")
       end

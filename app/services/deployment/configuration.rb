@@ -6,7 +6,7 @@ module Deployment
 
     attribute :application_name, String
     attribute :repo_path, String
-    attribute :private_key, String
+    attribute :installation_id, String
     attribute :env_variables, Hash
     attribute :git_reference, String
     attribute :deployment_configuration_id, Integer

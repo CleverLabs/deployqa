@@ -2,7 +2,7 @@
 
 module Github
   module WebhookProcessors
-    class ClosePullRequest
+    class DeleteProject
       def initialize(body)
         @body = body
       end

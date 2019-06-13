@@ -11,7 +11,7 @@ module Deployment
 
       def call
         @logger.info("Clone repository")
-        git = GitWrapper.clone(@configuration.repo_path, @configuration.private_key)
+        git = clone_repo
         @logger.info("Add heroku remote") && git.add_remote_heroku(application_name)
         @logger.info("Push code to the heroku remote") && git.push_heroku(@configuration.git_reference)
         @logger.info("Remove temporary directory") && git.remove_dir
@@ -20,6 +20,12 @@ module Deployment
       private
 
       attr_reader :application_name
+
+      def clone_repo
+        # TODO: extract GithubClient so we can use any integration client
+        client = GithubClient.new(@configuration.installation_id)
+        GitWrapper.clone(@configuration.repo_path, client)
+      end
     end
   end
 end

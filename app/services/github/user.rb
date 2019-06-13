@@ -12,8 +12,7 @@ module Github
 
     def identify
       ::User.find_or_create_by!(user_uniq_id).tap do |user|
-        user.update(token: token) if user.token.nil?
-        user.update(full_name: full_name) unless user.full_name == full_name
+        user.update(token: token, full_name: full_name)
       end
     end
 

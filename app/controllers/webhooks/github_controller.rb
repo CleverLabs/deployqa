@@ -6,9 +6,9 @@ module Webhooks
     skip_before_action :login_if_not
 
     def create
-      project = Project.find_by(id: params[:project_id])
-      WebhookResolverJob.perform_later(Github::WebhookRequestWrapper.build(request).serialize, project)
-
+      wrapped_request = Github::WebhookRequestWrapper.build(request)
+      WebhookLog.create!(body: wrapped_request.parse_body, event: wrapped_request.github_event)
+      WebhookResolverJob.perform_later(Github::WebhookRequestWrapper.build(request).serialize)
       head :ok
     end
   end

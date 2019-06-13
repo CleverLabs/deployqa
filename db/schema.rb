@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_10_160857) do
+ActiveRecord::Schema.define(version: 2019_06_13_131423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,9 @@ ActiveRecord::Schema.define(version: 2019_06_10_160857) do
     t.string "repo_path", null: false
     t.jsonb "env_variables", default: {}, null: false
     t.string "public_key"
+    t.string "integration_id"
+    t.string "integration_type"
+    t.integer "status"
     t.index ["project_id"], name: "index_deployment_configurations_on_project_id"
   end
 
@@ -74,6 +77,9 @@ ActiveRecord::Schema.define(version: 2019_06_10_160857) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "github_secret_token"
+    t.string "integration_id"
+    t.string "integration_type"
+    t.integer "github_installation_id"
   end
 
   create_table "repos", force: :cascade do |t|
@@ -94,6 +100,13 @@ ActiveRecord::Schema.define(version: 2019_06_10_160857) do
     t.string "auth_uid", null: false
     t.string "full_name"
     t.string "token"
+  end
+
+  create_table "webhook_logs", force: :cascade do |t|
+    t.jsonb "body", null: false
+    t.string "event", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "build_action_logs", "build_actions"

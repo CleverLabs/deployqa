@@ -3,14 +3,16 @@
 require "clone_repo"
 
 class GitWrapper
-  def self.clone(repo_path, private_key)
-    clone_repo = CloneRepo.new(repo_path, private_key).tap(&:call)
-    new(Git.open(clone_repo.repo_dir), clone_repo.repo_dir)
+  TEMP_FOLDER = "tmp"
+
+  def self.clone(repo_path, integration_client)
+    repo_name = [*repo_path.split("/"), SecureRandom.hex(4)].join("-")
+    new(Git.clone(integration_client.repo_uri(repo_path), repo_name, path: TEMP_FOLDER))
   end
 
-  def initialize(git_client, repo_dir)
+  def initialize(git_client)
     @git_client = git_client
-    @repo_dir = repo_dir
+    @repo_dir = git_client.dir.to_s
   end
 
   def add_remote_heroku(heroku_app_name)

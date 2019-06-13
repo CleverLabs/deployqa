@@ -11,10 +11,11 @@ Rails.application.routes.draw do
     resources :secrets, only: %i[index create]
   end
 
+  namespace :webhooks do
+    resources :github, only: %i[create]
+  end
+
   resources :projects do
-    namespace :webhooks do
-      resources :github, only: %i[create]
-    end
     resources :project_instances do
       resource :deploy, only: %i[show create], module: :project_instances
       resource :reload, only: %i[create], module: :project_instances
