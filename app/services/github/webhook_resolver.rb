@@ -19,7 +19,7 @@ module Github
         "removed" => Github::WebhookProcessors::RemoveRepo
       },
 
-      # legacy events
+      # github legacy events
       "integration_installation" => {},
       "integration_installation_repositories" => {}
     }.freeze

@@ -8,23 +8,30 @@ module Github
       end
 
       def call
-        user = ::User.find_or_create_by(auth_provider: Github::User::PROVIDER, auth_uid: Integer(@wrapped_body.initiator_info.id))
+        user = find_user
         project = find_project
         ProjectUserRole.find_or_create_by(user: user, project: project).update!(role: ProjectUserRoleConstants::ADMIN)
-        @wrapped_body.repos.each { |repo_info| create_repo(repo_info) }
+        @wrapped_body.repos.each { |repo_info| create_repo(repo_info, project) }
         ReturnValue.ok(nil)
       end
 
       private
 
-      def find_project
-        project = ::Project.find_or_create_by(integration_type: Github::User::PROVIDER, github_installation_id: @wrapped_body.installation_id)
-        project.update!(name: @wrapped_body.organization_info.name, integration_id: @wrapped_body.organization_info.id) if project.name != @wrapped_body.organization_info.name
-        project
+      def find_user
+        ::User.find_or_create_by(auth_provider: Github::User::PROVIDER, auth_uid: Integer(@wrapped_body.initiator_info.id)).tap do |user|
+          GithubEntity.ensure_info_exists(user, @wrapped_body.raw_initiator_info)
+        end
       end
 
-      def create_repo(repo_info)
-        ::DeploymentConfiguration.create!(
+      def find_project
+        ::Project.find_or_create_by(integration_type: Github::User::PROVIDER, integration_id: @wrapped_body.installation_id).tap do |project|
+          project.update!(name: @wrapped_body.organization_info.name) if project.name != @wrapped_body.organization_info.name
+          GithubEntity.ensure_info_exists(project, @wrapped_body.raw_organization_info)
+        end
+      end
+
+      def create_repo(repo_info, project)
+        configuration = ::DeploymentConfiguration.create!(
           project: project,
           repo_path: repo_info.full_name,
           name: repo_info.name,
@@ -32,6 +39,8 @@ module Github
           integration_id: repo_info.id,
           status: DeploymentConfigurationConstants::INSTALLED
         )
+
+        GithubEntity.ensure_info_exists(configuration, repo_info.raw_info)
       end
     end
   end

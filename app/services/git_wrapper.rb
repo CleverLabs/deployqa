@@ -5,9 +5,9 @@ require "clone_repo"
 class GitWrapper
   TEMP_FOLDER = "tmp"
 
-  def self.clone(repo_path, integration_client)
+  def self.clone(repo_path, repo_uri)
     repo_name = [*repo_path.split("/"), SecureRandom.hex(4)].join("-")
-    new(Git.clone(integration_client.repo_uri(repo_path), repo_name, path: TEMP_FOLDER))
+    new(Git.clone(repo_uri, repo_name, path: TEMP_FOLDER))
   end
 
   def initialize(git_client)

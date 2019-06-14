@@ -6,7 +6,7 @@ module Github
       include ShallowAttributes
 
       GithubPerson = Struct.new(:id, :name)
-      GithubRepo = Struct.new(:id, :name, :full_name)
+      GithubRepo = Struct.new(:id, :name, :full_name, :raw_info)
 
       attribute :payload, Hash
 
@@ -34,11 +34,19 @@ module Github
         transform_repo_infos(payload.fetch("repositories_removed"))
       end
 
+      def raw_organization_info
+        payload.dig("installation", "account")
+      end
+
+      def raw_initiator_info
+        payload.dig("sender")
+      end
+
       private
 
       def transform_repo_infos(infos)
         infos.map do |repo_hash|
-          GithubRepo.new(repo_hash.fetch("id"), repo_hash.fetch("name"), repo_hash.fetch("full_name"))
+          GithubRepo.new(repo_hash.fetch("id"), repo_hash.fetch("name"), repo_hash.fetch("full_name"), repo_hash)
         end
       end
     end

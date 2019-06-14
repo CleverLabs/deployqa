@@ -5,7 +5,7 @@ module Github
     class UpdatePullRequest
       def initialize(body)
         @wrapped_body = Github::Events::PullRequest.new(payload: body)
-        @project = Project.find_by(integration_type: Github::User::PROVIDER, github_installation_id: @wrapped_body.installation_id)
+        @project = Project.find_by(integration_type: Github::User::PROVIDER, integration_id: @wrapped_body.installation_id)
       end
 
       def call
@@ -20,7 +20,7 @@ module Github
       def update_info_comment(result, project_instance)
         comment = Notifications::Comment.new(project_instance)
         text = result.ok? ? comment.deployed : comment.failed
-        Github::PullRequest.new(@project.github_installation_id, @wrapped_body.full_repo_name, @wrapped_body.number).update_info_comment(text)
+        Github::PullRequest.new(@project.integration_id, @wrapped_body.full_repo_name, @wrapped_body.number).update_info_comment(text)
       end
     end
   end

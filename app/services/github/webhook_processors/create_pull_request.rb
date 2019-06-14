@@ -5,7 +5,7 @@ module Github
     class CreatePullRequest
       def initialize(body)
         @wrapped_body = Github::Events::PullRequest.new(payload: body)
-        @project = Project.find_by(integration_type: Github::User::PROVIDER, github_installation_id: @wrapped_body.installation_id)
+        @project = Project.find_by(integration_type: Github::User::PROVIDER, integration_id: @wrapped_body.installation_id)
       end
 
       def call
@@ -21,7 +21,7 @@ module Github
       def create_deployment_links(result)
         comment = Notifications::Comment.new(result.object)
         text = result.ok? ? comment.header : comment.failure_header
-        Github::PullRequest.new(@project.github_installation_id, @wrapped_body.full_repo_name, @wrapped_body.number).add_to_first_comment(text)
+        Github::PullRequest.new(@project.integration_id, @wrapped_body.full_repo_name, @wrapped_body.number).add_to_first_comment(text)
       end
     end
   end

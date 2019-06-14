@@ -13,7 +13,6 @@ class DeploymentConfigurationsController < ApplicationController
     @deployment_configuration = @project.deployment_configurations.build(deployment_configuration_params)
 
     if @deployment_configuration.save
-      DeployKeysWorkflow.new(@deployment_configuration, current_user).call
       redirect_to project_path(@project)
     else
       render :new

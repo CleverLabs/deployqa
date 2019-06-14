@@ -2,5 +2,5 @@
 
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :github, ENV["GITHUB_CLIENT_ID"], ENV["GITHUB_CLIENT_SECRET"],
-           redirect_uri: "http://localhost:3000/", state: SecureRandom.uuid # TODO: change state to something meaningful
+           redirect_uri: ENV["GITHUB_APP_REDIRECT_URI"], state: SecureRandom.uuid # TODO: change state to something meaningful
 end

@@ -23,8 +23,8 @@ module Deployment
 
       def clone_repo
         # TODO: extract GithubClient so we can use any integration client
-        client = GithubClient.new(@configuration.installation_id)
-        GitWrapper.clone(@configuration.repo_path, client)
+        repo_uri = GithubClient.new(@configuration.installation_id).repo_uri(@configuration.repo_path)
+        GitWrapper.clone(@configuration.repo_path, repo_uri)
       end
     end
   end
