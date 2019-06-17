@@ -91,6 +91,14 @@ ActiveRecord::Schema.define(version: 2019_06_24_161207) do
     t.index ["integration_id", "integration_type"], name: "index_projects_on_integration_id_and_integration_type", unique: true
   end
 
+  create_table "slack_entities", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.jsonb "data", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_slack_entities_on_project_id", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "auth_provider", null: false
     t.string "auth_uid", null: false
@@ -108,4 +116,5 @@ ActiveRecord::Schema.define(version: 2019_06_24_161207) do
   add_foreign_key "build_action_logs", "build_actions"
   add_foreign_key "project_user_roles", "projects"
   add_foreign_key "project_user_roles", "users"
+  add_foreign_key "slack_entities", "projects"
 end

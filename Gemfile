@@ -9,8 +9,10 @@ gem "dotenv-rails", groups: %i[development test]
 
 gem "bootsnap", ">= 1.4.4", require: false
 gem "enumerize"
+gem "ginjo-omniauth-slack", require: "omniauth-slack"
 gem "git"
 gem "heroku-api-postgres"
+gem "httparty"
 gem "jbuilder", "~> 2.5"
 gem "lograge", "~> 0.11.1"
 gem "logstash-event", "~> 1.2", ">= 1.2.02"

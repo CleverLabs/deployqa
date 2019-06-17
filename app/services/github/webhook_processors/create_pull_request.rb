@@ -22,6 +22,7 @@ module Github
         comment = Notifications::Comment.new(result.object)
         text = result.ok? ? comment.header : comment.failure_header
         Github::PullRequest.new(@project.integration_id, @wrapped_body.full_repo_name, @wrapped_body.number).add_to_first_comment(text)
+        Slack::Notificator.new(@project).send_message("#{result.object.name} Deployed")
       end
     end
   end
