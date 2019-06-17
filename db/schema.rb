@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_14_092823) do
+ActiveRecord::Schema.define(version: 2019_06_17_093202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -90,19 +90,6 @@ ActiveRecord::Schema.define(version: 2019_06_14_092823) do
     t.string "integration_id", null: false
     t.string "integration_type", null: false
     t.index ["integration_id", "integration_type"], name: "index_projects_on_integration_id_and_integration_type", unique: true
-  end
-
-  create_table "repos", force: :cascade do |t|
-    t.string "path", null: false
-    t.integer "user_id", null: false
-    t.string "public_key"
-    t.string "private_key"
-  end
-
-  create_table "secrets", force: :cascade do |t|
-    t.integer "repo_id", null: false
-    t.string "key", null: false
-    t.string "value", null: false
   end
 
   create_table "users", force: :cascade do |t|

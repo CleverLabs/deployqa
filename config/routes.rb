@@ -7,9 +7,6 @@ Rails.application.routes.draw do
   get "/auth/:provider/callback", to: "sessions#create"
   resources :home, only: %i[index]
   resource :sessions, only: %i[show create destroy]
-  resources :repos, only: %i[create show index] do
-    resources :secrets, only: %i[index create]
-  end
 
   namespace :webhooks do
     resources :github, only: %i[create]

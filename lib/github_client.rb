@@ -3,6 +3,8 @@
 class GithubClient
   delegate :login, :issue, :update_issue, :issue_comments, :update_comment, :add_comment, to: :client
 
+  TOKEN_TIME_TO_LIVE = 10.minutes
+
   def initialize(installation_id)
     @installation_id = installation_id
     @token_end_time = nil
@@ -18,7 +20,7 @@ class GithubClient
   def client
     return @client unless expired?
 
-    @token_end_time = (Time.now + 10.minutes).to_i
+    @token_end_time = (Time.now + TOKEN_TIME_TO_LIVE).to_i
     @client = Octokit::Client.new(access_token: create_installation_token)
   end
 
@@ -34,7 +36,7 @@ class GithubClient
     private_key = OpenSSL::PKey::RSA.new(ENV["GITHUB_APP_KEY"])
 
     payload = {
-      iat: (@token_end_time - 10.minutes).to_i,
+      iat: (@token_end_time - TOKEN_TIME_TO_LIVE).to_i,
       exp: @token_end_time,
       iss: ENV["GITHUB_APP_ID"]
     }
