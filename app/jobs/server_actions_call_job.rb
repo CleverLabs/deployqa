@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 class ServerActionsCallJob < ApplicationJob
-  def perform(class_name, configurations, serialized_logger, project_instance, performing_status)
+  def perform(class_name, configurations, build_action)
     deserialized_configurations = configurations.map { |configuration| Deployment::Configuration.new(configuration) }
-    deserialized_logger = BuildActionLogger.deserialize(serialized_logger)
+    state_machine = Deployment::ActionStateMachine.new(build_action, ProjectInstanceConstants::ACTION_STATUSES.fetch(class_name))
 
-    project_instance.update(deployment_status: performing_status)
-    result_status = class_name.constantize.new(deserialized_configurations, deserialized_logger).call
-
-    project_instance.update!(deployment_status: result_status)
+    result_status = class_name.constantize.new(deserialized_configurations, state_machine).call
+    Deployment::ServerActions::Rollback.new(state_machine).call if result_status.error?
   end
 end

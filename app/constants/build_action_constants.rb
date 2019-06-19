@@ -10,8 +10,8 @@ module BuildActionConstants
 
   module Log
     STATUSES = [
-      INFO = :info,
-      ERROR = :error
+      INFO = "info",
+      ERROR = "error"
     ].freeze
   end
 end

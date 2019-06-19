@@ -3,18 +3,19 @@
 module Deployment
   module Helpers
     class PushCodeToServer
-      def initialize(configuration, logger)
+      def initialize(configuration, state)
         @configuration = configuration
-        @logger = logger
+        @state = state
         @application_name = configuration.application_name
+        @git = nil
       end
 
       def call
-        @logger.info("Clone repository")
-        git = clone_repo
-        @logger.info("Add heroku remote") && git.add_remote_heroku(application_name)
-        @logger.info("Push code to the heroku remote") && git.push_heroku(@configuration.git_reference)
-        @logger.info("Remove temporary directory") && git.remove_dir
+        @state
+          .add_state(:clone_repo) { clone_repo }
+          .add_state(:add_remote) { @git.add_remote_heroku(application_name) }
+          .add_state(:push_code) { @git.push_heroku(@configuration.git_reference) }
+          .add_state(:clean_up_dir) { @git.remove_dir }
       end
 
       private
@@ -24,7 +25,10 @@ module Deployment
       def clone_repo
         # TODO: extract GithubClient so we can use any integration client
         repo_uri = GithubClient.new(@configuration.installation_id).repo_uri(@configuration.repo_path)
-        GitWrapper.clone(@configuration.repo_path, repo_uri)
+        @git = GitWrapper.clone(@configuration.repo_path, repo_uri)
+        ReturnValue.ok
+      rescue Git::GitExecuteError => error
+        ReturnValue.error(errors: error.message)
       end
     end
   end

@@ -23,8 +23,7 @@ module Deployment
 
       def deploy_instance(instance, configurations)
         build_action = BuildAction.create!(project_instance: instance, author: current_user, action: BuildActionConstants::CREATE_INSTANCE)
-        logger = ::BuildActionLogger.new(build_action)
-        ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, configurations.map(&:to_h), logger.serialize, instance, ProjectInstanceConstants::DEPLOYING.to_s)
+        ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, configurations.map(&:to_h), build_action)
       end
     end
   end

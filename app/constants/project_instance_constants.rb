@@ -22,4 +22,11 @@ module ProjectInstanceConstants
     DESTROYING => "destroying",
     DESTROYED => "destroyed"
   }.freeze
+
+  ACTION_STATUSES = {
+    Deployment::ServerActions::Create.to_s => { running: DEPLOYING, success: RUNNING_INSTANCES, failure: FAILURE },
+    Deployment::ServerActions::Update.to_s => { running: UPDATING, success: RUNNING_INSTANCES, failure: FAILURE },
+    Deployment::ServerActions::Restart.to_s => { running: UPDATING, success: RUNNING_INSTANCES, failure: RUNNING_INSTANCES },
+    Deployment::ServerActions::Destroy.to_s => { running: DESTROYING, success: DESTROYED, failure: FAILURE }
+  }.freeze
 end

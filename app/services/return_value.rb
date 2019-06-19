@@ -11,13 +11,14 @@ class ReturnValue
   delegate :ok?, :error?, :no_action?, to: :status
 
   alias _status= status=
+  alias _errors= errors=
 
-  def self.ok(object)
+  def self.ok(object = nil)
     new(status: :ok, object: object)
   end
 
-  def self.error(object)
-    new(status: :error, object: object)
+  def self.error(object: nil, errors: nil)
+    new(status: :error, object: object, errors: errors)
   end
 
   def status=(value)
@@ -27,6 +28,7 @@ class ReturnValue
   end
 
   def errors=(value)
-    value.is_a?(::Hash) ? super(value) : super(Array(value))
+    @errors = value.is_a?(::Hash) ? value : Array(value)
+    @attributes[:errors] = @errors
   end
 end

@@ -11,36 +11,38 @@ module ServerAccess
     end
 
     def create
-      @heroku.app.create(name: @name)
+      safely { @heroku.app.create(name: @name) }
     end
 
     def build_addons
-      @heroku.addon.create(@name, plan: "heroku-postgresql:hobby-dev")
-      @heroku.addon.create(@name, plan: "heroku-redis:hobby-dev")
+      safely do
+        @heroku.addon.create(@name, plan: "heroku-postgresql:hobby-dev")
+        @heroku.addon.create(@name, plan: "heroku-redis:hobby-dev")
+      end
     end
 
     def restart
-      @heroku.dyno.restart_all(@name)
+      safely { @heroku.dyno.restart_all(@name) }
     end
 
     def destroy
-      @heroku.app.delete(@name)
+      safely { @heroku.app.delete(@name) }
     end
 
     def update_env_variables(env)
-      @heroku.config_var.update(@name, env)
+      safely { @heroku.config_var.update(@name, env) }
     end
 
     def migrate_db
-      execute_command("RAILS_ENV=production rails db:migrate", {})
+      safely { execute_command("RAILS_ENV=production rails db:migrate", {}) }
     end
 
     def setup_db
-      execute_command("rails db:schema:load", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1)
+      safely { execute_command("rails db:schema:load", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1) }
     end
 
     def setup_worker
-      @heroku.formation.update(@name, "worker", quantity: 1)
+      safely { @heroku.formation.update(@name, "worker", quantity: 1) }
     end
 
     private
@@ -49,6 +51,13 @@ module ServerAccess
       dyno_id = @heroku.dyno.create(@name, command: command, env: env).fetch("id")
 
       sleep(COMMAND_CHECK_DELAY) while @heroku.dyno.list(@name).find { |dyno| dyno.fetch("id") == dyno_id }
+    end
+
+    def safely(&block)
+      block.call
+      ReturnValue.ok
+    rescue Excon::Error::UnprocessableEntity => error
+      ReturnValue.error(errors: error.response.data[:body])
     end
   end
 end

@@ -19,6 +19,7 @@
         tr
           th.by-content #
           th Name
+          th Status
       tbody
         - @project_instances.each_with_index do |project_instance, index|
           tr
@@ -28,3 +29,6 @@
             td
               = link_to project_project_instance_path(@project, project_instance) do
                 = project_instance.name
+            td
+              = link_to project_project_instance_path(@project, project_instance) do
+                = project_instance.deployment_status

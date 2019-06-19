@@ -3,31 +3,24 @@
 module Deployment
   module ServerActions
     class Update
-      def initialize(configurations, logger)
+      def initialize(configurations, state_machine)
         @configurations = configurations
-        @logger = logger
+        @state_machine = state_machine
       end
 
       def call
-        @configurations.each do |configuration|
-          logger.context = configuration.application_name
-          update_application(configuration)
-        rescue Excon::Error::UnprocessableEntity => error
-          @logger.error(error.response.data[:body], context: configuration.application_name)
-          return ProjectInstanceConstants::FAILURE
+        @configurations.each_with_object(@state_machine.start) do |configuration, state|
+          @state_machine.configuration_context = configuration
+          update_application(configuration, state)
         end
-
-        ProjectInstanceConstants::RUNNING_INSTANCES
+        @state_machine.finalize
       end
 
       private
 
-      attr_reader :logger
-
-      def update_application(configuration)
-        Deployment::Helpers::PushCodeToServer.new(configuration, logger).call
-        logger.info("Migrate database") && ServerAccess::Heroku.new(name: configuration.application_name).migrate_db
-        logger.info("Instance updated")
+      def update_application(configuration, state)
+        state = Deployment::Helpers::PushCodeToServer.new(configuration, state).call
+        state.add_state(:migrate_db) { ServerAccess::Heroku.new(name: configuration.application_name).migrate_db }
       end
     end
   end

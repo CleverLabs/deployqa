@@ -3,24 +3,19 @@
 module Deployment
   module ServerActions
     class Destroy
-      def initialize(configurations, logger)
+      def initialize(configurations, state_machine)
         @configurations = configurations
-        @logger = logger
+        @state_machine = state_machine
       end
 
       def call
-        @configurations.each do |configuration|
-          @logger.context = configuration.application_name
+        @configurations.each_with_object(@state_machine.start) do |configuration, state|
+          @state_machine.configuration_context = configuration
           server = ServerAccess::Heroku.new(name: configuration.application_name)
-
-          @logger.info("Destroying server") && server.destroy
-          @logger.info("Destroyed")
-        rescue Excon::Error::UnprocessableEntity => error
-          @logger.error(error.response.data[:body])
-          return ProjectInstanceConstants::FAILURE
+          state.add_state(:destroy_server) { server.destroy }
         end
 
-        ProjectInstanceConstants::DESTROYED
+        @state_machine.finalize
       end
     end
   end
