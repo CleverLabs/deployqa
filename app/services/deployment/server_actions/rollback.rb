@@ -13,7 +13,7 @@ module Deployment
 
       def call
         @state_machine.states.reverse.each do |state|
-          ACTIONS[state.state_name]&.call(state.configuration_context) if state.status.ok?
+          ACTIONS[state.state_name]&.call(state.context) if state.status.ok?
         end
       end
     end

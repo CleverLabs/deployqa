@@ -10,7 +10,7 @@ module Deployment
 
       def call
         @configurations.each_with_object(@state_machine.start) do |configuration, state|
-          @state_machine.configuration_context = configuration
+          @state_machine.context = configuration
           deploy_configuration(configuration, state)
         end
         @state_machine.finalize

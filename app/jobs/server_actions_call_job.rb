@@ -3,7 +3,7 @@
 class ServerActionsCallJob < ApplicationJob
   def perform(class_name, configurations, build_action)
     deserialized_configurations = configurations.map { |configuration| Deployment::Configuration.new(configuration) }
-    state_machine = Deployment::ActionStateMachine.new(build_action, ProjectInstanceConstants::ACTION_STATUSES.fetch(class_name))
+    state_machine = Deployment::ActionFlowController.new(build_action, ProjectInstanceConstants::ACTION_STATUSES.fetch(class_name))
 
     result_status = class_name.constantize.new(deserialized_configurations, state_machine).call
     Deployment::ServerActions::Rollback.new(state_machine).call if result_status.error?
