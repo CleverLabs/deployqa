@@ -11,8 +11,9 @@ class DeploymentConfigurationsController < ApplicationController
   def create
     @project = find_project
     @deployment_configuration = @project.deployment_configurations.build(deployment_configuration_params)
+    form = DeploymentConfigurationForm.new(deployment_configuration_params.merge(project: @project))
 
-    if @deployment_configuration.save
+    if @deployment_configuration.update(form.attributes)
       redirect_to project_path(@project)
     else
       render :new
@@ -27,8 +28,9 @@ class DeploymentConfigurationsController < ApplicationController
   def update
     @project = find_project
     @deployment_configuration = @project.deployment_configurations.find(params[:id])
+    form = DeploymentConfigurationForm.new(deployment_configuration_params.merge(project: @project, integration_id: @deployment_configuration.integration_id))
 
-    if @deployment_configuration.update(deployment_configuration_params)
+    if @deployment_configuration.update(form.attributes)
       redirect_to project_path(@project)
     else
       render :edit
@@ -50,10 +52,7 @@ class DeploymentConfigurationsController < ApplicationController
   end
 
   def deployment_configuration_params
-    params.require(:deployment_configuration).permit(:repo_path, :env_variables).tap do |result|
-      result[:env_variables] = Hash[result[:env_variables].split("\n").map { |line| line.tr("\r", "").split(": ") }]
-      result[:name] = result[:repo_path].split("/").last
-    end
+    params.require(:deployment_configuration).permit(:repo_path, :env_variables)
   end
 
   def authorize_project_admin

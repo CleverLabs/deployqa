@@ -5,7 +5,7 @@ module Github
     class UpdatePullRequest
       def initialize(body)
         @wrapped_body = Github::Events::PullRequest.new(payload: body)
-        @project = Project.find_by(integration_type: Github::User::PROVIDER, integration_id: @wrapped_body.installation_id)
+        @project = Project.find_by(integration_type: ProjectsConstants::Providers::GITHUB, integration_id: @wrapped_body.installation_id)
       end
 
       def call

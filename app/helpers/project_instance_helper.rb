@@ -4,10 +4,10 @@ module ProjectInstanceHelper
   def status_alert_class(status)
     alert_class_mapping = {
       ProjectInstanceConstants::SCHEDULED => "alert-info",
-      ProjectInstanceConstants::DEPLOYING => "alert-info",
-      ProjectInstanceConstants::RUNNING_INSTANCES => "alert-success",
+      ProjectInstanceConstants::DEPLOYING => "alert-warning",
+      ProjectInstanceConstants::RUNNING => "alert-success",
       ProjectInstanceConstants::FAILURE => "alert-danger",
-      ProjectInstanceConstants::CANCELED => "alert-warning",
+      ProjectInstanceConstants::NOT_DEPLOYED => "alert-danger",
       ProjectInstanceConstants::DESTROYING => "alert-secondary",
       ProjectInstanceConstants::DESTROYED => "alert-dark"
     }

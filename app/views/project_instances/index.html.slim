@@ -1,8 +1,8 @@
 .container
   = render partial: "shared/breadcrumb", locals: {\
       text_link_hash: {\
-        "Dashboard" => root_path,
         "Projects" => projects_path,
+        @project.name => project_path(@project),
         "Builds" => nil\
       },
       class: "mt-4" }

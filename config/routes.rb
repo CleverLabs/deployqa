@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   root "home#index"
   get "/auth/:provider/callback", to: "sessions#create"
+  get "/auth/:provider", to: "sessions#show", as: "omniauth"
   resources :home, only: %i[index]
   resource :sessions, only: %i[show create destroy]
 

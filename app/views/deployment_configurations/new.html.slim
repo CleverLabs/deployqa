@@ -1,8 +1,8 @@
 .container
   = render partial: "shared/breadcrumb", locals: {\
       text_link_hash: {\
-        "Dashboard" => root_path,
         "Projects" => projects_path,
+        @project.name => project_path(@project),
         "Configurations" => project_path(@project),
         "Create" => nil\
       },
@@ -11,7 +11,14 @@
   h1.mt-4 New Configuration
   .mt-4
     = simple_form_for @deployment_configuration, url: project_deployment_configurations_path(@project) do |form|
-      = form.input :repo_path, input_html: { placeholder: "rails/rails" }
+      - if @deployment_configuration.errors.any?
+        p.text-danger = @deployment_configuration.errors.full_messages.join(", ")
+      = form.input :repo_path, label: "Full git SSH link", input_html: { placeholder: "git@github.com:rails/rails.git" }
       = form.input :env_variables, input_html: { value: @deployment_configuration.env_variables.map {|key, value| "#{key}: #{value}"}.join("\n"), placeholder: "KEY: value\nANOTHER_KEY: value" }
+      .form-group.deployment_configuration_private_key
+        label for="deployment_configuration_private_key" Add this SSH key to your repository
+        #deployment_configuration_private_key.card.text-white.bg-info.mb-3
+          .card-body
+            p.card-text.word-break-all = @project.public_key
 
       = form.button :submit, class: "btn btn-primary"

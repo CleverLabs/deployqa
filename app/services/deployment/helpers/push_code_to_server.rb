@@ -23,12 +23,21 @@ module Deployment
       attr_reader :application_name
 
       def clone_repo
+        @configuration.project_integration_type == ProjectsConstants::Providers::VIA_SSH ? clone_repo_by_ssh : clone_repo_by_token
+      end
+
+      def clone_repo_by_token
         # TODO: extract GithubClient so we can use any integration client
-        repo_uri = GithubClient.new(@configuration.installation_id).repo_uri(@configuration.repo_path)
-        @git = GitWrapper.clone(@configuration.repo_path, repo_uri)
+        repo_uri = GithubClient.new(@configuration.project_integration_id).repo_uri(@configuration.repo_path)
+        @git = GitWrapper.clone_by_uri(@configuration.repo_path, repo_uri)
         ReturnValue.ok
       rescue Git::GitExecuteError => error
         ReturnValue.error(errors: error.message)
+      end
+
+      def clone_repo_by_ssh
+        @git = GitWrapper.clone_by_ssh(@configuration.repo_path, @configuration.project_integration_id)
+        ReturnValue.ok
       end
     end
   end

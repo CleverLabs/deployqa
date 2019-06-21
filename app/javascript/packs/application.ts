@@ -1,10 +1,13 @@
 import 'bootstrap';
 import * as Rails from 'rails-ujs'
+const Turbolinks = require("turbolinks")
 
 import HomeChart from './homeChart'
 import ReposPage from './repos'
 
 Rails.start()
+Turbolinks.start()
+
 
 window.onload = () => {
   // const hiNode = document.createElement('h1')

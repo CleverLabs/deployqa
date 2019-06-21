@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SshKeys
-  ABOUT = "Deployka"
+  ABOUT = "DeployQA"
 
   def generate
     {

@@ -6,5 +6,9 @@ body {
     padding-bottom: 2rem;
     min-height: calc(100vh - #{$footer-height} - 2rem);
   }
+
+  .word-break-all {
+    word-break: break-all;
+  }
 }
 

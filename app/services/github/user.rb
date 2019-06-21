@@ -5,7 +5,6 @@ module Github
     TOKEN_PATH = %w[credentials token].freeze
     NAME_PATH = %w[info name].freeze
     RAW_INFO_PATH = %w[extra raw_info].freeze
-    PROVIDER = "github"
 
     def initialize(omniauth_user)
       @omniauth_user = omniauth_user
@@ -33,7 +32,7 @@ module Github
     end
 
     def user_uniq_id
-      { auth_provider: PROVIDER, auth_uid: Integer(@omniauth_user["uid"]) }
+      { auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: Integer(@omniauth_user["uid"]) }
     end
   end
 end

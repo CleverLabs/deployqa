@@ -2,7 +2,7 @@
 
 class ProjectCreator
   def initialize(controller_params, current_user)
-    @params = controller_params
+    @controller_params = controller_params
     @current_user = current_user
   end
 
@@ -17,10 +17,12 @@ class ProjectCreator
 
   private
 
-  attr_reader :params, :current_user
+  attr_reader :controller_params, :current_user
 
   def project_params
-    # TODO: change github_secret_token
-    params.merge(github_secret_token: "12345")
+    meaningless_integration_id = SecureRandom.uuid
+    controller_params
+      .merge(integration_type: ProjectsConstants::Providers::VIA_SSH, integration_id: meaningless_integration_id)
+      .merge(SshKeys.new.generate)
   end
 end

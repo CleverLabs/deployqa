@@ -1,17 +1,19 @@
 .container
   = render partial: "shared/breadcrumb", locals: {\
       text_link_hash: {\
-        "Dashboard" => root_path,
         "Projects" => projects_path,
+        @project.name => project_path(@project),
         "Configurations" => nil\
       },
       class: "mt-4" }
 
-  h1.mt-4 = @project.name
+  h1.mt-4
+    = link_to_project_orgatnization(@project)
+    = @project.name
   .d-flex.justify-content-between
     h3 Configurations
     .d-flex.align-items-center
-      = link_to "Create", new_project_deployment_configuration_path(@project), class: "btn btn-primary"
+      = link_to "Add new configuration", new_configuration_url(@project), class: "btn btn-primary"
   .mt-4
     table.table.table-hover.table-clickable
       thead

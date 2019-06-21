@@ -17,22 +17,20 @@ module Deployment
     private
 
     def hash_by_project_instance(deployment_configuration, configuration, project)
-      {
-        application_name: configuration.fetch("application_name"),
-        repo_path: configuration.fetch("repo_path"),
-        git_reference: configuration.fetch("git_reference"),
-        installation_id: project.integration_id,
+      configuration.slice("application_name", "repo_path", "git_reference", "application_url").merge(
+        project_integration_id: project.integration_id,
+        project_integration_type: project.integration_type,
         env_variables: deployment_configuration.env_variables,
-        deployment_configuration_id: deployment_configuration.id,
-        application_url: configuration.fetch("application_url")
-      }
+        deployment_configuration_id: deployment_configuration.id
+      ).symbolize_keys
     end
 
     def hash_by_project(deployment_configuration, project, instance_name, branches)
       {
         application_name: build_name(project.name, deployment_configuration.name, instance_name),
         repo_path: deployment_configuration.repo_path,
-        installation_id: project.integration_id,
+        project_integration_id: project.integration_id,
+        project_integration_type: project.integration_type,
         env_variables: deployment_configuration.env_variables,
         git_reference: branches.fetch(deployment_configuration.name, "master"),
         deployment_configuration_id: deployment_configuration.id,
@@ -47,7 +45,7 @@ module Deployment
     end
 
     def build_name(project_name, deployment_configuration_name, instance_name)
-      "#{project_name}-#{deployment_configuration_name}-#{instance_name}".tr(" ", "-").tr("_", "-").downcase
+      "#{project_name}-#{deployment_configuration_name}-#{instance_name}".gsub(/([^\w]|_)/, "-").downcase
     end
 
     def heroku_url(application_name)

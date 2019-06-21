@@ -23,22 +23,22 @@ export default class HomeChart {
   private instancesCountUrl = 'project_instances_counts'
   private chartSelector: HTMLCanvasElement
   private statusesColors: INameToValueMap = {
-    canceled: '#ffeeba',
+    not_deployed: '#ffeeba',
     deploying: '#b8daff',
     destroying_instances: '#d6d8db',
     failure: '#f5c6cb',
     instances_destroyed: '#c6c8ca',
-    running_instances: '#c3e6cb',
+    running: '#c3e6cb',
     scheduled: '#bee5eb'
   }
 
   private statusesHumanized: INameToValueMap = {
-    canceled: 'Canceled',
+    not_deployed: 'Not deployed',
     deploying: 'Deploying',
     destroying_instances: 'Destroying',
     failure: 'Failed',
     instances_destroyed: 'Destroyed',
-    running_instances: 'Running',
+    running: 'Running',
     scheduled: 'Scheduled'
   }
 

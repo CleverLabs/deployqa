@@ -8,7 +8,6 @@ class CloneRepo
   SSH_ENV = "GIT_SSH_COMMAND"
   SSH_COMMAND = "ssh -i %<keypath>s"
   CLONE_COMMAND = "git clone %<git_path>s %<dest>s"
-  GITHUB_URL = "git@github.com:%<repo_path>s.git"
 
   def initialize(repo_path, private_key)
     @repo_path = repo_path
@@ -19,7 +18,7 @@ class CloneRepo
     with_env do |key|
       Open3.capture3(
         { SSH_ENV => format(SSH_COMMAND, keypath: key) },
-        format(CLONE_COMMAND, git_path: ssh_url, dest: repo_dir)
+        format(CLONE_COMMAND, git_path: @repo_path, dest: repo_dir)
       )
     end
   end
@@ -32,10 +31,6 @@ class CloneRepo
   end
 
   private
-
-  def ssh_url
-    format(GITHUB_URL, repo_path: @repo_path)
-  end
 
   def with_env
     key = write_temp_key!

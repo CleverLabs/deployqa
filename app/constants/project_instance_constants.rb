@@ -5,9 +5,9 @@ module ProjectInstanceConstants
     SCHEDULED = :scheduled,
     DEPLOYING = :deploying,
     UPDATING = :updating,
-    RUNNING_INSTANCES = :running_instances,
+    RUNNING = :running,
     FAILURE = :failure,
-    CANCELED = :canceled,
+    NOT_DEPLOYED = :not_deployed,
     DESTROYING = :destroying_instances,
     DESTROYED = :instances_destroyed
   ].freeze
@@ -16,17 +16,19 @@ module ProjectInstanceConstants
     SCHEDULED => "scheduled",
     DEPLOYING => "deploying",
     UPDATING => "updating",
-    RUNNING_INSTANCES => "running",
+    RUNNING => "running",
     FAILURE => "failed",
-    CANCELED => "canceled",
+    NOT_DEPLOYED => "not_deployed",
     DESTROYING => "destroying",
     DESTROYED => "destroyed"
   }.freeze
 
   ACTION_STATUSES = {
-    Deployment::ServerActions::Create.to_s => { running: DEPLOYING, success: RUNNING_INSTANCES, failure: FAILURE },
-    Deployment::ServerActions::Update.to_s => { running: UPDATING, success: RUNNING_INSTANCES, failure: FAILURE },
-    Deployment::ServerActions::Restart.to_s => { running: UPDATING, success: RUNNING_INSTANCES, failure: RUNNING_INSTANCES },
+    Deployment::ServerActions::Create.to_s => { running: DEPLOYING, success: RUNNING, failure: NOT_DEPLOYED },
+    Deployment::ServerActions::Update.to_s => { running: UPDATING, success: RUNNING, failure: FAILURE },
+    Deployment::ServerActions::Restart.to_s => { running: UPDATING, success: RUNNING, failure: RUNNING },
     Deployment::ServerActions::Destroy.to_s => { running: DESTROYING, success: DESTROYED, failure: FAILURE }
   }.freeze
+
+  ACTIVE_INSTANCES = [RUNNING, FAILURE].freeze
 end

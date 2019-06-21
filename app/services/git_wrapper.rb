@@ -5,7 +5,12 @@ require "clone_repo"
 class GitWrapper
   TEMP_FOLDER = "tmp"
 
-  def self.clone(repo_path, repo_uri)
+  def self.clone_by_ssh(repo_path, private_key)
+    clone_repo = CloneRepo.new(repo_path, private_key).tap(&:call)
+    new(Git.open(clone_repo.repo_dir))
+  end
+
+  def self.clone_by_uri(repo_path, repo_uri)
     repo_name = [*repo_path.split("/"), SecureRandom.hex(4)].join("-")
     new(Git.clone(repo_uri, repo_name, path: TEMP_FOLDER))
   end

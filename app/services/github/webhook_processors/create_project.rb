@@ -18,13 +18,13 @@ module Github
       private
 
       def find_user
-        ::User.find_or_create_by(auth_provider: Github::User::PROVIDER, auth_uid: Integer(@wrapped_body.initiator_info.id)).tap do |user|
+        ::User.find_or_create_by(auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: Integer(@wrapped_body.initiator_info.id)).tap do |user|
           GithubEntity.ensure_info_exists(user, @wrapped_body.raw_initiator_info)
         end
       end
 
       def find_project
-        ::Project.find_or_create_by(integration_type: Github::User::PROVIDER, integration_id: @wrapped_body.installation_id).tap do |project|
+        ::Project.find_or_create_by(integration_type: ProjectsConstants::Providers::GITHUB, integration_id: @wrapped_body.installation_id).tap do |project|
           project.update!(name: @wrapped_body.organization_info.name) if project.name != @wrapped_body.organization_info.name
           GithubEntity.ensure_info_exists(project, @wrapped_body.raw_organization_info)
         end
@@ -35,7 +35,7 @@ module Github
           project: project,
           repo_path: repo_info.full_name,
           name: repo_info.name,
-          integration_type: Github::User::PROVIDER,
+          integration_type: ProjectsConstants::Providers::GITHUB,
           integration_id: repo_info.id,
           status: DeploymentConfigurationConstants::INSTALLED
         )
