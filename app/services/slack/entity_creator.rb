@@ -8,8 +8,8 @@ module Slack
     end
 
     def call
-      SlackEntity.find_or_create_by!(project: project) do |project|
-        project.data = @oauth_token.to_hash
+      SlackEntity.find_or_create_by!(project: project) do |enitity|
+        enitity.data = @oauth_token.to_hash
       end
     end
 

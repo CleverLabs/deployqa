@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   default_url_options host: ENV["HOST_NAME"], protocol: "https"
 
   root "home#index"
-  get "/auth/slack/callback", to: "slack_authorizations#create"
+  get "/auth/slack/callback", to: "slack/authentications#create"
   get "/auth/:provider/callback", to: "sessions#create"
   get "/auth/:provider", to: "sessions#show", as: "omniauth"
 
