@@ -15,15 +15,16 @@ Rails.application.routes.draw do
     resources :github, only: %i[create]
   end
 
-  resources :projects do
-    resources :project_instances do
+  resources :projects, only: %i[index new show create] do
+    resources :project_instances, only: %i[index show new create destroy] do
       resource :deploy, only: %i[show create], module: :project_instances
       resource :reload, only: %i[create], module: :project_instances
       resource :update, only: %i[create], module: :project_instances
       resources :database_dumps, only: %i[index show create update], module: :project_instances
       resources :build_actions, only: %i[show], module: :project_instances
     end
-    resources :deployment_configurations
+    resources :deployment_configurations, only: %i[new create edit update destroy]
+    resources :project_user_roles, only: %i[destroy]
   end
 
   resources :project_instances_counts, only: %i[index]

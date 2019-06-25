@@ -28,7 +28,7 @@ module Deployment
 
       def clone_repo_by_token
         # TODO: extract GithubClient so we can use any integration client
-        repo_uri = GithubClient.new(@configuration.project_integration_id).repo_uri(@configuration.repo_path)
+        repo_uri = GithubAppClient.new(@configuration.project_integration_id).repo_uri(@configuration.repo_path)
         @git = GitWrapper.clone_by_uri(@configuration.repo_path, repo_uri)
         ReturnValue.ok
       rescue Git::GitExecuteError => error

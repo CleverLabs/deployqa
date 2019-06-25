@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GithubClient
+class GithubAppClient
   delegate :login, :issue, :update_issue, :issue_comments, :update_comment, :add_comment, to: :client
 
   TOKEN_TIME_TO_LIVE = 10.minutes

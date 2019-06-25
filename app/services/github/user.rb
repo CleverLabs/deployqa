@@ -13,6 +13,7 @@ module Github
     def identify
       ::User.find_or_create_by!(user_uniq_id).tap do |user|
         user.update(token: token, full_name: full_name)
+        update_user_roles_for_projects(user)
         GithubEntity.ensure_info_exists(user, raw_info)
       end
     end
@@ -33,6 +34,16 @@ module Github
 
     def user_uniq_id
       { auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: Integer(@omniauth_user["uid"]) }
+    end
+
+    def update_user_roles_for_projects(user)
+      installation_ids = Github::Events::UserInstallations.new(payload: GithubUserClient.new(user.token).find_user_installations.to_h).installations.map(&:id)
+
+      Project.where(integration_type: ProjectsConstants::Providers::GITHUB, integration_id: installation_ids).each do |project|
+        ProjectUserRole.find_or_create_by(user: user, project: project) do |role|
+          role.role = ProjectUserRoleConstants::REGULAR_USER
+        end
+      end
     end
   end
 end

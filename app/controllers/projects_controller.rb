@@ -18,6 +18,7 @@ class ProjectsController < ApplicationController
     @project = find_project
     authorize @project, :edit?, policy_class: ProjectPolicy
     @deployment_configurations = @project.deployment_configurations
+    @roles = @project.project_user_roles.includes(:user)
   end
 
   def create

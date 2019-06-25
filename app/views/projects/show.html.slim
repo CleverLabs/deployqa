@@ -2,22 +2,21 @@
   = render partial: "shared/breadcrumb", locals: {\
       text_link_hash: {\
         "Projects" => projects_path,
-        @project.name => project_path(@project),
-        "Configurations" => nil\
+        @project.name => project_path(@project)\
       },
       class: "mt-4" }
 
   h1.mt-4
     = link_to_project_orgatnization(@project)
     = @project.name
+  - if @project.slack_entity.blank?
+    .mt-4.mb-4
+      = link_to omniauth_path("slack", project_id: @project.id) do
+        img alt="Enable Slack notifications" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
   .d-flex.justify-content-between
     h3 Configurations
     .d-flex.align-items-center
       = link_to "Add new configuration", new_configuration_url(@project), class: "btn btn-primary"
-  - if @project.slack_entity.blank?
-    .mt-4
-      = link_to omniauth_path("slack", project_id: @project.id) do
-        img alt="Enable Slack notifications" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
 
   .mt-4
     table.table.table-hover.table-clickable
@@ -37,3 +36,24 @@
                 = deployment_configuration.name
             td
               = link_to "Delete", project_deployment_configuration_path(@project, deployment_configuration), method: :delete, data: { confirm: "Are you sure want to delete configuration?" }
+
+  .d-flex.justify-content-between
+    h3 Members
+    .d-flex.align-items-center
+      = link_to "Add new member", "/", class: "btn btn-primary"
+
+  .mt-4
+    table.table.table-hover
+      thead
+        tr
+          th.by-content #
+          th Name
+          th Role
+          th
+      tbody
+        - @roles.each_with_index do |project_user_role, index|
+          tr
+            td.text-center = index + 1
+            td = project_user_role.user.full_name
+            td = project_user_role.role.humanize
+            td = link_to "X", project_project_user_role_path(@project, project_user_role), method: :delete, data: { confirm: "Are you sure want to remove user from project?" }

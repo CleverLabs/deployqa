@@ -18,6 +18,9 @@ module Github
         "added" => Github::WebhookProcessors::AddNewRepo,
         "removed" => Github::WebhookProcessors::RemoveRepo
       },
+      "github_app_authorization" => {
+        "revoked" => Github::WebhookProcessors::RevokeAuth
+      },
 
       # github legacy events
       "integration_installation" => {},
