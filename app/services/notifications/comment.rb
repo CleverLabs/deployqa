@@ -35,7 +35,7 @@ module Notifications
     end
 
     def failed
-      "Deployment failed"
+      "Deployment failed. [Project instance](#{project_instance_url})"
     end
 
     private

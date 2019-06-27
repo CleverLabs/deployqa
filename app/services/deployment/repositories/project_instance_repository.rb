@@ -10,8 +10,14 @@ module Deployment
         @project_instance = project_instance
       end
 
-      def create(name:, configurations:, pull_request_number: nil, deployment_status: nil)
-        object = @project.project_instances.create(deployment_status: deployment_status, name: name, pull_request_number: pull_request_number, configurations: configurations)
+      def create(name:, configurations:, attached_repo_path: nil, attached_pull_request_number: nil, deployment_status: nil)
+        object = @project.project_instances.create(
+          deployment_status: deployment_status,
+          name: name,
+          attached_repo_path: attached_repo_path,
+          attached_pull_request_number: attached_pull_request_number,
+          configurations: configurations
+        )
         ReturnValue.new(object: object, status: object.errors.any? ? :error : :ok)
       end
 

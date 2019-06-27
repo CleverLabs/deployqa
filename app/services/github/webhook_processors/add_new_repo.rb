@@ -12,7 +12,7 @@ module Github
         @wrapped_body.added_repos.each do |repo_info|
           create_configuration(repo_info)
         end
-        ReturnValue.ok(nil)
+        ReturnValue.ok
       end
 
       private

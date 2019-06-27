@@ -9,10 +9,11 @@ module Deployment
       @project_instance = build_action.project_instance
       @logger = BuildActionLogger.new(build_action)
       @deployment_statuses = deployment_statuses
+      @instance_events = ProjectInstanceEvents.new(@project_instance)
     end
 
     def start
-      @project_instance.update!(deployment_status: @deployment_statuses.fetch(:running))
+      @instance_events.create_event(@deployment_statuses.fetch(:running))
       self
     end
 
@@ -29,12 +30,11 @@ module Deployment
     def finalize
       if last_state.status.ok?
         @logger.info(I18n.t("build_addons.log.success"), context: context_name)
-        deployment_status = @deployment_statuses.fetch(:success)
+        @instance_events.create_event(@deployment_statuses.fetch(:success))
       else
-        deployment_status = @deployment_statuses.fetch(:failure)
+        @instance_events.create_event(@deployment_statuses.fetch(:failure))
       end
 
-      @project_instance.update!(deployment_status: deployment_status)
       last_state.status
     end
 

@@ -19,6 +19,8 @@ module Deployment
 
     # Temporary solution
     def add_private_key(private_key)
+      return self unless project_integration_type == ProjectsConstants::Providers::VIA_SSH
+
       self.project_integration_id = private_key
       self
     end

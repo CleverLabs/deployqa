@@ -3,6 +3,13 @@
 module Github
   module Events
     class PullRequest
+      class Sender
+        include ShallowAttributes
+
+        attribute :id, Integer
+        attribute :login, String
+      end
+
       include ShallowAttributes
 
       attribute :payload, Hash
@@ -25,6 +32,10 @@ module Github
 
       def branch
         payload.dig("pull_request", "head", "ref")
+      end
+
+      def sender
+        Sender.new(payload.fetch("sender"))
       end
     end
   end

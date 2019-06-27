@@ -9,18 +9,17 @@ module Github
       end
 
       def call
-        project_instance = @project.project_instances.find_by(pull_request_number: @wrapped_body.number)
-        Deployment::Processes::UpdateProjectInstance.new(project_instance, nil).call.tap do |result|
-          update_info_comment(result, project_instance)
-        end
+        project_instance = @project.project_instances.find_by(attached_pull_request_number: @wrapped_body.number)
+        Deployment::Processes::UpdateProjectInstance.new(project_instance, get_user(@wrapped_body.sender)).call
+        ReturnValue.ok
       end
 
       private
 
-      def update_info_comment(result, project_instance)
-        comment = Notifications::Comment.new(project_instance)
-        text = result.ok? ? comment.deployed : comment.failed
-        Github::PullRequest.new(@project.integration_id, @wrapped_body.full_repo_name, @wrapped_body.number).update_info_comment(text)
+      def get_user(sender)
+        ::User.find_or_create_by!(auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: sender.id) do |user|
+          user.full_name = sender.login
+        end
       end
     end
   end

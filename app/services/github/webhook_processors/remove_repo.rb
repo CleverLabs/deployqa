@@ -13,7 +13,7 @@ module Github
         ::DeploymentConfiguration
           .where(project: @project, integration_type: ProjectsConstants::Providers::GITHUB, integration_id: repos_ids)
           .update_all(status: DeploymentConfigurationConstants::REMOVED)
-        ReturnValue.ok(nil)
+        ReturnValue.ok
       end
     end
   end

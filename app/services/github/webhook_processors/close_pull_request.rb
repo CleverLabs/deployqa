@@ -7,7 +7,9 @@ module Github
         @body = body
       end
 
-      def call; end
+      def call
+        ReturnValue.new(status: :no_action)
+      end
     end
   end
 end

@@ -12,7 +12,7 @@ module Github
         project = find_project
         ProjectUserRole.find_or_create_by(user: user, project: project).update!(role: ProjectUserRoleConstants::ADMIN)
         @wrapped_body.repos.each { |repo_info| create_repo(repo_info, project) }
-        ReturnValue.ok(nil)
+        ReturnValue.ok
       end
 
       private

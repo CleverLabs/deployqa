@@ -66,7 +66,8 @@ ActiveRecord::Schema.define(version: 2019_07_01_125130) do
     t.datetime "updated_at", null: false
     t.string "name", null: false
     t.jsonb "configurations", default: {}, null: false
-    t.integer "pull_request_number"
+    t.integer "attached_pull_request_number"
+    t.string "attached_repo_path"
     t.index ["project_id"], name: "index_project_instances_on_project_id"
   end
 

@@ -15,7 +15,7 @@ module Github
     end
 
     def update_info_comment(text)
-      comment = @client.issue_comments(@repo_path, @pull_request_number).reverse.find { |issue| issue.user.login == @client.login }
+      comment = @client.issue_comments(@repo_path, @pull_request_number).reverse.find { |issue| issue.user.login == Github::PullRequestConstants::APPLICATION_COMMENT_LOGIN }
       comment ? @client.update_comment(@repo_path, comment.id, text) : @client.add_comment(@repo_path, @pull_request_number, text)
     end
   end
