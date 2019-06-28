@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ProjectInstancesController < ApplicationController
-  before_action :authorize_project_member
-
   def index
     @project = find_project
     @project_instances = @project.project_instances.order(created_at: :desc)
@@ -15,12 +13,13 @@ class ProjectInstancesController < ApplicationController
 
   def new
     @project = find_project
+    @deployment_configurations = @project.deployment_configurations.active
     @project_instance = @project.project_instances.build
   end
 
   def create
     @project = find_project
-    result = Deployment::Processes::CreateProjectInstance.new(@project, current_user).call(project_instance_name: project_instance_name)
+    result = Deployment::Processes::CreateProjectInstance.new(@project, current_user).call(project_instance_name: project_instance_name, branches: branches)
 
     if result.ok?
       redirect_to project_project_instance_path(@project, result.object)
@@ -41,14 +40,14 @@ class ProjectInstancesController < ApplicationController
   private
 
   def find_project
-    @_project ||= Project.find(params[:project_id])
+    authorize Project.find(params[:project_id]), :show?, policy_class: ProjectPolicy
   end
 
   def project_instance_name
     params.require(:project_instance).fetch(:name)
   end
 
-  def authorize_project_member
-    authorize find_project, :show?, policy_class: ProjectPolicy
+  def branches
+    params.require(:project_instance).fetch(:configurations)
   end
 end

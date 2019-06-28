@@ -9,7 +9,7 @@ module Deployment
     end
 
     def by_project(project, instance_name, branches: {})
-      project.deployment_configurations.map do |deployment_configuration|
+      project.deployment_configurations.active.map do |deployment_configuration|
         Deployment::Configuration.new(hash_by_project(deployment_configuration, project, instance_name, branches))
       end
     end

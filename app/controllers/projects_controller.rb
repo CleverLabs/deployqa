@@ -17,8 +17,9 @@ class ProjectsController < ApplicationController
   def show
     @project = find_project
     authorize @project, :edit?, policy_class: ProjectPolicy
-    @deployment_configurations = @project.deployment_configurations
+    @deployment_configurations = @project.deployment_configurations.order(:status)
     @roles = @project.project_user_roles.includes(:user)
+    @project_github_entity = GithubEntity.find_by(owner: @project) if @project.integration_type == ProjectsConstants::Providers::GITHUB
   end
 
   def create

@@ -9,25 +9,31 @@
       class: "mt-4" }
 
   h1.mt-4 = @project_instance.project.name
-  h3 = @project_instance.name
-  .mt-4
-    .application-links.mt-4
-      - @project_instance.configurations.each do |configuration|
-        h5.app-link
-          = link_to configuration["application_name"], configuration["application_url"], target: "_blank", rel: "noopener noreferrer"
-
-    div class=["mt-4 alert", status_alert_class(@project_instance.deployment_status)] role="alert"
-      = "Status is: "
+  h3
+    = @project_instance.name
+    span class=["ml-2 badge", status_badge_class(@project_instance.deployment_status)]
       = ProjectInstanceConstants::DEPLOYMENT_STATUSES_HUMANISED.fetch(@project_instance.deployment_status.to_sym)
 
-    .d-flex.justify-content-between
+  .mt-4
+    .application-links.mt-5.row
+      - @project_instance.configurations.each do |configuration|
+        .col-6
+          h5 = configuration["repo_path"]
+          p.mb-0
+            | Branch: 
+            span.text-monospace.bg-light = configuration["git_reference"]
+          p.mb-0
+            | Link: 
+            = link_to configuration["application_name"], configuration["application_url"], target: "_blank", rel: "noopener noreferrer"
+
+    .d-flex.justify-content-between.mt-5
       div
         = link_to "Dumps", project_project_instance_database_dumps_path(@project, @project_instance), class: "btn btn-secondary"
         = link_to "Reload", project_project_instance_reload_path(@project, @project_instance), method: :post, class: "btn btn-info ml-2"
         = link_to "Update", project_project_instance_update_path(@project, @project_instance), method: :post, class: "btn btn-info ml-2"
       = link_to "Terminate", project_project_instance_path(@project, @project_instance), method: :delete, class: "btn btn-danger"
 
-    .build-actions.mt-5
+    .build-actions.mt-3
       table.table.table-hover.table-clickable
         thead
           tr

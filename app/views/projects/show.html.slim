@@ -16,31 +16,40 @@
   .d-flex.justify-content-between
     h3 Configurations
     .d-flex.align-items-center
+      - if @project.integration_type == ProjectsConstants::Providers::GITHUB
+        = link_to "Manage installation 🔗", github_router.installation_page_url(@project.integration_id, @project_github_entity), target: :_blank, class: "btn btn-primary mr-1"
       = link_to "Add new configuration", new_configuration_url(@project), class: "btn btn-primary"
 
   .mt-4
-    table.table.table-hover.table-clickable
+    table.table.table-hover
       thead
         tr
           th.by-content #
           th Name
+          th Status
           th
       tbody
         - @deployment_configurations.each_with_index do |deployment_configuration, index|
           tr
-            td.text-center
-              = link_to edit_project_deployment_configuration_path(@project, deployment_configuration) do
-                = index + 1
+            td.text-center = index + 1
             td
-              = link_to edit_project_deployment_configuration_path(@project, deployment_configuration) do
+              - if deployment_configuration.status == DeploymentConfigurationConstants::REMOVED
                 = deployment_configuration.name
+              - else
+                = link_to edit_project_deployment_configuration_path(@project, deployment_configuration) do
+                  = deployment_configuration.name
+            td = deployment_configuration.status.humanize
             td
-              = link_to "Delete", project_deployment_configuration_path(@project, deployment_configuration), method: :delete, data: { confirm: "Are you sure want to delete configuration?" }
+              - if deployment_configuration.status.in? [DeploymentConfigurationConstants::INSTALLED, DeploymentConfigurationConstants::INACTIVE]
+                = link_to "Activate", project_deployment_configuration_status_path(@project, deployment_configuration, status: DeploymentConfigurationConstants::ACTIVE), method: :patch
+              - if deployment_configuration.status == DeploymentConfigurationConstants::ACTIVE
+                = link_to "Deactivate", project_deployment_configuration_status_path(@project, deployment_configuration, status: DeploymentConfigurationConstants::INACTIVE), method: :patch
 
-  .d-flex.justify-content-between
+  .d-flex.justify-content-between.mt-5
     h3 Members
     .d-flex.align-items-center
-      = link_to "Add new member", "/", class: "btn btn-primary"
+    button.btn.btn-primary type="button" data-toggle="modal" data-target="#addNewMemberModal" Add new member
+
 
   .mt-4
     table.table.table-hover
@@ -57,3 +66,18 @@
             td = project_user_role.user.full_name
             td = project_user_role.role.humanize
             td = link_to "X", project_project_user_role_path(@project, project_user_role), method: :delete, data: { confirm: "Are you sure want to remove user from project?" }
+
+#addNewMemberModal.modal.fade aria-hidden="true" aria-labelledby="addNewMemberModalLabel" role="dialog" tabindex="-1" 
+  .modal-dialog role="document" 
+    .modal-content
+      .modal-header
+        h5#addNewMemberModalLabel.modal-title Add new member to project
+        button.close aria-label="Close" data-dismiss="modal" type="button" 
+          span aria-hidden="true" &times;
+      .modal-body
+        = simple_form_for @project.project_user_roles.build, url: project_project_user_roles_path(@project) do |form|
+          = form.input :user_id, collection: User.where.not(id: @project.project_user_roles.map(&:user_id)).pluck(:full_name, :id)
+          = form.input :role, selected: ProjectUserRoleConstants::REGULAR_USER
+          = form.button :submit, "Add user", class: "btn btn-primary btn-block"
+      .modal-footer
+        button.btn.alert-dark data-dismiss="modal" type="button" Cancel

@@ -18,12 +18,10 @@ module Github
       private
 
       def create_configuration(repo_info)
-        configuration = ::DeploymentConfiguration.create!(
-          project: @project,
+        configuration = ::DeploymentConfiguration.find_or_create_by(project: @project, integration_type: ProjectsConstants::Providers::GITHUB, integration_id: repo_info.id)
+        configuration.update!(
           repo_path: repo_info.full_name,
           name: repo_info.name,
-          integration_type: ProjectsConstants::Providers::GITHUB,
-          integration_id: repo_info.id,
           status: DeploymentConfigurationConstants::INSTALLED
         )
 

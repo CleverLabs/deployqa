@@ -11,7 +11,10 @@
   h1.mt-4 Edit Configuration
   .mt-4
     = simple_form_for @deployment_configuration, url: project_deployment_configuration_path(@project, @deployment_configuration) do |form|
-      = form.input :repo_path
+      - if @deployment_configuration.errors.any?
+        p.text-danger = @deployment_configuration.errors.full_messages.join(", ")
+      - if @project.integration_type == ProjectsConstants::Providers::VIA_SSH
+        = form.input :repo_path
       = form.input :env_variables, input_html: {value: @deployment_configuration.env_variables.map {|key, value| "#{key}: #{value}"}.join("\n")}
 
       = form.button :submit, class: "btn btn-primary"

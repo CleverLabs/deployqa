@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 module ProjectInstanceHelper
-  def status_alert_class(status)
-    alert_class_mapping = {
-      ProjectInstanceConstants::SCHEDULED => "alert-info",
-      ProjectInstanceConstants::DEPLOYING => "alert-warning",
-      ProjectInstanceConstants::RUNNING => "alert-success",
-      ProjectInstanceConstants::FAILURE => "alert-danger",
-      ProjectInstanceConstants::NOT_DEPLOYED => "alert-danger",
-      ProjectInstanceConstants::DESTROYING => "alert-secondary",
-      ProjectInstanceConstants::DESTROYED => "alert-dark"
-    }
+  STATUS_BADGE_CLASS_MAPPING = {
+    ProjectInstanceConstants::SCHEDULED => "badge-info",
+    ProjectInstanceConstants::DEPLOYING => "badge-warning",
+    ProjectInstanceConstants::RUNNING => "badge-success",
+    ProjectInstanceConstants::FAILURE => "badge-danger",
+    ProjectInstanceConstants::NOT_DEPLOYED => "badge-danger",
+    ProjectInstanceConstants::DESTROYING => "badge-secondary",
+    ProjectInstanceConstants::DESTROYED => "badge-dark"
+  }.freeze
 
-    alert_class_mapping.fetch(status.to_sym, "alert-info")
+  def status_badge_class(status)
+    STATUS_BADGE_CLASS_MAPPING.fetch(status.to_sym, "badge-info")
   end
 end

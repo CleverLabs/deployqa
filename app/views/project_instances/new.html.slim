@@ -10,8 +10,11 @@
 
   h1.mt-4 New build
   .mt-4
-    = simple_form_for @project_instance, url: project_project_instances_path do |form|
+    = simple_form_for @project_instance, url: project_project_instances_path, class: "row" do |form|
       - if @project_instance.errors.any?
         b = @project_instance.errors.full_messages
       = form.input :name
+      - @deployment_configurations.each do |deployment_configuration|
+        = form.simple_fields_for :configurations do |configurations_form|
+          = configurations_form.input deployment_configuration.name, label: "'#{deployment_configuration.name}' branch", input_html: { value: "master" }, wrapper_html: { class: "w-50" }
       = form.button :submit, class: "btn btn-primary"

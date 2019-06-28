@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
   include Pundit
   before_action :login_if_not
 
+  helper_method :github_router
+
   private
 
   def current_user
@@ -20,5 +22,9 @@ class ApplicationController < ActionController::Base
 
   def login_if_not
     redirect_to sessions_path unless authenticated?
+  end
+
+  def github_router
+    @_github_router ||= Github::Router.new
   end
 end
