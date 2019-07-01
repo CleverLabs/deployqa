@@ -10,7 +10,7 @@ module Deployment
         @project_instance = project_instance
       end
 
-      def create(name, pull_request_number, configurations)
+      def create(name:, configurations:, pull_request_number: nil)
         object = @project.project_instances.create(deployment_status: :scheduled, name: name, pull_request_number: pull_request_number, configurations: configurations)
         ReturnValue.new(object: object, status: object.errors.any? ? :error : :ok)
       end
