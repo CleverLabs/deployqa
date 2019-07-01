@@ -10,11 +10,11 @@ class BuildActionLogger
   end
 
   def info(message, context: nil)
-    create_log(message, status: BuildActionConstants::Log::INFO, context: context)
+    create_log(message, status: BuildActionConstants::Log::INFO, context: context, error_backtrace: nil)
   end
 
-  def error(message, context: nil)
-    create_log(message, status: BuildActionConstants::Log::ERROR, context: context)
+  def error(message, context: nil, error_backtrace: nil)
+    create_log(message, status: BuildActionConstants::Log::ERROR, context: context, error_backtrace: error_backtrace)
   end
 
   def serialize
@@ -25,7 +25,7 @@ class BuildActionLogger
 
   attr_reader :build_action
 
-  def create_log(message, status:, context:)
-    BuildActionLog.create(build_action: build_action, message: message, status: status, context: context)
+  def create_log(message, status:, context:, error_backtrace:)
+    BuildActionLog.create(build_action: build_action, message: message, status: status, context: context, error_backtrace: error_backtrace)
   end
 end

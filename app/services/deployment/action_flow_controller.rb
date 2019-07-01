@@ -20,7 +20,7 @@ module Deployment
       @state_machine.add_state(
         state_name,
         before: -> { @logger.info(I18n.t("build_addons.log.#{state_name}"), context: context_name) },
-        on_error: ->(errors) { @logger.error(errors.to_s, context: context_name) },
+        on_error: ->(errors, backtrace) { @logger.error(errors.to_s, context: context_name, error_backtrace: backtrace) },
         &block
       )
       self

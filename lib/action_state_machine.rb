@@ -17,7 +17,7 @@ class ActionStateMachine
     result = block.call
     create_state(state_name, result.status, result.errors, on_error)
   rescue StandardError => error
-    create_state(state_name, ReturnValue.error.status, error.message, on_error)
+    create_state(state_name, ReturnValue.error.status, error.message, on_error, backtrace: error.backtrace.join("\n"))
   end
 
   def last_state
@@ -26,8 +26,8 @@ class ActionStateMachine
 
   private
 
-  def create_state(state_name, status, errors, on_error_callback)
-    on_error_callback.call(errors) if status.error?
+  def create_state(state_name, status, errors, on_error_callback, backtrace: nil)
+    on_error_callback.call(errors, backtrace) if status.error?
     @states << State.new(state_name, status, context)
     self
   end

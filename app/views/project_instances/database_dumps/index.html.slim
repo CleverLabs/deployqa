@@ -1,13 +1,31 @@
-h1 Dumps
-div
-  - @dumps_list.each do |dump|
-    li
-      = "#{dump[:uuid]}, created: #{dump[:created_at]}, "
-      = link_to("Download", project_project_instance_database_dump_path(@project, @project_instance, dump[:uuid]))
- 
-= link_to "Create dump", project_project_instance_database_dumps_path(@project, @project_instance), method: :post
+.container
+  = render partial: "shared/breadcrumb", locals: {\
+      text_link_hash: {\
+        "Projects" => projects_path,
+        @project.name => project_path(@project),
+        "Builds" => project_project_instances_path(@project),
+        @project_instance.name => project_project_instance_path(@project, @project_instance),
+        "Dumps" => nil\
+      },
+      class: "mt-4" }
 
-h3 Upload dump
-= simple_form_for :dump, url: project_project_instance_database_dump_path(@project, @project_instance, "no-id"), method: :patch do |form|
-  = form.input :url
-  = form.button :submit
+  h1.mt-4
+    = @project_instance.project.name
+    = "\\"
+    = @project_instance.name
+  h3 Database dumps
+
+  div.mt-3
+    - @dumps_list.each do |dump|
+      li
+        span.text-monospace.bg-light = dump[:uuid]
+        = ", created: #{dump[:created_at]}, "
+        = link_to "Download", project_project_instance_database_dump_path(@project, @project_instance, dump[:uuid])
+ 
+  = link_to "Create new dump", project_project_instance_database_dumps_path(@project, @project_instance), method: :post, class: "btn btn-primary mt-3"
+
+  h3.mt-5 Upload dump
+  p You can upload your database dump to instance
+  = simple_form_for :dump, url: project_project_instance_database_dump_path(@project, @project_instance, "no-id"), method: :patch do |form|
+    = form.input :url, input_html: { class: "w-50" }
+    = form.button :submit, "Upload dump", class: "btn btn-primary"

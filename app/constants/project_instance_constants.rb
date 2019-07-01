@@ -30,5 +30,5 @@ module ProjectInstanceConstants
     Deployment::ServerActions::Destroy.to_s => { running: DESTROYING, success: DESTROYED, failure: FAILURE }
   }.freeze
 
-  ACTIVE_INSTANCES = [RUNNING, FAILURE].freeze
+  ACTIVE_INSTANCES = [RUNNING, FAILURE, DEPLOYING, UPDATING].freeze
 end

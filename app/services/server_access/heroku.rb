@@ -56,7 +56,7 @@ module ServerAccess
     def safely(&block)
       block.call
       ReturnValue.ok
-    rescue Excon::Error::UnprocessableEntity => error
+    rescue Excon::Error::UnprocessableEntity, Excon::Error::NotFound => error
       ReturnValue.error(errors: error.response.data[:body])
     end
   end
