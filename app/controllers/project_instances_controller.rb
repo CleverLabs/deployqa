@@ -9,6 +9,7 @@ class ProjectInstancesController < ApplicationController
   def show
     @project = find_project
     @project_instance = @project.project_instances.find(params[:id])
+    @project_instance_policy = ProjectInstancePolicy.new(current_user, @project_instance)
   end
 
   def new

@@ -32,4 +32,4 @@
             td
               = link_to project_project_instance_path(@project, project_instance) do
                 span class=["ml-1 badge", status_badge_class(project_instance.deployment_status)]
-                  = ProjectInstanceConstants::DEPLOYMENT_STATUSES_HUMANISED.fetch(project_instance.deployment_status.to_sym)
+                  = project_instance.deployment_status

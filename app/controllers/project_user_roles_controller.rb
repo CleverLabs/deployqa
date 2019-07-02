@@ -3,8 +3,7 @@
 class ProjectUserRolesController < ApplicationController
   def destroy
     project = find_project
-    role = ProjectUserRole.find(params[:id])
-    role.destroy!
+    project.project_user_roles.find(params[:id]).destroy!
     redirect_to project_path(project)
   end
 

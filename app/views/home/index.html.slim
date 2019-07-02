@@ -57,7 +57,7 @@
                     = build.updated_at.strftime("%H:%M %d/%m")
                 td.text-center
                   = link_to project_project_instance_path(build.project, build) do
-                    = ProjectInstanceConstants::DEPLOYMENT_STATUSES_HUMANISED.fetch(build.deployment_status.to_sym)
+                    = build.deployment_status
   .row.mt-4
     .col-12.col-md-6
       .summary-block

@@ -13,6 +13,7 @@ module Deployment
         Deployment::Repositories::ProjectInstanceRepository.new(@project).create(
           name: project_instance_name,
           pull_request_number: pull_request_number,
+          deployment_status: ProjectInstanceConstants::EMPTY_RECORD_FOR_PR,
           configurations: configurations.map(&:to_project_instance_configuration)
         )
       end

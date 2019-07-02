@@ -4,7 +4,7 @@ module ProjectInstances
   class DeploysController < ApplicationController
     def show
       @project = find_project
-      @project_instance = @project.project_instances.find(params[:project_instance_id])
+      @project_instance = find_project_instance(@project)
       return if params[:custom_deploy]
 
       deploy(@project_instance)
@@ -13,7 +13,7 @@ module ProjectInstances
 
     def create
       @project = find_project
-      @project_instance = @project.project_instances.find(params[:project_instance_id])
+      @project_instance = find_project_instance(@project)
 
       if update_configurations(@project_instance)
         deploy(@project_instance)
@@ -26,7 +26,11 @@ module ProjectInstances
     private
 
     def find_project
-      Project.find(params[:project_id])
+      authorize Project.find(params[:project_id]), :show?, policy_class: ProjectPolicy
+    end
+
+    def find_project_instance(project)
+      authorize project.project_instances.find(params[:project_instance_id]), :deploy_by_link?, policy_class: ProjectInstancePolicy
     end
 
     def project_instance_params

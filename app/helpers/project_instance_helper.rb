@@ -12,6 +12,6 @@ module ProjectInstanceHelper
   }.freeze
 
   def status_badge_class(status)
-    STATUS_BADGE_CLASS_MAPPING.fetch(status.to_sym, "badge-info")
+    STATUS_BADGE_CLASS_MAPPING.fetch(status, "badge-info")
   end
 end

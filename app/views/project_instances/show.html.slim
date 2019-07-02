@@ -11,8 +11,7 @@
   h1.mt-4 = @project_instance.project.name
   h3
     = @project_instance.name
-    span class=["ml-2 badge", status_badge_class(@project_instance.deployment_status)]
-      = ProjectInstanceConstants::DEPLOYMENT_STATUSES_HUMANISED.fetch(@project_instance.deployment_status.to_sym)
+    span class=["ml-2 badge", status_badge_class(@project_instance.deployment_status)] = @project_instance.deployment_status
 
   .mt-4
     .application-links.mt-5.row
@@ -27,26 +26,23 @@
             = link_to configuration["application_name"], configuration["application_url"], target: "_blank", rel: "noopener noreferrer"
 
     .d-flex.justify-content-between.mt-5
-      div
-        = link_to "Dumps", project_project_instance_database_dumps_path(@project, @project_instance), class: "btn btn-secondary"
-        = link_to "Reload", project_project_instance_reload_path(@project, @project_instance), method: :post, class: "btn btn-info ml-2"
-        = link_to "Update", project_project_instance_update_path(@project, @project_instance), method: :post, class: "btn btn-info ml-2"
-      = link_to "Terminate", project_project_instance_path(@project, @project_instance), method: :delete, class: "btn btn-danger"
+
+      div.btn-group role="group"
+        = link_to "Reload", project_project_instance_reload_path(@project, @project_instance), method: :post, class: "btn btn-outline-primary #{'disabled' unless @project_instance_policy.reload?}"
+        = link_to "Update", project_project_instance_update_path(@project, @project_instance), method: :post, class: "btn btn-outline-primary #{'disabled' unless @project_instance_policy.update_server?}"
+        = link_to "Dumps", project_project_instance_database_dumps_path(@project, @project_instance), class: "btn btn-outline-secondary #{'disabled' unless @project_instance_policy.dumps?}"
+      = link_to "Terminate", project_project_instance_path(@project, @project_instance), method: :delete, class: "btn btn-outline-danger #{'disabled' unless @project_instance_policy.terminate?}"
 
     .build-actions.mt-3
       table.table.table-hover.table-clickable
         thead
           tr
-            th.by-content #
             th Action
             th Author
             th Created at
         tbody
-          - @project_instance.build_actions.order(created_at: :desc).each_with_index do |build_action, index|
+          - @project_instance.build_actions.order(created_at: :desc).each_with_index do |build_action|
             tr
-              td
-                = link_to project_project_instance_build_action_path(@project, @project_instance, build_action) do
-                  = index + 1
               td
                 = link_to project_project_instance_build_action_path(@project, @project_instance, build_action) do
                   = build_action.action.to_s.humanize
