@@ -2,7 +2,7 @@
   "name": "deployka",
   "private": true,
   "dependencies": {
-    "@rails/webpacker": "4.0.2",
+    "@rails/webpacker": "4.0.7",
     "@types/chart.js": "^2.7.52",
     "@types/node": "^10.12.10",
     "@types/webpack-env": "^1.13.9",
@@ -19,6 +19,6 @@
   "devDependencies": {
     "tslint": "^5.11.0",
     "tslint-config-standard": "^8.0.1",
-    "webpack-dev-server": "3.3.1"
+    "webpack-dev-server": "3.7.2"
   }
 }
