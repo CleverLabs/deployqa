@@ -12,11 +12,10 @@ module Deployment
       ProjectInstanceConstants::DESTROYED => ->(_comment) { "Application has been destroyed" }
     }.freeze
 
-    SLACK_EVENTS = [ProjectInstanceConstants::RUNNING, ProjectInstanceConstants::FAILURE].freeze
-
     def initialize(project_instance)
       @project_instance = project_instance
       @project = project_instance.project
+      @message_policy = ProjectInstanceMessagePolicy.new(nil, @project_instance)
     end
 
     def create_event(event)
@@ -24,25 +23,15 @@ module Deployment
       text = COMMENT_MESSAGES.fetch(event).call(comment)
 
       @project_instance.update!(deployment_status: event)
-      update_pull_request_info_comment(text)
-      Slack::Notificator.new(@project).send_message(text) if SLACK_EVENTS.include?(event)
+      update_pull_request_info_comment(text) if @message_policy.github_comments?
+      Slack::Notificator.new(@project_instance).send_message(text) if @message_policy.slack?
     end
 
     private
 
     def update_pull_request_info_comment(text)
-      return if @project.integration_type != ProjectsConstants::Providers::GITHUB || pull_request.blank?
-
+      pull_request = Github::PullRequest.new(@project.integration_id, @project_instance.attached_repo_path, @project_instance.attached_pull_request_number)
       pull_request.update_info_comment(text)
-    end
-
-    def pull_request
-      @_pull_request ||= begin
-        pr_params = [@project.integration_id, @project_instance.attached_repo_path, @project_instance.attached_pull_request_number]
-        return if pr_params.any?(&:blank?)
-
-        Github::PullRequest.new(*pr_params)
-      end
     end
   end
 end
