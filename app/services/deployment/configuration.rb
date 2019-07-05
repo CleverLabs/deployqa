@@ -14,7 +14,7 @@ module Deployment
     attribute :application_url, String
 
     def to_project_instance_configuration
-      to_h.slice(:application_name, :deployment_configuration_id, :git_reference, :repo_path, :application_url)
+      to_h.slice(:application_name, :deployment_configuration_id, :git_reference, :repo_path, :application_url, :env_variables)
     end
 
     # Temporary solution

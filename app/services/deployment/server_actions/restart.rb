@@ -11,7 +11,10 @@ module Deployment
       def call
         @configurations.each_with_object(@state_machine.start) do |configuration, state|
           @state_machine.context = configuration
-          state.add_state(:restart_server) { ServerAccess::Heroku.new(name: configuration.application_name).restart }
+          server = ServerAccess::Heroku.new(name: configuration.application_name)
+          state
+            .add_state(:restart_server) { server.restart }
+            .add_state(:update_env_variables) { server.update_env_variables(configuration.env_variables) }
         end
 
         @state_machine.finalize

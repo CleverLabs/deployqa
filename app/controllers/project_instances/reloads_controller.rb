@@ -5,9 +5,8 @@ module ProjectInstances
     def create
       project = find_project
       project_instance = find_project_instance(project)
-      configurations = Deployment::ConfigurationBuilder.new.by_project_instance(project_instance)
-      build_action = BuildAction.create!(project_instance: project_instance, author: current_user, action: BuildActionConstants::RELOAD_INSTANCE)
-      ServerActionsCallJob.perform_later(Deployment::ServerActions::Restart.to_s, configurations.map(&:to_h), build_action)
+
+      Deployment::Processes::ReloadProjectInstance.new(project_instance, current_user).call
       redirect_to project_project_instance_path(project, project_instance)
     end
 

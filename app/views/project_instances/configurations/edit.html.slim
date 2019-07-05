@@ -1,0 +1,19 @@
+.container
+  = render partial: "shared/breadcrumb", locals: {\
+      text_link_hash: {\
+        "Projects" => projects_path,
+        @project.name => project_path(@project),
+        "Builds" => project_project_instances_path(@project),
+        @project_instance.name => project_project_instance_path(@project_instance.project, @project_instance),
+        "Edit configuration" => nil\
+      },
+      class: "mt-4" }
+
+  .mt-4
+    h3 ENV variables
+    = simple_form_for @project_instance, url: project_project_instance_configuration_path(@project, @project_instance) do |form|
+      - @project_instance.configurations.each do |configuration|
+        = form.simple_fields_for :configurations do |configurations_form|
+          = configurations_form.input configuration["application_name"], as: :text, input_html: { value: configuration["env_variables"].map { |key, value| "#{key}: #{value}" }.join("\n"), rows: 8 }
+
+      = form.button :submit, "Update and reload instance", class: "btn btn-primary"

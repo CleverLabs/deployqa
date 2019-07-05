@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       resource :deploy, only: %i[show create], module: :project_instances
       resource :reload, only: %i[create], module: :project_instances
       resource :update, only: %i[create], module: :project_instances
+      resource :configuration, only: %i[edit update], module: :project_instances
       resources :database_dumps, only: %i[index show create update], module: :project_instances
       resources :build_actions, only: %i[show], module: :project_instances
     end

@@ -17,10 +17,9 @@ module Deployment
     private
 
     def hash_by_project_instance(deployment_configuration, configuration, project)
-      configuration.slice("application_name", "repo_path", "git_reference", "application_url").merge(
+      configuration.slice("application_name", "repo_path", "git_reference", "application_url", "env_variables").merge(
         project_integration_id: project.integration_id,
         project_integration_type: project.integration_type,
-        env_variables: deployment_configuration.env_variables,
         deployment_configuration_id: deployment_configuration.id
       ).symbolize_keys
     end
