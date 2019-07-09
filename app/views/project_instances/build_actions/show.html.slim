@@ -12,7 +12,7 @@
   .mt-4
     h3 Logs
     .log-section
-      - @build_action.build_action_logs.each do |log|
+      - @build_action_logs.each do |log|
         .log-item class="#{'text-danger' if log.status == BuildActionConstants::Log::ERROR}"
           = "[#{log.context}] #{log.message}"
 

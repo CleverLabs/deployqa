@@ -59,6 +59,8 @@ ActiveRecord::Schema.define(version: 2019_07_08_164304) do
   create_table "deployment_configurations_addons", force: :cascade do |t|
     t.bigint "deployment_configuration_id", null: false
     t.bigint "addon_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["addon_id", "deployment_configuration_id"], name: "deployment_configurations_addons_uniq_index", unique: true
   end
 

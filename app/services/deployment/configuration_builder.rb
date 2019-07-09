@@ -17,26 +17,40 @@ module Deployment
     private
 
     def hash_by_project_instance(deployment_configuration, configuration, project)
-      configuration.slice("application_name", "repo_path", "git_reference", "application_url", "env_variables").merge(
-        project_integration_id: project.integration_id,
-        project_integration_type: project.integration_type,
+      configuration.slice("application_name", "application_url", "env_variables").merge(
         addons: deployment_configuration.addons.pluck(:name),
-        deployment_configuration_id: deployment_configuration.id
+        deployment_configuration_id: deployment_configuration.id,
+        repo_configuration: build_repo_configuration_by_project_instance(configuration, project)
       ).symbolize_keys
     end
 
     def hash_by_project(deployment_configuration, project, instance_name, branches)
       {
         application_name: build_name(project.name, deployment_configuration.name, instance_name),
-        repo_path: deployment_configuration.repo_path,
-        project_integration_id: project.integration_id,
-        project_integration_type: project.integration_type,
         env_variables: deployment_configuration.env_variables,
         addons: deployment_configuration.addons.pluck(:name),
-        git_reference: branches.fetch(deployment_configuration.name, "master"),
         deployment_configuration_id: deployment_configuration.id,
-        application_url: heroku_url(build_name(project.name, deployment_configuration.name, instance_name))
+        application_url: heroku_url(build_name(project.name, deployment_configuration.name, instance_name)),
+        repo_configuration: build_repo_configuration_by_project(project, deployment_configuration, branches)
       }
+    end
+
+    def build_repo_configuration_by_project(project, deployment_configuration, branches)
+      Deployment::RepoConfiguration.new(
+        repo_path: deployment_configuration.repo_path,
+        git_reference: branches.fetch(deployment_configuration.name, "master"),
+        project_integration_id: project.integration_id,
+        project_integration_type: project.integration_type
+      )
+    end
+
+    def build_repo_configuration_by_project_instance(configuration, project)
+      Deployment::RepoConfiguration.new(
+        repo_path: configuration.fetch("repo_path"),
+        git_reference: configuration.fetch("git_reference"),
+        project_integration_id: project.integration_id,
+        project_integration_type: project.integration_type
+      )
     end
 
     # TODO: add check that ensures that DeploymentConfiguration is present for every configuration
