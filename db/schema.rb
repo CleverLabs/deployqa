@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_08_164304) do
+ActiveRecord::Schema.define(version: 2019_07_09_112437) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -122,6 +122,16 @@ ActiveRecord::Schema.define(version: 2019_07_08_164304) do
     t.string "token"
   end
 
+  create_table "web_processes", force: :cascade do |t|
+    t.bigint "deployment_configuration_id", null: false
+    t.string "name", null: false
+    t.string "command", null: false
+    t.integer "number", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deployment_configuration_id"], name: "index_web_processes_on_deployment_configuration_id"
+  end
+
   create_table "webhook_logs", force: :cascade do |t|
     t.jsonb "body", null: false
     t.string "event", null: false
@@ -133,4 +143,5 @@ ActiveRecord::Schema.define(version: 2019_07_08_164304) do
   add_foreign_key "project_user_roles", "projects"
   add_foreign_key "project_user_roles", "users"
   add_foreign_key "slack_entities", "projects"
+  add_foreign_key "web_processes", "deployment_configurations"
 end

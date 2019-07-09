@@ -43,7 +43,7 @@ class DeploymentConfigurationsController < ApplicationController
   end
 
   def deployment_configuration_params
-    params.require(:deployment_configuration).permit(:repo_path, :env_variables, addon_ids: [])
+    params.require(:deployment_configuration).permit(:repo_path, :env_variables, addon_ids: [], web_processes_attributes: [:id, :name, :command])
   end
 
   def update_configuration
@@ -51,7 +51,7 @@ class DeploymentConfigurationsController < ApplicationController
     if @project.integration_type == ProjectsConstants::Providers::VIA_SSH
       @deployment_configuration.update(form.attributes)
     else
-      @deployment_configuration.update(form.attributes.slice(:env_variables, :addon_ids))
+      @deployment_configuration.update(form.attributes.slice(:env_variables, :addon_ids, :web_processes_attributes))
     end
   end
 end
