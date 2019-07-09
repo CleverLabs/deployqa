@@ -1,5 +1,5 @@
 en:
-  build_addons:
+  build_actions:
     log:
       create_server: "Create server"
       build_addons: "Build addons"

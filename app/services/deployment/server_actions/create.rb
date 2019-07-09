@@ -30,7 +30,7 @@ module Deployment
         server = ServerAccess::Heroku.new(name: configuration.application_name)
         state
           .add_state(:create_server) { server.create }
-          .add_state(:build_addons) { server.build_addons }
+          .add_state(:build_addons) { server.build_addons(configuration.addons) }
           .add_state(:update_env_variables) { server.update_env_variables(configuration.env_variables) }
       end
 

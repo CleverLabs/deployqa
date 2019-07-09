@@ -3,6 +3,10 @@
 module ServerAccess
   class Heroku
     COMMAND_CHECK_DELAY = 10
+    ADDONS_MAPPING = {
+      "PostgreSQL" => "heroku-postgresql:hobby-dev",
+      "Redis" => "heroku-redis:hobby-dev"
+    }.freeze
 
     def initialize(name:)
       @heroku = PlatformAPI.connect_oauth(ENV["HEROKU_API_KEY"])
@@ -14,10 +18,11 @@ module ServerAccess
       safely { @heroku.app.create(name: @name) }
     end
 
-    def build_addons
+    def build_addons(addons_names)
       safely do
-        @heroku.addon.create(@name, plan: "heroku-postgresql:hobby-dev")
-        @heroku.addon.create(@name, plan: "heroku-redis:hobby-dev")
+        addons_names.each do |addon_name|
+          @heroku.addon.create(@name, plan: ADDONS_MAPPING.fetch(addon_name))
+        end
       end
     end
 

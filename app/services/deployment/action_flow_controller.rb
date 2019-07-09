@@ -20,7 +20,7 @@ module Deployment
     def add_state(state_name, &block)
       @state_machine.add_state(
         state_name,
-        before: -> { @logger.info(I18n.t("build_addons.log.#{state_name}"), context: context_name) },
+        before: -> { @logger.info(I18n.t("build_actions.log.#{state_name}"), context: context_name) },
         on_error: ->(errors, backtrace) { @logger.error(errors.to_s, context: context_name, error_backtrace: backtrace) },
         &block
       )
@@ -29,7 +29,7 @@ module Deployment
 
     def finalize
       if last_state.status.ok?
-        @logger.info(I18n.t("build_addons.log.success"), context: context_name)
+        @logger.info(I18n.t("build_actions.log.success"), context: context_name)
         @instance_events.create_event(@deployment_statuses.fetch(:success))
       else
         @instance_events.create_event(@deployment_statuses.fetch(:failure))

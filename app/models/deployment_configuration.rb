@@ -2,6 +2,8 @@
 
 class DeploymentConfiguration < ApplicationRecord
   belongs_to :project
+  has_many :deployment_configurations_addons
+  has_many :addons, through: :deployment_configurations_addons
 
   validates :name, :repo_path, :status, :integration_id, :integration_type, presence: true
   validates :repo_path, uniqueness: { scope: :project_id, message: "already exists within project" }

@@ -10,10 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_01_125130) do
+ActiveRecord::Schema.define(version: 2019_07_08_164304) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "addons", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "build_action_logs", force: :cascade do |t|
     t.bigint "build_action_id", null: false
@@ -48,6 +54,12 @@ ActiveRecord::Schema.define(version: 2019_07_01_125130) do
     t.integer "status", null: false
     t.index ["integration_id", "integration_type"], name: "index_deployment_configurations_on_integrations", unique: true
     t.index ["project_id"], name: "index_deployment_configurations_on_project_id"
+  end
+
+  create_table "deployment_configurations_addons", force: :cascade do |t|
+    t.bigint "deployment_configuration_id", null: false
+    t.bigint "addon_id", null: false
+    t.index ["addon_id", "deployment_configuration_id"], name: "deployment_configurations_addons_uniq_index", unique: true
   end
 
   create_table "github_entities", force: :cascade do |t|

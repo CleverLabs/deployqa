@@ -17,4 +17,6 @@
         = form.input :repo_path, label: "Full git SSH link", input_html: { placeholder: "git@github.com:rails/rails.git" }
       = form.input :env_variables, input_html: {value: @deployment_configuration.env_variables.map {|key, value| "#{key}: #{value}"}.join("\n")}
 
+      h4.mt-4 Addons
+      = form.input :addon_ids, collection: @addons, label: "Selected addons", include_hidden: false, input_html: { multiple: true }
       = form.button :submit, class: "btn btn-primary"

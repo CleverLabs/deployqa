@@ -10,6 +10,7 @@ class DeploymentConfigurationForm
   attribute :integration_type, String, default: ProjectsConstants::Providers::VIA_SSH
   attribute :integration_id, String, default: ->(_, _) { SecureRandom.uuid }
   attribute :project, Project
+  attribute :addon_ids, Array, of: Integer
 
   alias _env_variables= env_variables=
 

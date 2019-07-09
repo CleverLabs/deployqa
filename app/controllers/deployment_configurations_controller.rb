@@ -21,6 +21,7 @@ class DeploymentConfigurationsController < ApplicationController
   def edit
     @project = find_project
     @deployment_configuration = @project.deployment_configurations.find(params[:id])
+    @addons = Addon.pluck(:name, :id)
   end
 
   def update
@@ -30,6 +31,7 @@ class DeploymentConfigurationsController < ApplicationController
     if update_configuration
       redirect_to project_path(@project)
     else
+      @addons = Addon.pluck(:name, :id)
       render :edit
     end
   end
@@ -41,7 +43,7 @@ class DeploymentConfigurationsController < ApplicationController
   end
 
   def deployment_configuration_params
-    params.require(:deployment_configuration).permit(:repo_path, :env_variables)
+    params.require(:deployment_configuration).permit(:repo_path, :env_variables, addon_ids: [])
   end
 
   def update_configuration
@@ -49,7 +51,7 @@ class DeploymentConfigurationsController < ApplicationController
     if @project.integration_type == ProjectsConstants::Providers::VIA_SSH
       @deployment_configuration.update(form.attributes)
     else
-      @deployment_configuration.update(form.attributes.slice(:env_variables))
+      @deployment_configuration.update(form.attributes.slice(:env_variables, :addon_ids))
     end
   end
 end

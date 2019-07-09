@@ -20,6 +20,7 @@ module Deployment
       configuration.slice("application_name", "repo_path", "git_reference", "application_url", "env_variables").merge(
         project_integration_id: project.integration_id,
         project_integration_type: project.integration_type,
+        addons: deployment_configuration.addons.pluck(:name),
         deployment_configuration_id: deployment_configuration.id
       ).symbolize_keys
     end
@@ -31,6 +32,7 @@ module Deployment
         project_integration_id: project.integration_id,
         project_integration_type: project.integration_type,
         env_variables: deployment_configuration.env_variables,
+        addons: deployment_configuration.addons.pluck(:name),
         git_reference: branches.fetch(deployment_configuration.name, "master"),
         deployment_configuration_id: deployment_configuration.id,
         application_url: heroku_url(build_name(project.name, deployment_configuration.name, instance_name))
