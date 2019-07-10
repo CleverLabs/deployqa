@@ -17,7 +17,7 @@ module Deployment
     private
 
     def hash_by_project_instance(deployment_configuration, configuration, project)
-      configuration.slice("application_name", "application_url", "env_variables").merge(
+      configuration.slice("application_name", "application_url", "env_variables", "web_processes").merge(
         addons: deployment_configuration.addons.pluck(:name),
         deployment_configuration_id: deployment_configuration.id,
         repo_configuration: build_repo_configuration_by_project_instance(configuration, project)
@@ -29,6 +29,7 @@ module Deployment
         application_name: build_name(project.name, deployment_configuration.name, instance_name),
         env_variables: deployment_configuration.env_variables,
         addons: deployment_configuration.addons.pluck(:name),
+        web_processes: deployment_configuration.web_processes.pluck(:name, :command).to_h,
         deployment_configuration_id: deployment_configuration.id,
         application_url: heroku_url(build_name(project.name, deployment_configuration.name, instance_name)),
         repo_configuration: build_repo_configuration_by_project(project, deployment_configuration, branches)

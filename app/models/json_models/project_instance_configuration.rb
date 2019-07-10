@@ -10,6 +10,7 @@ module JSONModels
     attribute :application_url, :string
     attribute :repo_path, :string
     attribute :git_reference, :string
+    attribute :web_processes
 
     validates :application_name, :deployment_configuration_id, :application_url, :repo_path, :git_reference, presence: true
   end
