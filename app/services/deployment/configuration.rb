@@ -14,7 +14,7 @@ module Deployment
 
     def to_project_instance_configuration
       to_h.slice(:application_name, :deployment_configuration_id, :application_url, :env_variables, :web_processes)
-        .merge(repo_configuration.to_h.slice(:git_reference, :repo_path))
+          .merge(repo_configuration.to_h.slice(:git_reference, :repo_path))
     end
 
     # Temporary solution

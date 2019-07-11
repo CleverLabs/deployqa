@@ -4,6 +4,7 @@ require "clone_repo"
 
 class GitWrapper
   TEMP_FOLDER = "tmp"
+  PROCFILE_NAME = "Procfile"
 
   def self.clone_by_ssh(repo_path, private_key)
     clone_repo = CloneRepo.new(repo_path, private_key).tap(&:call)
@@ -18,6 +19,14 @@ class GitWrapper
   def initialize(git_client)
     @git_client = git_client
     @repo_dir = git_client.dir.to_s
+  end
+
+  def add_procfile(web_processes)
+    return if web_processes.blank?
+
+    generate_procfile(web_processes)
+    commit_procfile
+    ReturnValue.ok
   end
 
   def add_remote_heroku(heroku_app_name)
@@ -35,5 +44,19 @@ class GitWrapper
   def remove_dir
     FileUtils.rm_rf(@repo_dir)
     ReturnValue.ok
+  end
+
+  private
+
+  def generate_procfile(web_processes)
+    file_text = web_processes.to_a.map { |name_command_pair| name_command_pair.join(": ") }.join("\n")
+    procfile = File.new(File.join(@repo_dir, PROCFILE_NAME), "w")
+    procfile.write(file_text)
+    procfile.close
+  end
+
+  def commit_procfile
+    @git_client.add(PROCFILE_NAME)
+    @git_client.commit("Add procfile")
   end
 end

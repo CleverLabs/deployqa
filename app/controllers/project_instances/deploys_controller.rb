@@ -39,7 +39,7 @@ module ProjectInstances
 
     def update_configurations(project_instance)
       project_instance.configurations.each do |configuration|
-        configuration["git_reference"] = project_instance_params[configuration.fetch("application_name")].presence || configuration["git_reference"]
+        configuration.git_reference = project_instance_params[configuration.application_name].presence || configuration.git_reference
       end
       project_instance.save
     end

@@ -43,7 +43,7 @@ class DeploymentConfigurationsController < ApplicationController
   end
 
   def deployment_configuration_params
-    params.require(:deployment_configuration).permit(:repo_path, :env_variables, addon_ids: [], web_processes_attributes: [:id, :name, :command])
+    params.require(:deployment_configuration).permit(:repo_path, :env_variables, addon_ids: [], web_processes_attributes: %i[id name command])
   end
 
   def update_configuration

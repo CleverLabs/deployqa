@@ -17,7 +17,7 @@ module Deployment
     private
 
     def hash_by_project_instance(deployment_configuration, configuration, project)
-      configuration.slice("application_name", "application_url", "env_variables", "web_processes").merge(
+      configuration.attributes.slice("application_name", "application_url", "env_variables", "web_processes").merge(
         addons: deployment_configuration.addons.pluck(:name),
         deployment_configuration_id: deployment_configuration.id,
         repo_configuration: build_repo_configuration_by_project_instance(configuration, project)
@@ -47,8 +47,8 @@ module Deployment
 
     def build_repo_configuration_by_project_instance(configuration, project)
       Deployment::RepoConfiguration.new(
-        repo_path: configuration.fetch("repo_path"),
-        git_reference: configuration.fetch("git_reference"),
+        repo_path: configuration.repo_path,
+        git_reference: configuration.git_reference,
         project_integration_id: project.integration_id,
         project_integration_type: project.integration_type
       )
@@ -56,8 +56,8 @@ module Deployment
 
     # TODO: add check that ensures that DeploymentConfiguration is present for every configuration
     def with_deployment_configuration(project_instance)
-      deployment_configurations = DeploymentConfiguration.where(id: project_instance.configurations.map { |configuration| configuration.fetch("deployment_configuration_id") }).order(:id)
-      deployment_configurations.zip(project_instance.configurations.sort_by { |configuration| configuration.fetch("deployment_configuration_id") })
+      deployment_configurations = DeploymentConfiguration.where(id: project_instance.configurations.map(&:deployment_configuration_id)).order(:id)
+      deployment_configurations.zip(project_instance.configurations.sort_by(&:deployment_configuration_id))
     end
 
     def build_name(project_name, deployment_configuration_name, instance_name)

@@ -3,7 +3,7 @@
 class GithubAppClient
   delegate :login, :issue, :update_issue, :issue_comments, :update_comment, :add_comment, to: :client
 
-  TOKEN_TIME_TO_LIVE = 10.minutes
+  TOKEN_TIME_TO_LIVE = 10.minutes - 5.seconds
 
   def initialize(installation_id)
     @installation_id = installation_id
@@ -29,7 +29,6 @@ class GithubAppClient
     jwt_client.create_app_installation_access_token(@installation_id, accept: "application/vnd.github.machine-man-preview+json").token
   rescue StandardError => error
     puts error
-    puts error.response.data[:body]
   end
 
   def jwt_auth_token

@@ -16,5 +16,5 @@
 
       - @project_instance.configurations.each do |configuration|
         = form.simple_fields_for :configurations do |configurations_form|
-          = configurations_form.input configuration["application_name"], label: configuration["repo_path"], input_html: { value: configuration["git_reference"] }
+          = configurations_form.input configuration.application_name, label: configuration.repo_path, input_html: { value: configuration.git_reference }
       = form.button :submit, "Deploy", class: "btn btn-primary"

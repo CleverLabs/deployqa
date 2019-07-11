@@ -17,19 +17,17 @@
         = form.input :repo_path, label: "Full git SSH link", input_html: { placeholder: "git@github.com:rails/rails.git" }
       = form.input :env_variables, input_html: {value: @deployment_configuration.env_variables.map {|key, value| "#{key}: #{value}"}.join("\n")}
       h4.mt-5 Processes
-      .row.mt-3
+      .row
         = form.simple_fields_for :web_processes_attributes do |web_processes|
           - processes = @deployment_configuration.web_processes.to_a
           .col-6
-            h5 web:
             = web_processes.input :id, as: :hidden, input_html: { name: "deployment_configuration[web_processes_attributes][0][id]", value: processes.first&.id }
             = web_processes.input :name, as: :hidden, input_html: { name: "deployment_configuration[web_processes_attributes][0][name]", value: processes.first&.name || "web" }
-            = web_processes.input :command, input_html: { name: "deployment_configuration[web_processes_attributes][0][command]", value: processes.first&.command }
+            = web_processes.input :command, label: "Web command", input_html: { name: "deployment_configuration[web_processes_attributes][0][command]", value: processes.first&.command }
           .col-6
-            h5 worker:
             = web_processes.input :name, as: :hidden, input_html: { name: "deployment_configuration[web_processes_attributes][1][id]", value: processes.second&.id }
             = web_processes.input :name, as: :hidden, input_html: { name: "deployment_configuration[web_processes_attributes][1][name]", value: processes.second&.name || "worker" }
-            = web_processes.input :command, input_html: { name: "deployment_configuration[web_processes_attributes][1][command]", value: processes.second&.command }
+            = web_processes.input :command, label: "Worker command", input_html: { name: "deployment_configuration[web_processes_attributes][1][command]", value: processes.second&.command }
 
       h4.mt-4 Addons
       = form.input :addon_ids, collection: @addons, label: "Selected addons", include_hidden: false, input_html: { multiple: true }

@@ -8,6 +8,7 @@ en:
       setup_worker: "Setup worker"
       restart_server: "Restart server"
       clone_repo: "Clone repo"
+      generate_procfile: "Generate Procfile"
       add_remote: "Add remote"
       push_code: "Push code"
       clean_up_dir: "Clean up git directory"

@@ -31,7 +31,7 @@ module Notifications
     end
 
     def deployed
-      "Application url: #{@project_instance.configurations.first['application_url']}"
+      "Application url: #{@project_instance.configurations.first.application_url}"
     end
 
     def failed
