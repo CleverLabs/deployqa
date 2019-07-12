@@ -28,6 +28,7 @@ export default class HomeChart {
     destroying_instances: '#d6d8db',
     failure: '#f5c6cb',
     instances_destroyed: '#c6c8ca',
+    closed: '#c6c8ca',
     running: '#c3e6cb',
     scheduled: '#bee5eb'
   }
@@ -38,6 +39,7 @@ export default class HomeChart {
     destroying_instances: 'Destroying',
     failure: 'Failed',
     instances_destroyed: 'Destroyed',
+    closed: 'Closed',
     running: 'Running',
     scheduled: 'Scheduled'
   }

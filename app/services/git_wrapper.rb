@@ -26,7 +26,9 @@ class GitWrapper
   end
 
   def push_heroku(branch)
-    @git_client.branch(branch.to_s).checkout
+    @git_client.fetch("origin")
+    @git_client.reset_hard("origin/master")
+    @git_client.checkout(branch.to_s)
     @git_client.pull("origin", branch)
     @git_client.push("heroku", "#{branch}:master", f: true)
     ReturnValue.ok
