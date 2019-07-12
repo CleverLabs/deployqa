@@ -20,6 +20,7 @@ gem "logstash-logger", "~> 0.26.1"
 gem "octokit", "~> 4.0"
 gem "omniauth"
 gem "omniauth-github"
+gem "omniauth-rails_csrf_protection", "~> 0.1.2" # Remove after https://github.com/omniauth/omniauth/pull/809 will be resolved
 gem "pg"
 gem "platform-api"
 gem "puma", "~> 3.11"

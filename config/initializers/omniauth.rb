@@ -7,3 +7,5 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   provider :slack, ENV["SLACK_CLIENT_ID"], ENV["SLACK_CLIENT_SECRET"], scope: "incoming-webhook",
            redirect_uri: ENV["SLACK_REDIRECT_URI"]
 end
+
+OmniAuth.config.allowed_request_methods = [:post]

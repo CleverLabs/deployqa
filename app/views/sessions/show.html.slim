@@ -5,4 +5,4 @@
         = image_pack_tag 'media/images/logos/earth-colored.svg'
         | DeployQA
 
-      = link_to "Log in", omniauth_path("github"), class: "btn"
+      = link_to "Log in", omniauth_path("github"), method: :post, class: "btn"
