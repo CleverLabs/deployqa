@@ -18,7 +18,6 @@ class DeploymentConfigurationForm
     self._env_variables = Hash[value.split("\n").map { |line| line.tr("\r", "").split(": ") }]
   end
 
-  alias _web_processes_attributes= web_processes_attributes=
   def web_processes_attributes=(attributes)
     @web_processes_attributes = attributes.values
   end

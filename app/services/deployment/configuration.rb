@@ -9,7 +9,7 @@ module Deployment
     attribute :deployment_configuration_id, Integer
     attribute :application_url, String
     attribute :addons, Array, of: String
-    attribute :web_processes, Hash
+    attribute :web_processes, Array, of: Deployment::WebProcess
     attribute :repo_configuration, Deployment::RepoConfiguration
 
     def to_project_instance_configuration

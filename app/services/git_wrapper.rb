@@ -49,7 +49,7 @@ class GitWrapper
   private
 
   def generate_procfile(web_processes)
-    file_text = web_processes.to_a.map { |name_command_pair| name_command_pair.join(": ") }.join("\n")
+    file_text = web_processes.map(&:to_procfile_command).join("\n")
     procfile = File.new(File.join(@repo_dir, PROCFILE_NAME), "w")
     procfile.write(file_text)
     procfile.close

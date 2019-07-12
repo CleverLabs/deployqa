@@ -29,7 +29,7 @@ module Deployment
         application_name: build_name(project.name, deployment_configuration.name, instance_name),
         env_variables: deployment_configuration.env_variables,
         addons: deployment_configuration.addons.pluck(:name),
-        web_processes: deployment_configuration.web_processes.pluck(:name, :command).to_h,
+        web_processes: get_web_processes_data(deployment_configuration),
         deployment_configuration_id: deployment_configuration.id,
         application_url: heroku_url(build_name(project.name, deployment_configuration.name, instance_name)),
         repo_configuration: build_repo_configuration_by_project(project, deployment_configuration, branches)
@@ -52,6 +52,10 @@ module Deployment
         project_integration_id: project.integration_id,
         project_integration_type: project.integration_type
       )
+    end
+
+    def get_web_processes_data(deployment_configuration)
+      deployment_configuration.web_processes.to_a.map { |web_process| web_process.attributes.slice("name", "command") }
     end
 
     # TODO: add check that ensures that DeploymentConfiguration is present for every configuration
