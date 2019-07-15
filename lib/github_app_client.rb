@@ -3,7 +3,7 @@
 class GithubAppClient
   delegate :login, :issue, :update_issue, :issue_comments, :update_comment, :add_comment, to: :client
 
-  TOKEN_TIME_TO_LIVE = 10.minutes - 5.seconds
+  TOKEN_TIME_TO_LIVE = 9.minutes # 10 is max, used 9 to avoid Github errors
 
   def initialize(installation_id)
     @installation_id = installation_id

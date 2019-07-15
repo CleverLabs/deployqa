@@ -10,7 +10,7 @@ module Deployment
 
       def call
         return if project_instance.deployment_status.in?([ProjectInstanceConstants::DESTROYED, ProjectInstanceConstants::CLOSED])
-        return update_status if project_instance.deployment_status.in?(ProjectInstanceConstants::NOT_DEPLOYED_INSTANCES)
+        return update_status if @project_instance.deployment_status.in?(ProjectInstanceConstants::NOT_DEPLOYED_INSTANCES)
 
         configurations = Deployment::ConfigurationBuilder.new.by_project_instance(@project_instance).map(&:to_h)
         build_action = BuildAction.create!(project_instance: @project_instance, author: @current_user, action: BuildActionConstants::DESTROY_INSTANCE)
@@ -20,7 +20,7 @@ module Deployment
       private
 
       def update_status
-        project_instance.update(deployment_status: ProjectInstanceConstants::CLOSED)
+        @project_instance.update(deployment_status: ProjectInstanceConstants::CLOSED)
       end
     end
   end
