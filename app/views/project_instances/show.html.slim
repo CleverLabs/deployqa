@@ -12,6 +12,10 @@
   h3
     = @project_instance.name
     span class=["ml-2 badge", status_badge_class(@project_instance.deployment_status)] = @project_instance.deployment_status
+    - if @project_instance.project.integration_type == ProjectsConstants::Providers::GITHUB && @project_instance.attached_pull_request_number
+      | &nbsp;
+      small
+        = link_to "Pull request", github_router.pull_request_url(@project_instance.attached_repo_path, @project_instance.attached_pull_request_number), target: :_blank
 
   .mt-4
     .application-links.mt-5.row
@@ -19,10 +23,10 @@
         .col-6
           h5 = configuration.repo_path
           p.mb-0
-            | Branch:
+            | Branch: 
             span.text-monospace.bg-light = configuration.git_reference
           p.mb-0
-            | Link:
+            | Link: 
             = link_to configuration.application_name, configuration.application_url, target: "_blank", rel: "noopener noreferrer"
 
     .d-flex.justify-content-between.mt-5

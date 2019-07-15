@@ -32,6 +32,7 @@
             td.text-center
               = link_to project_path(project) do
                 = image_pack_tag 'media/images/configure.svg', class: "configure-icon"
+                = " (#{project.deployment_configurations.count})"
 
 
 #createNewProjectModal.modal.fade aria-hidden="true" aria-labelledby="createNewProjectModalLabel" role="dialog" tabindex="-1" 

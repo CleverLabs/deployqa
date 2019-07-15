@@ -10,6 +10,7 @@ class ProjectsController < ApplicationController
                        .where(project_user_roles: { user_id: current_user.id })
                        .group("projects.id")
                        .order("projects.created_at DESC")
+                       .includes(:deployment_configurations)
   end
 
   def new

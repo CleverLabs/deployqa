@@ -23,5 +23,9 @@ module Github
         GITHUB_HOST + "settings/installations/#{installation_id}"
       end
     end
+
+    def pull_request_url(repo_path, pull_request_number)
+      GITHUB_HOST + "#{repo_path}/pull/#{pull_request_number}"
+    end
   end
 end
