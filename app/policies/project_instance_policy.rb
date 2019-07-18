@@ -21,6 +21,10 @@ class ProjectInstancePolicy < ApplicationPolicy
     record.deployment_status.in?([ProjectInstanceConstants::RUNNING])
   end
 
+  def redeploy?
+    record.deployment_status.in?([ProjectInstanceConstants::FAILURE, ProjectInstanceConstants::NOT_DEPLOYED])
+  end
+
   def deploy_by_link?
     record.deployment_status == ProjectInstanceConstants::EMPTY_RECORD_FOR_PR
   end

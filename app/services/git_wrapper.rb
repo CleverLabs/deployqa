@@ -19,6 +19,8 @@ class GitWrapper
   def initialize(git_client)
     @git_client = git_client
     @repo_dir = git_client.dir.to_s
+
+    configure_git
   end
 
   def add_procfile(web_processes)
@@ -49,6 +51,12 @@ class GitWrapper
   end
 
   private
+
+  def configure_git
+    @git_client.config("user.name", "DeployQA")
+    @git_client.config("user.email", "deployqa@cleverlabs.io")
+    @git_client.config("commit.gpgsign", "false")
+  end
 
   def generate_procfile(web_processes)
     file_text = web_processes.map(&:to_procfile_command).join("\n")

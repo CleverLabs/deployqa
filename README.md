@@ -49,7 +49,7 @@ Enable `incoming-webhooks` it's used to send notifications to your slack channel
  
 3. Deploy
 
-    - 
+    - [Deployment Wiki](https://github.com/CleverLabs/deployqa/wiki/Deployment)
 
 ## License
 

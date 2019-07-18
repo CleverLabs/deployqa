@@ -31,7 +31,13 @@ module ServerAccess
     end
 
     def destroy
-      safely { @heroku.app.delete(@name) }
+      safely do
+        existing_apps = @heroku.app.list.map { |app| app["name"] }
+
+        return ReturnValue.ok unless existing_apps.include?(@name)
+
+        @heroku.app.delete(@name)
+      end
     end
 
     def update_env_variables(env)
