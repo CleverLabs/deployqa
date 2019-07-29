@@ -89,6 +89,9 @@ GEM
     git (1.5.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    good_migrations (0.0.2)
+      activerecord (>= 3.1)
+      railties (>= 3.1)
     hashdiff (0.3.7)
     hashie (3.5.7)
     heroics (0.0.25)
@@ -298,6 +301,8 @@ GEM
       rubocop (>= 0.60)
     store_model (0.3.2)
       rails (>= 5.2)
+    strong_migrations (0.4.1)
+      activerecord (>= 5)
     temple (0.8.0)
     thor (0.20.3)
     thread_safe (0.3.6)
@@ -336,6 +341,7 @@ DEPENDENCIES
   enumerize
   ginjo-omniauth-slack
   git
+  good_migrations
   heroku-api-postgres
   httparty
   jbuilder (~> 2.5)
@@ -369,6 +375,7 @@ DEPENDENCIES
   sshkey
   standard
   store_model
+  strong_migrations
   turbolinks (~> 5)
   uglifier (>= 1.3.0)
   vcr

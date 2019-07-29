@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "sidekiq/web"
+require "routes/logged_user_constrait"
+
 Rails.application.routes.draw do
   default_url_options host: ENV["HOST_NAME"], protocol: "https"
 
@@ -7,6 +10,10 @@ Rails.application.routes.draw do
   get "/auth/slack/callback", to: "slack/authentications#create"
   get "/auth/:provider/callback", to: "sessions#create"
   get "/auth/:provider", to: "sessions#show", as: "omniauth"
+
+  constraints Routes::LoggedUserConstrait.new(SidekiqPolicy) do
+    mount Sidekiq::Web => "/sidekiq"
+  end
 
   resources :home, only: %i[index]
   resource :sessions, only: %i[show create destroy]
