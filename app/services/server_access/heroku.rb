@@ -52,7 +52,9 @@ module ServerAccess
       safely { execute_command("rails db:schema:load", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1) }
     end
 
-    def setup_worker
+    def setup_worker(web_processes)
+      return ReturnValue.ok unless web_processes.find { |web_process| web_process.name == "worker" }
+
       safely { @heroku.formation.update(@name, "worker", quantity: 1) }
     end
 

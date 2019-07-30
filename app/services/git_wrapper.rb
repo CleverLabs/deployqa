@@ -24,7 +24,7 @@ class GitWrapper
   end
 
   def add_procfile(web_processes)
-    return if web_processes.blank?
+    return ReturnValue.ok if web_processes.blank?
 
     generate_procfile(web_processes)
     commit_procfile

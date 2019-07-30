@@ -18,7 +18,19 @@ class DeploymentConfigurationForm
     self._env_variables = Hash[value.split("\n").map { |line| line.tr("\r", "").split(": ") }]
   end
 
-  def web_processes_attributes=(attributes)
-    @web_processes_attributes = attributes.values
+  def web_processes_attributes=(params)
+    @web_processes_attributes = mark_empty_processes_to_destroy(params.values)
+                                .select { |attributes| attributes[:command].present? || attributes[:_destroy] }
+
+    @attributes[:web_processes_attributes] = @web_processes_attributes
+  end
+
+  private
+
+  def mark_empty_processes_to_destroy(attributes_array)
+    attributes_array.map do |attributes|
+      attributes[:_destroy] = true if attributes[:id].present? && attributes[:command].blank?
+      attributes
+    end
   end
 end

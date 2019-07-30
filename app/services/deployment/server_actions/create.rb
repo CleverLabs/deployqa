@@ -23,7 +23,7 @@ module Deployment
       def deploy_configuration(configuration, state)
         state = create_server(configuration, state)
         state = push_code_to_server(configuration, state)
-        create_infrastructure(configuration.application_name, state)
+        create_infrastructure(configuration.application_name, configuration.web_processes, state)
       end
 
       def create_server(configuration, state)
@@ -34,11 +34,11 @@ module Deployment
           .add_state(:update_env_variables) { server.update_env_variables(configuration.env_variables) }
       end
 
-      def create_infrastructure(app_name, state)
+      def create_infrastructure(app_name, web_processes, state)
         server = ServerAccess::Heroku.new(name: app_name)
         state
           .add_state(:setup_db) { server.setup_db }
-          .add_state(:setup_worker) { server.setup_worker }
+          .add_state(:setup_worker) { server.setup_worker(web_processes) }
           .add_state(:restart_server) { server.restart }
       end
 
