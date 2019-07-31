@@ -9,8 +9,9 @@ module Github
       end
 
       def call
-        project_instance = @project.project_instances.find_by(attached_pull_request_number: @wrapped_body.number)
+        return ReturnValue.ok unless DeploymentConfigurationStatus.new(@project).active?(@wrapped_body.full_repo_name)
 
+        project_instance = @project.project_instances.find_by(attached_pull_request_number: @wrapped_body.number)
         Deployment::Processes::DestroyProjectInstance.new(project_instance, get_user(@wrapped_body.sender)).call
         ReturnValue.ok
       end

@@ -9,7 +9,7 @@ module Deployment
     def initialize(build_action, deployment_statuses)
       @state_machine = ::ActionStateMachine.new
       @project_instance = build_action.project_instance
-      @logger = BuildActionLogger.new(build_action)
+      @logger = Deployment::BuildActionLogger.new(build_action)
       @deployment_statuses = deployment_statuses
       @instance_events = ProjectInstanceEvents.new(@project_instance)
     end
