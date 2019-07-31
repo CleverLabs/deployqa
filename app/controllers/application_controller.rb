@@ -3,6 +3,7 @@
 class ApplicationController < ActionController::Base
   include Pundit
   before_action :login_if_not
+  before_action :set_paper_trail_whodunnit
 
   helper_method :github_router
 
@@ -22,6 +23,12 @@ class ApplicationController < ActionController::Base
 
   def login_if_not
     redirect_to sessions_path unless authenticated?
+  end
+
+  def set_paper_trail_whodunnit
+    return unless PaperTrail.request.enabled?
+
+    PaperTrail.request.whodunnit = "controller:#{controller_name}##{action_name}; user:#{current_user&.id}"
   end
 
   def github_router

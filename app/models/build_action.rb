@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BuildAction < ApplicationRecord
+  has_paper_trail
+
   belongs_to :author, class_name: "User", foreign_key: :author_id
   belongs_to :project_instance
   has_many :build_action_logs

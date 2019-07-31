@@ -2,6 +2,7 @@
 
 class ProjectUserRole < ApplicationRecord
   extend Enumerize
+  has_paper_trail
 
   belongs_to :project
   belongs_to :user

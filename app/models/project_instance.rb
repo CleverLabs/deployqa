@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ProjectInstance < ApplicationRecord
+  has_paper_trail
+
   belongs_to :project
   has_many :build_actions
 

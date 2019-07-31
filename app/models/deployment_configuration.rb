@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class DeploymentConfiguration < ApplicationRecord
+  has_paper_trail
+
   belongs_to :project
   has_many :deployment_configurations_addons, dependent: :destroy
   has_many :addons, through: :deployment_configurations_addons
