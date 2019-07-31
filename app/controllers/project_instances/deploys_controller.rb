@@ -8,7 +8,7 @@ module ProjectInstances
       return if params[:custom_deploy]
 
       deploy(@project_instance)
-      redirect_to project_project_instance_path(@project, @project_instance)
+      redirect_to github_router.pull_request_url(@project_instance.attached_repo_path, @project_instance.attached_pull_request_number)
     end
 
     def create

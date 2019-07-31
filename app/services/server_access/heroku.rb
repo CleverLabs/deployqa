@@ -2,26 +2,29 @@
 
 module ServerAccess
   class Heroku
-    COMMAND_CHECK_DELAY = 10
-    ADDONS_MAPPING = {
-      "PostgreSQL" => "heroku-postgresql:hobby-dev",
-      "Redis" => "heroku-redis:hobby-dev"
-    }.freeze
+    COMMAND_CHECK_DELAY = 12
 
     def initialize(name:)
       @heroku = PlatformAPI.connect_oauth(ENV["HEROKU_API_KEY"])
       @heroku_for_db = ::Heroku::Api::Postgres.connect_oauth(ENV["HEROKU_API_KEY"])
       @name = name
+      @level = ServerAccess::HerokuHelpers::Level.new
     end
 
     def create
-      safely { @heroku.app.create(name: @name) }
+      safely do
+        if ENV["HEROKU_ORGANIZATION"].present?
+          @heroku.organization_app.create(name: @name, organization: ENV["HEROKU_ORGANIZATION"])
+        else
+          @heroku.app.create(name: @name)
+        end
+      end
     end
 
     def build_addons(addons_names)
       safely do
         addons_names.each do |addon_name|
-          @heroku.addon.create(@name, plan: ADDONS_MAPPING.fetch(addon_name))
+          @heroku.addon.create(@name, plan: @level.addon(addon_name))
         end
       end
     end
@@ -53,9 +56,16 @@ module ServerAccess
     end
 
     def setup_worker(web_processes)
-      return ReturnValue.ok unless web_processes.find { |web_process| web_process.name == "worker" }
-
-      safely { @heroku.formation.update(@name, "worker", quantity: 1) }
+      safely do
+        formations = web_processes.map do |web_process|
+          {
+            quantity: 1,
+            size: @level.dyno_type,
+            type: web_process.name
+          }
+        end
+        @heroku.formation.batch_update(@name, updates: formations)
+      end
     end
 
     private
