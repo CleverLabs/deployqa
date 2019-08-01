@@ -13,5 +13,6 @@ en:
       push_code: "Push code"
       clean_up_dir: "Clean up git directory"
       migrate_db: "Migrate database"
+      destroy_addons: "Destroy addons"
       destroy_server: "Destroy server"
       success: "Success!"

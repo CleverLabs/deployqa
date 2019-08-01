@@ -17,8 +17,7 @@ module Deployment
     private
 
     def hash_by_project_instance(deployment_configuration, configuration, project)
-      configuration.attributes.slice("application_name", "application_url", "env_variables", "web_processes").merge(
-        addons: deployment_configuration.addons.pluck(:name),
+      configuration.attributes.slice("application_name", "application_url", "env_variables", "web_processes", "addons").merge(
         deployment_configuration_id: deployment_configuration.id,
         repo_configuration: build_repo_configuration_by_project_instance(configuration, project)
       ).symbolize_keys
@@ -28,7 +27,7 @@ module Deployment
       {
         application_name: build_name(project.name, deployment_configuration.name, instance_name),
         env_variables: deployment_configuration.env_variables,
-        addons: deployment_configuration.addons.pluck(:name),
+        addons: build_addons(deployment_configuration),
         web_processes: get_web_processes_data(deployment_configuration),
         deployment_configuration_id: deployment_configuration.id,
         application_url: heroku_url(build_name(project.name, deployment_configuration.name, instance_name)),
@@ -52,6 +51,12 @@ module Deployment
         project_integration_id: project.integration_id,
         project_integration_type: project.integration_type
       )
+    end
+
+    def build_addons(deployment_configuration)
+      deployment_configuration.addons.map do |addon|
+        addon.attributes.slice("name", "integration_provider")
+      end
     end
 
     def get_web_processes_data(deployment_configuration)

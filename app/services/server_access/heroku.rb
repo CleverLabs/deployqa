@@ -5,7 +5,7 @@ module ServerAccess
     COMMAND_CHECK_DELAY = 12
 
     def initialize(name:)
-      @heroku = PlatformAPI.connect_oauth(ENV["HEROKU_API_KEY"])
+      @heroku = PlatformAPI.connect_oauth(ENV["HEROKU_API_KEY"], cache: Moneta.new(:Null))
       @heroku_for_db = ::Heroku::Api::Postgres.connect_oauth(ENV["HEROKU_API_KEY"])
       @name = name
       @level = ServerAccess::HerokuHelpers::Level.new
@@ -21,10 +21,10 @@ module ServerAccess
       end
     end
 
-    def build_addons(addons_names)
+    def build_addons(addons)
       safely do
-        addons_names.each do |addon_name|
-          @heroku.addon.create(@name, plan: @level.addon(addon_name))
+        addons.each do |addon|
+          @heroku.addon.create(@name, plan: @level.addon(addon.name)) if addon.integration_provider == AddonConstants::IntegrationProviders::HEROKU
         end
       end
     end

@@ -28,10 +28,11 @@ module Deployment
 
       def create_server(configuration, state)
         server = ServerAccess::Heroku.new(name: configuration.application_name)
-        state
-          .add_state(:create_server) { server.create }
-          .add_state(:build_addons) { server.build_addons(configuration.addons) }
-          .add_state(:update_env_variables) { server.update_env_variables(configuration.env_variables) }
+        Deployment::Helpers::AddonsBuilder.new(
+          configuration,
+          state.add_state(:create_server) { server.create },
+          server
+        ).call
       end
 
       def create_infrastructure(app_name, web_processes, state)

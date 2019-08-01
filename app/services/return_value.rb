@@ -31,4 +31,10 @@ class ReturnValue
     @errors = value.is_a?(::Hash) ? value : Array(value)
     @attributes[:errors] = @errors
   end
+
+  def then(&block)
+    return self if status.error?
+
+    block.call
+  end
 end

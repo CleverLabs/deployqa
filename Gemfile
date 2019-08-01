@@ -7,6 +7,7 @@ ruby "2.6.3"
 
 gem "dotenv-rails", groups: %i[development test]
 
+gem "aws-sdk"
 gem "bootsnap", ">= 1.4.4", require: false
 gem "enumerize"
 gem "ginjo-omniauth-slack", require: "omniauth-slack"
@@ -14,7 +15,6 @@ gem "git"
 gem "good_migrations"
 gem "heroku-api-postgres"
 gem "httparty"
-gem "jbuilder", "~> 2.5"
 gem "lograge", "~> 0.11.1"
 gem "logstash-event", "~> 1.2", ">= 1.2.02"
 gem "logstash-logger", "~> 0.26.1"
@@ -28,7 +28,6 @@ gem "platform-api"
 gem "puma", "~> 3.11"
 gem "pundit", "~> 2.0", ">= 2.0.1"
 gem "rails", "~> 5.2.3"
-gem "sass-rails", "~> 5.0"
 gem "shallow_attributes"
 gem "sidekiq"
 gem "simple_form"

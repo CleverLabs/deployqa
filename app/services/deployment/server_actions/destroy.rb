@@ -12,10 +12,18 @@ module Deployment
         @configurations.each_with_object(@state_machine.start) do |configuration, state|
           @state_machine.context = configuration
           server = ServerAccess::Heroku.new(name: configuration.application_name)
-          state.add_state(:destroy_server) { server.destroy }
+          state
+            .add_state(:destroy_addons) { destroy_addons(configuration) }
+            .add_state(:destroy_server) { server.destroy }
         end
 
         @state_machine.finalize
+      end
+
+      private
+
+      def destroy_addons(configuration)
+        Deployment::Helpers::AddonsDestroyer.new(configuration).call
       end
     end
   end

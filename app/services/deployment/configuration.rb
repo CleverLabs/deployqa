@@ -8,12 +8,12 @@ module Deployment
     attribute :env_variables, Hash
     attribute :deployment_configuration_id, Integer
     attribute :application_url, String
-    attribute :addons, Array, of: String
+    attribute :addons, Array, of: Deployment::Addon
     attribute :web_processes, Array, of: Deployment::WebProcess
     attribute :repo_configuration, Deployment::RepoConfiguration
 
     def to_project_instance_configuration
-      to_h.slice(:application_name, :deployment_configuration_id, :application_url, :env_variables, :web_processes)
+      to_h.slice(:application_name, :deployment_configuration_id, :application_url, :env_variables, :web_processes, :addons)
           .merge(repo_configuration.to_h.slice(:git_reference, :repo_path))
     end
 
