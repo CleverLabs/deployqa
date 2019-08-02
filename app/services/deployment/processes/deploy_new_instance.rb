@@ -8,7 +8,7 @@ module Deployment
       end
 
       def call(current_user)
-        configurations = Deployment::ConfigurationBuilder.new.by_project_instance(@project_instance)
+        configurations = Deployment::ConfigurationBuilders::ByProjectInstance.new(@project_instance).call
         build_action = BuildAction.create!(project_instance: @project_instance, author: current_user, action: BuildActionConstants::CREATE_INSTANCE)
         ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, configurations.map(&:to_h), build_action)
       end

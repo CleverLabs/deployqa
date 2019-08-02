@@ -2,7 +2,7 @@
 
 module ServerAccess
   class Heroku
-    COMMAND_CHECK_DELAY = 12
+    COMMAND_CHECK_DELAY = 7
 
     def initialize(name:)
       @heroku = PlatformAPI.connect_oauth(ENV["HEROKU_API_KEY"], cache: Moneta.new(:Null))
@@ -73,10 +73,7 @@ module ServerAccess
     def execute_command(command, env)
       dyno_id = @heroku.dyno.create(@name, command: command, env: env).fetch("id")
 
-      sleep(COMMAND_CHECK_DELAY) while @heroku.dyno.list(@name).find do |dyno|
-        puts " -- Waiting, id is: #{dyno.fetch('id')}, desirable is: #{dyno_id}"
-        dyno.fetch("id") == dyno_id
-      end
+      sleep(COMMAND_CHECK_DELAY) while @heroku.dyno.list(@name).find { |dyno| dyno.fetch("id") == dyno_id }
     end
 
     def safely(&block)

@@ -9,7 +9,7 @@ module Deployment
       end
 
       def call(project_instance_name:, branches:)
-        configurations = Deployment::ConfigurationBuilder.new.by_project(@project, project_instance_name, branches: branches)
+        configurations = Deployment::ConfigurationBuilders::ByProject.new(@project).call(project_instance_name, branches)
         creation_result = create_project_instance(project_instance_name, configurations)
         return creation_result unless creation_result.ok?
 

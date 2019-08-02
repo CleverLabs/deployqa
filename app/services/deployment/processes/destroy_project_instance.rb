@@ -12,7 +12,7 @@ module Deployment
         return if @project_instance.deployment_status.in?([ProjectInstanceConstants::DESTROYED, ProjectInstanceConstants::CLOSED])
         return update_status if @project_instance.deployment_status.in?(ProjectInstanceConstants::NOT_DEPLOYED_INSTANCES)
 
-        configurations = Deployment::ConfigurationBuilder.new.by_project_instance(@project_instance).map(&:to_h)
+        configurations = Deployment::ConfigurationBuilders::ByProjectInstance.new(@project_instance).call.map(&:to_h)
         build_action = BuildAction.create!(project_instance: @project_instance, author: @current_user, action: BuildActionConstants::DESTROY_INSTANCE)
         ServerActionsCallJob.perform_later(Deployment::ServerActions::Destroy.to_s, configurations, build_action)
       end
