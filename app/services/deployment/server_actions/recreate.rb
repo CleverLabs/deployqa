@@ -9,9 +9,6 @@ module Deployment
       end
 
       def call
-        destroy_result = Deployment::ServerActions::Destroy.new(@configurations, @state_machine).call
-        return destroy_result if destroy_result.error?
-
         Deployment::ServerActions::Create.new(@configurations, @state_machine).call
       end
     end

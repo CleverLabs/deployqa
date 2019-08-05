@@ -2,7 +2,8 @@ en:
   build_actions:
     log:
       create_server: "Create server"
-      build_addons: "Build addons"
+      build_heroku_addons: "Build heroku addons"
+      build_s3_addon: "Build S3 bucket"
       update_env_variables: "Update env variables"
       setup_db: "Setup database"
       setup_worker: "Setup worker"

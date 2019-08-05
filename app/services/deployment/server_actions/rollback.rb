@@ -5,7 +5,7 @@ module Deployment
     class Rollback
       ACTIONS = {
         create_server: ->(configuration) { ServerAccess::Heroku.new(name: configuration.application_name).destroy },
-        build_addons: ->(configuration) { Deployment::Helpers::AddonsDestroyer.new(configuration).call }
+        build_s3_addon: ->(configuration) { Deployment::Helpers::AddonsDestroyer.new(configuration).call }
       }.freeze
 
       def initialize(state_machine)

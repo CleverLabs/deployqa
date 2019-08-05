@@ -10,30 +10,28 @@ module Deployment
       end
 
       def call
-        build_addons
-        update_env_variables
+        build_heroku_addons
+        build_s3_addon if s3_addon_present?
+
+        @state
       end
 
       private
 
-      def build_addons
-        @state.add_state(:build_addons) do
-          @server
-            .build_addons(@configuration.addons)
-            .then { build_s3 }
+      def build_heroku_addons
+        @state.add_state(:build_heroku_addons) do
+          @server.build_addons(@configuration.addons)
         end
       end
 
-      def update_env_variables
-        @state.add_state(:update_env_variables) do
-          @server.update_env_variables(@configuration.env_variables)
-        end
+      def s3_addon_present?
+        @configuration.addons.find { |addon| addon.name == "AWS S3" }
       end
 
-      def build_s3
-        return ReturnValue.ok unless @configuration.addons.find { |addon| addon.name == "AWS S3" }
-
-        AwsIntegration::S3Accessor.new.create_bucket(@configuration.application_name)
+      def build_s3_addon
+        @state.add_state(:build_s3_addon) do
+          AwsIntegration::S3Accessor.new.create_bucket(@configuration.application_name)
+        end
       end
     end
   end
