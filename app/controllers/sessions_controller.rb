@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
   def show; end
 
   def create
-    request.session[:user_id] = github_user.id
+    request.session[:user_id] = user_from_omniauth.id
     redirect_to "/"
   end
 
@@ -18,8 +18,9 @@ class SessionsController < ApplicationController
 
   protected
 
-  def github_user
-    Github::User.new(auth_hash).identify
+  def user_from_omniauth
+    provider_user = ::Omniauth::UserFactory.provider_user(params[:provider], auth_hash)
+    provider_user.identify
   end
 
   def auth_hash

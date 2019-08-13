@@ -8,7 +8,7 @@ module Github
       end
 
       def call
-        user = User.find_by(auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: @wrapped_body.id)
+        user = ::User.find_by(auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: @wrapped_body.id)
         user.project_user_roles.destroy_all
       end
     end

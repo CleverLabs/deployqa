@@ -3,9 +3,9 @@
 class User < ApplicationRecord
   has_paper_trail
 
-  has_many :repos
-  has_many :project_user_roles
+  has_many :project_user_roles, dependent: :destroy
   has_many :projects, through: :project_user_roles
+  has_one :auth_info, dependent: :destroy
 
   validates :system_role, presence: true
 
