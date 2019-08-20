@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   root "projects#index"
   get "/auth/slack/callback", to: "slack/authentications#create"
+  get "/auth/failure", to: "slack/authentications#show"
   get "/auth/:provider/callback", to: "sessions#create"
   get "/auth/:provider", to: "sessions#show", as: "omniauth"
 

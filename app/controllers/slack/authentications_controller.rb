@@ -2,10 +2,15 @@
 
 module Slack
   class AuthenticationsController < ApplicationController
-    before_action :authorize_project_admin
+    def show
+      flash[:notice] = params[:message]
+      redirect_to params[:origin]
+    end
 
     def create
-      Slack::EntityCreator.new(request.env["omniauth.auth"], request.env["omniauth.strategy"].access_token, request.env["omniauth.params"]).call
+      authorize_project_admin
+      Slack::EntityCreator.new(*slack_entity_params).call
+
       redirect_to project_path(find_project)
     end
 
@@ -13,6 +18,14 @@ module Slack
 
     def find_project
       @_project ||= Project.find(request.env["omniauth.params"]["project_id"])
+    end
+
+    def slack_entity_params
+      [
+        request.env["omniauth.auth"],
+        request.env["omniauth.strategy"],
+        request.env["omniauth.params"]
+      ]
     end
 
     def authorize_project_admin
