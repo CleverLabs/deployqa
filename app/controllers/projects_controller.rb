@@ -7,6 +7,7 @@ class ProjectsController < ApplicationController
   end
 
   def new
+    @provider = find_provider
     @project = Project.new
   end
 
@@ -29,6 +30,12 @@ class ProjectsController < ApplicationController
   end
 
   private
+
+  def find_provider
+    raise "Wrong provider" unless ProjectsConstants::Providers::ALL.include?(params[:provider])
+
+    params[:provider]
+  end
 
   def find_project
     authorize Project.find(params[:id]), :edit?, policy_class: ProjectPolicy
@@ -54,6 +61,6 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(:name)
+    params.require(:project).permit(:name, :integration_type)
   end
 end

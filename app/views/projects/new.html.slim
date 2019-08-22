@@ -12,4 +12,5 @@
       - if @project.errors.any?
         p = @project.errors.full_messages
       = form.input :name
+      = form.input_field :integration_type, as: :hidden, value: @provider
       = form.button :submit, class: "btn btn-primary"

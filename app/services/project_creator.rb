@@ -21,8 +21,9 @@ class ProjectCreator
 
   def project_params
     meaningless_integration_id = SecureRandom.uuid
+
+    controller_params.merge(SshKeys.new.generate) if controller_params[:integration_type] == ProjectsConstants::Providers::VIA_SSH
+    controller_params.merge(integration_id: meaningless_integration_id) unless controller_params[:integration_type] == ProjectsConstants::Providers::GITHUB
     controller_params
-      .merge(integration_type: ProjectsConstants::Providers::VIA_SSH, integration_id: meaningless_integration_id)
-      .merge(SshKeys.new.generate)
   end
 end

@@ -12,6 +12,7 @@ gem "bootsnap", ">= 1.4.4", require: false
 gem "enumerize"
 gem "ginjo-omniauth-slack", require: "omniauth-slack"
 gem "git"
+gem "gitlab", "~> 4.12"
 gem "good_migrations"
 gem "heroku-api-postgres"
 gem "httparty"
