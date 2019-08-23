@@ -10,9 +10,9 @@ module Github
 
       def call
         repos_ids = @wrapped_body.removed_repos.map(&:id)
-        ::DeploymentConfiguration
+        ::Repository
           .where(project: @project, integration_type: ProjectsConstants::Providers::GITHUB, integration_id: repos_ids)
-          .update_all(status: DeploymentConfigurationConstants::REMOVED)
+          .update_all(status: RepositoryConstants::REMOVED)
         ReturnValue.ok
       end
     end

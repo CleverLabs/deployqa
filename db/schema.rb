@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_14_121526) do
+ActiveRecord::Schema.define(version: 2019_08_23_082651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 2019_08_14_121526) do
   end
 
   create_table "auth_infos", force: :cascade do |t|
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.jsonb "data", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -110,11 +110,26 @@ ActiveRecord::Schema.define(version: 2019_08_14_121526) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "integration_id", null: false
+    t.string "integration_id"
     t.integer "integration_type", null: false
     t.string "private_key"
     t.string "public_key"
     t.index ["integration_id", "integration_type"], name: "index_projects_on_integration_id_and_integration_type", unique: true
+  end
+
+  create_table "repositories", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.string "name", null: false
+    t.integer "integration_type", null: false
+    t.string "integration_id", null: false
+    t.integer "status", null: false
+    t.string "path", null: false
+    t.jsonb "env_variables", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["integration_id", "integration_type"], name: "index_repositories_on_integration_id_and_integration_type", unique: true
+    t.index ["project_id", "path"], name: "index_repositories_on_project_id_and_path", unique: true
+    t.index ["project_id"], name: "index_repositories_on_project_id"
   end
 
   create_table "slack_entities", force: :cascade do |t|
@@ -165,6 +180,7 @@ ActiveRecord::Schema.define(version: 2019_08_14_121526) do
   add_foreign_key "build_action_logs", "build_actions"
   add_foreign_key "project_user_roles", "projects"
   add_foreign_key "project_user_roles", "users"
+  add_foreign_key "repositories", "projects"
   add_foreign_key "slack_entities", "projects"
   add_foreign_key "web_processes", "deployment_configurations"
 end

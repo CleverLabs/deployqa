@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DeploymentConfigurationConstants
+module RepositoryConstants
   STATUSES = [
     INSTALLED = "installed",
     ACTIVE = "active",

@@ -3,7 +3,7 @@
 module ProjectHelper
   NEW_CONFIGURATION_URL_MAPPING = {
     ProjectsConstants::Providers::GITHUB => ->(helper, _project) { helper.github_router.additional_installation_url },
-    ProjectsConstants::Providers::VIA_SSH => ->(helper, project) { helper.new_project_deployment_configuration_path(project) }
+    ProjectsConstants::Providers::VIA_SSH => ->(helper, project) { helper.new_project_repository_path(project) }
   }.freeze
 
   def new_configuration_url(project)

@@ -12,7 +12,7 @@ class ProjectsController < ApplicationController
 
   def show
     @project = find_project
-    @deployment_configurations = @project.deployment_configurations.order(:status)
+    @repositories = @project.repositories.order(:status)
     @roles = @project.project_user_roles.includes(:user)
     @project_github_entity = GithubEntity.find_by(owner: @project) if @project.integration_type == ProjectsConstants::Providers::GITHUB
   end
@@ -44,7 +44,7 @@ class ProjectsController < ApplicationController
       .where(project_user_roles: { user_id: current_user.id })
       .group("projects.id")
       .order("projects.created_at DESC")
-      .includes(:deployment_configurations)
+      .includes(:repositories)
   end
 
   def project_installing?

@@ -10,19 +10,19 @@ module Github
 
       def call
         @wrapped_body.added_repos.each do |repo_info|
-          create_configuration(repo_info)
+          create_repository(repo_info)
         end
         ReturnValue.ok
       end
 
       private
 
-      def create_configuration(repo_info)
-        configuration = ::DeploymentConfiguration.find_or_create_by(project: @project, integration_type: ProjectsConstants::Providers::GITHUB, integration_id: repo_info.id)
+      def create_repository(repo_info)
+        configuration = ::Repository.find_or_create_by(project: @project, integration_type: ProjectsConstants::Providers::GITHUB, integration_id: repo_info.id)
         configuration.update!(
           repo_path: repo_info.full_name,
           name: repo_info.name,
-          status: DeploymentConfigurationConstants::INSTALLED
+          status: RepositoryConstants::INSTALLED
         )
 
         GithubEntity.ensure_info_exists(configuration, repo_info.raw_info)

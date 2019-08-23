@@ -33,8 +33,8 @@ Rails.application.routes.draw do
       resources :database_dumps, only: %i[index show create update], module: :project_instances
       resources :build_actions, only: %i[show], module: :project_instances
     end
-    resources :deployment_configurations, only: %i[new create edit update]
-    resources :deployment_configuration_statuses, only: %i[update]
+    resources :repositories, only: %i[new create edit update]
+    resources :repository_statuses, only: %i[update]
     resources :project_user_roles, only: %i[destroy create]
   end
 

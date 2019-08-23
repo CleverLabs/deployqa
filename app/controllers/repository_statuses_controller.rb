@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-class DeploymentConfigurationStatusesController < ApplicationController
+class RepositoryStatusesController < ApplicationController
   def update
     project = find_project
-    project.deployment_configurations.find(params[:id]).update!(status: params[:status])
+    project.repositories.find(params[:id]).update!(status: params[:status])
     redirect_to project_path(project)
   end
 

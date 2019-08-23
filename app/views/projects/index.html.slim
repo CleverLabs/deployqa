@@ -40,15 +40,15 @@
               - if ProjectPolicy.new(current_user, project).edit?
                 = link_to project_path(project) do
                   = image_pack_tag 'media/images/configure.svg', class: "configure-icon"
-                  = " (#{project.deployment_configurations.count})"
+                  = " (#{project.repositories.count})"
 
 
-#createNewProjectModal.modal.fade aria-hidden="true" aria-labelledby="createNewProjectModalLabel" role="dialog" tabindex="-1" 
-  .modal-dialog role="document" 
+#createNewProjectModal.modal.fade aria-hidden="true" aria-labelledby="createNewProjectModalLabel" role="dialog" tabindex="-1"
+  .modal-dialog role="document"
     .modal-content
       .modal-header
         h5#createNewProjectModalLabel.modal-title Create new Project
-        button.close aria-label="Close" data-dismiss="modal" type="button" 
+        button.close aria-label="Close" data-dismiss="modal" type="button"
           span aria-hidden="true" &times;
       .modal-body
         = link_to "Github", github_router.install_url, class: "btn btn-primary"

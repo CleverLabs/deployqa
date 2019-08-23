@@ -10,11 +10,11 @@
 
   h1.mt-4 New Configuration
   .mt-4
-    = simple_form_for @deployment_configuration, url: project_deployment_configurations_path(@project) do |form|
-      - if @deployment_configuration.errors.any?
-        p.text-danger = @deployment_configuration.errors.full_messages.join(", ")
-      = form.input :repo_path, label: "Full git SSH link", input_html: { placeholder: "git@github.com:rails/rails.git" }
-      = form.input :env_variables, input_html: { value: @deployment_configuration.env_variables.map {|key, value| "#{key}: #{value}"}.join("\n"), placeholder: "KEY: value\nANOTHER_KEY: value" }
+    = simple_form_for @repository, url: project_repositories_path(@project) do |form|
+      - if @repository.errors.any?
+        p.text-danger = @repository.errors.full_messages.join(", ")
+      = form.input :path, label: "Full git SSH link", input_html: { placeholder: "git@github.com:rails/rails.git" }
+      = form.input :env_variables, input_html: { value: @repository.env_variables.map {|key, value| "#{key}: #{value}"}.join("\n"), placeholder: "KEY: value\nANOTHER_KEY: value" }
       .form-group.deployment_configuration_private_key
         label for="deployment_configuration_private_key" Add this SSH key to your repository
         #deployment_configuration_private_key.card.text-white.bg-info.mb-3
