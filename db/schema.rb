@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_26_095032) do
+ActiveRecord::Schema.define(version: 2019_08_26_162712) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,28 +50,6 @@ ActiveRecord::Schema.define(version: 2019_08_26_095032) do
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_build_actions_on_author_id"
     t.index ["project_instance_id"], name: "index_build_actions_on_project_instance_id"
-  end
-
-  create_table "deployment_configurations", force: :cascade do |t|
-    t.bigint "project_id", null: false
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "repo_path", null: false
-    t.jsonb "env_variables", default: {}, null: false
-    t.string "integration_id", null: false
-    t.integer "integration_type", null: false
-    t.integer "status", null: false
-    t.index ["integration_id", "integration_type"], name: "index_deployment_configurations_on_integrations", unique: true
-    t.index ["project_id"], name: "index_deployment_configurations_on_project_id"
-  end
-
-  create_table "deployment_configurations_addons", force: :cascade do |t|
-    t.bigint "deployment_configuration_id", null: false
-    t.bigint "addon_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["addon_id", "deployment_configuration_id"], name: "deployment_configurations_addons_uniq_index", unique: true
   end
 
   create_table "github_entities", force: :cascade do |t|
@@ -132,6 +110,16 @@ ActiveRecord::Schema.define(version: 2019_08_26_095032) do
     t.index ["project_id"], name: "index_repositories_on_project_id"
   end
 
+  create_table "repositories_addons", force: :cascade do |t|
+    t.bigint "repository_id", null: false
+    t.bigint "addon_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["addon_id"], name: "index_repositories_addons_on_addon_id"
+    t.index ["repository_id", "addon_id"], name: "index_repositories_addons_on_repository_id_and_addon_id", unique: true
+    t.index ["repository_id"], name: "index_repositories_addons_on_repository_id"
+  end
+
   create_table "slack_entities", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.jsonb "data", null: false
@@ -160,13 +148,13 @@ ActiveRecord::Schema.define(version: 2019_08_26_095032) do
   end
 
   create_table "web_processes", force: :cascade do |t|
-    t.bigint "deployment_configuration_id", null: false
+    t.bigint "repository_id", null: false
     t.string "name", null: false
     t.string "command", null: false
     t.integer "number", default: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["deployment_configuration_id"], name: "index_web_processes_on_deployment_configuration_id"
+    t.index ["repository_id"], name: "index_web_processes_on_repository_id"
   end
 
   create_table "webhook_logs", force: :cascade do |t|
@@ -181,6 +169,8 @@ ActiveRecord::Schema.define(version: 2019_08_26_095032) do
   add_foreign_key "project_user_roles", "projects"
   add_foreign_key "project_user_roles", "users"
   add_foreign_key "repositories", "projects"
+  add_foreign_key "repositories_addons", "addons"
+  add_foreign_key "repositories_addons", "repositories"
   add_foreign_key "slack_entities", "projects"
-  add_foreign_key "web_processes", "deployment_configurations"
+  add_foreign_key "web_processes", "repositories"
 end
