@@ -6,7 +6,7 @@ class DeploymentConfigurationForm
   attribute :repo_path, String
   attribute :env_variables, Hash
   attribute :name, String, default: ->(form, _attribute) { form.repo_path.present? && form.repo_path.split(":").last.gsub(/\.git$/, "") }
-  attribute :status, String, default: DeploymentConfigurationConstants::ACTIVE
+  attribute :status, String, default: RepositoryConstants::ACTIVE
   attribute :integration_type, String, default: ProjectsConstants::Providers::VIA_SSH
   attribute :integration_id, String, default: ->(_, _) { SecureRandom.uuid }
   attribute :project, Project

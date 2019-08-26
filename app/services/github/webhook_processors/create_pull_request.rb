@@ -9,7 +9,7 @@ module Github
       end
 
       def call
-        return ReturnValue.ok unless DeploymentConfigurationStatus.new(@project).active?(@wrapped_body.full_repo_name)
+        return ReturnValue.ok unless RepositoryStatus.new(@project).active?(@wrapped_body.full_repo_name)
 
         result = create_project_instance
         create_deployment_links(result)

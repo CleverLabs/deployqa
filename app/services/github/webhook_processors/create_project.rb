@@ -31,13 +31,13 @@ module Github
       end
 
       def create_repo(repo_info, project)
-        configuration = ::DeploymentConfiguration.create!(
+        configuration = ::Repository.create!(
           project: project,
-          repo_path: repo_info.full_name,
+          path: repo_info.full_name,
           name: repo_info.name,
           integration_type: ProjectsConstants::Providers::GITHUB,
           integration_id: repo_info.id,
-          status: DeploymentConfigurationConstants::INSTALLED
+          status: RepositoryConstants::INSTALLED
         )
 
         GithubEntity.ensure_info_exists(configuration, repo_info.raw_info)

@@ -8,52 +8,52 @@ module Deployment
       end
 
       def call(instance_name, branches)
-        @project.deployment_configurations.active.map do |deployment_configuration|
-          Deployment::Configuration.new(configuration_hash(deployment_configuration, instance_name, branches))
+        @project.repositories.active.map do |active_repository|
+          Deployment::Configuration.new(configuration_hash(active_repository, instance_name, branches))
         end
       end
 
       private
 
-      def configuration_hash(deployment_configuration, instance_name, branches)
-        name = build_name(deployment_configuration, instance_name)
+      def configuration_hash(repository, instance_name, branches)
+        name = build_name(repository, instance_name)
         {
           application_name: name,
-          env_variables: build_env_variables(deployment_configuration, name),
-          addons: build_addons(deployment_configuration),
-          web_processes: build_web_processes(deployment_configuration),
-          deployment_configuration_id: deployment_configuration.id,
+          env_variables: build_env_variables(repository, name),
+          addons: build_addons(repository),
+          web_processes: build_web_processes(repository),
+          repository_id: repository.id,
           application_url: heroku_url(name),
-          repo_configuration: build_repo_configuration_by_project(deployment_configuration, branches)
+          repo_configuration: build_repo_configuration_by_project(repository, branches)
         }
       end
 
-      def build_name(deployment_configuration, instance_name)
-        Deployment::ConfigurationBuilders::NameBuilder.new.call(@project.name, deployment_configuration.name, instance_name)
+      def build_name(repository, instance_name)
+        Deployment::ConfigurationBuilders::NameBuilder.new.call(@project.name, repository.name, instance_name)
       end
 
-      def build_env_variables(deployment_configuration, name)
-        Deployment::ConfigurationBuilders::EnvVariablesBuilder.new(deployment_configuration, name).call
+      def build_env_variables(repository, name)
+        Deployment::ConfigurationBuilders::EnvVariablesBuilder.new(repository, name).call
       end
 
-      def build_addons(deployment_configuration)
-        deployment_configuration.addons.to_a.map do |addon|
+      def build_addons(repository)
+        repository.addons.to_a.map do |addon|
           addon.attributes.slice(*Deployment::Addon.attributes.map(&:to_s))
         end
       end
 
-      def build_web_processes(deployment_configuration)
-        deployment_configuration.web_processes.to_a.map { |web_process| web_process.attributes.slice(*Deployment::WebProcess.attributes.map(&:to_s)) }
+      def build_web_processes(repository)
+        repository.web_processes.to_a.map { |web_process| web_process.attributes.slice(*Deployment::WebProcess.attributes.map(&:to_s)) }
       end
 
       def heroku_url(application_name)
         "https://#{application_name}.herokuapp.com"
       end
 
-      def build_repo_configuration_by_project(deployment_configuration, branches)
+      def build_repo_configuration_by_project(repository, branches)
         Deployment::RepoConfiguration.new(
-          repo_path: deployment_configuration.repo_path,
-          git_reference: branches.fetch(deployment_configuration.name, "master"),
+          repo_path: repository.path,
+          git_reference: branches.fetch(repository.name, "master"),
           project_integration_id: @project.integration_id,
           project_integration_type: @project.integration_type
         )
