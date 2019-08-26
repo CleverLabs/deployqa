@@ -1,5 +1,7 @@
 # DeployQA
 
+![Deployqa logo](https://raw.githubusercontent.com/CleverLabs/deployqa/master/app/javascript/images/logos/deployqa-with-word.png)
+
 DeployQA is an automated tool for application deployment. It helps teams to make deployment and testing processes simple and easy to maintain.
 
 ## Installation
