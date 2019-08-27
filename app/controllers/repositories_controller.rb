@@ -9,7 +9,7 @@ class RepositoriesController < ApplicationController
   def create
     @project = find_project
     @repository = @project.repositories.build
-    form = DeploymentConfigurationForm.new(repository_params.merge(project: @project))
+    form = RepositoryForm.new(repository_params.merge(project: @project))
 
     if @repository.update(form.attributes)
       redirect_to project_path(@project)
@@ -47,7 +47,7 @@ class RepositoriesController < ApplicationController
   end
 
   def update_repo
-    form = DeploymentConfigurationForm.new(repository_params.merge(project: @project, integration_id: @repository.integration_id))
+    form = RepositoryForm.new(repository_params.merge(project: @project, integration_id: @repository.integration_id))
     if @project.integration_type == ProjectsConstants::Providers::VIA_SSH
       @repository.update(form.attributes)
     else

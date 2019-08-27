@@ -6,7 +6,6 @@ module JSONModels
 
     attribute :application_name, :string
     attribute :env_variables
-    attribute :deployment_configuration_id, :integer # TODO: Delete after migrate it to repository_id
     attribute :repository_id, :integer
     attribute :application_url, :string
     attribute :repo_path, :string

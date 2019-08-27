@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DeploymentConfigurationForm
+class RepositoryForm
   include ShallowAttributes
 
   attribute :repo_path, String
