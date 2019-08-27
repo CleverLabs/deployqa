@@ -14,6 +14,6 @@ module JSONModels
     attribute :web_processes
     attribute :addons
 
-    validates :application_name, :deployment_configuration_id, :application_url, :repo_path, :git_reference, presence: true
+    validates :application_name, :repository_id, :application_url, :repo_path, :git_reference, presence: true
   end
 end

@@ -18,8 +18,8 @@ module Deployment
       private
 
       def repositories_with_configurations
-        repositories = Repository.where(id: @project_instance.configurations.map(&:deployment_configuration_id)).order(:id)
-        repositories.zip(@project_instance.configurations.sort_by(&:deployment_configuration_id))
+        repositories = Repository.where(id: @project_instance.configurations.map(&:repository_id)).order(:id)
+        repositories.zip(@project_instance.configurations.sort_by(&:repository_id))
       end
 
       def configuration_hash(repository, configuration)

@@ -6,6 +6,6 @@ class RepositoryStatus
   end
 
   def active?(repo_path)
-    @project.repositories.find_by(repo_path: repo_path).status == RepositoryConstants::ACTIVE
+    @project.repositories.find_by(path: repo_path).status == RepositoryConstants::ACTIVE
   end
 end

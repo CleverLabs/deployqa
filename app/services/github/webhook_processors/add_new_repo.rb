@@ -18,14 +18,14 @@ module Github
       private
 
       def create_repository(repo_info)
-        configuration = ::Repository.find_or_create_by(project: @project, integration_type: ProjectsConstants::Providers::GITHUB, integration_id: repo_info.id)
-        configuration.update!(
-          repo_path: repo_info.full_name,
+        repository = ::Repository.find_or_create_by(project: @project, integration_type: ProjectsConstants::Providers::GITHUB, integration_id: repo_info.id)
+        repository.update!(
+          path: repo_info.full_name,
           name: repo_info.name,
           status: RepositoryConstants::INSTALLED
         )
 
-        GithubEntity.ensure_info_exists(configuration, repo_info.raw_info)
+        GithubEntity.ensure_info_exists(repository, repo_info.raw_info)
       end
     end
   end

@@ -14,7 +14,7 @@ class ProjectInstancesController < ApplicationController
 
   def new
     @project = find_project
-    @deployment_configurations = @project.deployment_configurations.active
+    @repositories = @project.repositories.active
     @project_instance = @project.project_instances.build
   end
 
@@ -25,7 +25,7 @@ class ProjectInstancesController < ApplicationController
     if result.ok?
       redirect_to project_project_instance_path(@project, result.object)
     else
-      @deployment_configurations = @project.deployment_configurations.active
+      @repositories = @project.repositories.active
       @project_instance = result.object
       render :new
     end
