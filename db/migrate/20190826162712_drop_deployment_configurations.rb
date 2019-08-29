@@ -15,8 +15,8 @@ class DropDeploymentConfigurations < ActiveRecord::Migration[5.2]
 
       t.timestamps
 
-      t.index [:integration_id, :integration_type], unique: true
-      t.index [:project_id, :path], unique: true
+      t.index [:integration_id, :integration_type], name: "index_deployment_configurations_on_integration_id_and_type", unique: true
+      t.index [:project_id, :repo_path], unique: true
     end
   end
 end

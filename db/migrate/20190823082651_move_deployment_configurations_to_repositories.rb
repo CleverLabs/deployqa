@@ -8,7 +8,6 @@ class MoveDeploymentConfigurationsToRepositories < ActiveRecord::Migration[5.2]
       attributes["path"] = deployment_configuration.repo_path
 
       Repository.create!(attributes)
-      deployment_configuration.destroy!
     end
   end
 
@@ -18,7 +17,6 @@ class MoveDeploymentConfigurationsToRepositories < ActiveRecord::Migration[5.2]
       attributes["repo_path"] = repository.path
 
       DeploymentConfiguration.create!(attributes)
-      repository.destroy!
     end
   end
 end

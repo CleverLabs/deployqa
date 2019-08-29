@@ -4,15 +4,19 @@ class MoveDeploymentConfigurationsAddonsToRepositoriesAddons < ActiveRecord::Mig
 
   def up
     DeploymentConfigurationsAddon.find_each do |pair|
-      RepositoriesAddon.create!(pair.attributes)
-      pair.destroy!
+      new_attributes = pair.attributes.except("deployment_configuration_id")
+      new_attributes["repository_id"] = pair.deployment_configuration_id
+
+      RepositoriesAddon.create!(new_attributes)
     end
   end
 
   def down
     RepositoriesAddon.find_each do |pair|
-      DeploymentConfigurationsAddon.create!(pair.attributes)
-      pair.destroy!
+      new_attributes = pair.attributes.except("repository_id")
+      new_attributes["deployment_configuration_id"] = pair.repository_id
+
+      DeploymentConfigurationsAddon.create!(new_attributes)
     end
   end
 end
