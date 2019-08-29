@@ -4,7 +4,7 @@ module Omniauth
   class UserFactory
     PROVIDER_USER = {
       ::OmniauthConstants::GITHUB => ::Github::User,
-      ::OmniauthConstants::GITLAB => ::Gitlab::User
+      ::OmniauthConstants::GITLAB => ::GitlabIntegration::User
     }.freeze
 
     def self.provider_user(provider, auth_hash)

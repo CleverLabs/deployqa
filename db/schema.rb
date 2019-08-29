@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_27_124703) do
+ActiveRecord::Schema.define(version: 2019_09_03_093959) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,14 @@ ActiveRecord::Schema.define(version: 2019_08_27_124703) do
     t.index ["owner_type", "owner_id"], name: "index_github_entities_on_owner_type_and_owner_id", unique: true
   end
 
+  create_table "gitlab_repositories_infos", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_gitlab_repositories_infos_on_project_id"
+  end
+
   create_table "project_instances", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.integer "deployment_status", null: false
@@ -105,7 +113,7 @@ ActiveRecord::Schema.define(version: 2019_08_27_124703) do
     t.jsonb "env_variables", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["integration_id", "integration_type"], name: "index_repositories_on_integration_id_and_integration_type", unique: true
+    t.index ["project_id", "integration_id", "integration_type"], name: "index_repositories_on_project_id_integration_id_and_type", unique: true
     t.index ["project_id", "path"], name: "index_repositories_on_project_id_and_path", unique: true
     t.index ["project_id"], name: "index_repositories_on_project_id"
   end
@@ -166,6 +174,7 @@ ActiveRecord::Schema.define(version: 2019_08_27_124703) do
 
   add_foreign_key "auth_infos", "users"
   add_foreign_key "build_action_logs", "build_actions"
+  add_foreign_key "gitlab_repositories_infos", "projects"
   add_foreign_key "project_user_roles", "projects"
   add_foreign_key "project_user_roles", "users"
   add_foreign_key "repositories", "projects"

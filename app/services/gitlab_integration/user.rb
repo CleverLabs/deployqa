@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Gitlab
+module GitlabIntegration
   class User
     def initialize(auth_info_presenter)
       @auth_info_presenter = auth_info_presenter

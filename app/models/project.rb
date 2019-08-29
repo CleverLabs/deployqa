@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 class Project < ApplicationRecord
@@ -9,6 +8,7 @@ class Project < ApplicationRecord
   has_many :project_user_roles, dependent: :destroy
   has_many :users, through: :project_user_roles
   has_one :slack_entity, dependent: :destroy
+  has_one :gitlab_repositories_info, dependent: :destroy
 
   validates :name, :integration_id, :integration_type, presence: true
 
