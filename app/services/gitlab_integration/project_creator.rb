@@ -22,7 +22,7 @@ module GitlabIntegration
     attr_reader :project_params, :current_user
 
     def load_gitlab_repositories
-      gitlab_client.projects(membership: true)
+      GitlabIntegration::ClientWrapper.new(current_user.token).load_projects
     end
 
     def create_gitlab_repositories_info(project)
@@ -36,11 +36,6 @@ module GitlabIntegration
     def build_project_params(controller_params)
       meaningless_integration_id = SecureRandom.uuid
       controller_params.merge(integration_id: meaningless_integration_id)
-    end
-
-    def gitlab_client
-      Gitlab.client(endpoint: ENV["GITLAB_API_ENDPOINT"],
-                    private_token: current_user.token)
     end
   end
 end

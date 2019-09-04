@@ -9,11 +9,12 @@ module GitlabIntegration
 
     def create
       @page = GitlabIntegration::RepositoryPage.new(find_project)
-      @repository = @page.project.repositories.build
+      result = GitlabIntegration::RepositoryCreator.new(create_repository_form.attributes, current_user).call
 
-      if @repository.update(create_repository_form.attributes)
+      if result.ok?
         redirect_to project_path(@page.project)
       else
+        @repository = result.object
         render :new
       end
     end
