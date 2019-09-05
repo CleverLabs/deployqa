@@ -30,7 +30,7 @@ module GitlabIntegration
 
       RepositoryForm.new(repository_params.merge(project: @page.project,
                                                  name: gitlab_repository["name"],
-                                                 path: gitlab_repository["http_url_to_repo"],
+                                                 path: gitlab_repository["path_with_namespace"],
                                                  integration_type: ProjectsConstants::Providers::GITLAB))
     end
 
