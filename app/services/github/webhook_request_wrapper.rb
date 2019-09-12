@@ -10,7 +10,7 @@ module Github
 
     def self.build(request)
       new(
-        raw_body: request.body.read,
+        raw_body: request.body.set_encoding("UTF-8").read,
         hub_signature: request.env["HTTP_X_HUB_SIGNATURE"],
         github_event: request.env["HTTP_X_GITHUB_EVENT"]
       )
