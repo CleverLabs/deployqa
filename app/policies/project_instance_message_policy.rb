@@ -2,13 +2,14 @@
 
 class ProjectInstanceMessagePolicy < ApplicationPolicy
   SLACK_EVENTS = [ProjectInstanceConstants::RUNNING, ProjectInstanceConstants::FAILURE].freeze
+  COMMENTABLE_PROVIDERS = [ProjectsConstants::Providers::GITHUB, ProjectsConstants::Providers::GITLAB].freeze
 
   def slack?
     project.slack_entity.present? && slack_event_enabled?
   end
 
-  def github_comments?
-    project.integration_type == ProjectsConstants::Providers::GITHUB &&
+  def pull_request_comments?
+    COMMENTABLE_PROVIDERS.include?(project.integration_type) &&
       project.integration_id.present? &&
       record.attached_repo_path.present? &&
       record.attached_pull_request_number.present?

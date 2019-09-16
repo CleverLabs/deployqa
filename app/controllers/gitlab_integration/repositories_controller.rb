@@ -9,7 +9,7 @@ module GitlabIntegration
 
     def create
       @page = GitlabIntegration::RepositoryPage.new(find_project)
-      result = GitlabIntegration::RepositoryCreator.new(create_repository_form.attributes, current_user).call
+      result = GitlabIntegration::RepositoryCreator.new(create_repository_form.attributes, gitlab_client_wrapper).call
 
       if result.ok?
         redirect_to project_path(@page.project)
@@ -36,6 +36,10 @@ module GitlabIntegration
 
     def repository_params
       params.require(:repository).permit(:integration_id, :env_variables, addon_ids: [], web_processes_attributes: %i[id name command])
+    end
+
+    def gitlab_client_wrapper
+      GitlabIntegration::ClientWrapper.new(current_user.token)
     end
   end
 end

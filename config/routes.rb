@@ -21,6 +21,7 @@ Rails.application.routes.draw do
 
   namespace :webhooks do
     resources :github, only: %i[create]
+    resources :gitlab_integrations, only: %i[create]
   end
 
   resources :projects, only: %i[index new show create] do

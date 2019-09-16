@@ -34,4 +34,8 @@ class ApplicationController < ActionController::Base
   def github_router
     @_github_router ||= Github::Router.new
   end
+
+  def gitlab_router
+    @_gitlab_router ||= GitlabIntegration::Router.new
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_10_141259) do
+ActiveRecord::Schema.define(version: 2019_09_18_075642) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -170,6 +170,7 @@ ActiveRecord::Schema.define(version: 2019_09_10_141259) do
     t.string "event", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "integration_type", null: false
   end
 
   add_foreign_key "auth_infos", "users"

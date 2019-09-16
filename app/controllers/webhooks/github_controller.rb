@@ -7,8 +7,13 @@ module Webhooks
 
     def create
       wrapped_request = Github::WebhookRequestWrapper.build(request)
-      WebhookLog.create!(body: wrapped_request.parse_body, event: wrapped_request.github_event)
-      WebhookResolverJob.perform_later(Github::WebhookRequestWrapper.build(request).serialize)
+      WebhookLog.create!(body: wrapped_request.parse_body,
+                         event: wrapped_request.github_event,
+                         integration_type: ProjectsConstants::Providers::GITHUB)
+
+      WebhookResolverJob.perform_later(wrapped_request.serialize,
+                                       Github::WebhookRequestWrapper.to_s,
+                                       Github::WebhookResolver.to_s)
       head :ok
     end
   end

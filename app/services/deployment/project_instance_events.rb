@@ -23,15 +23,8 @@ module Deployment
       text = COMMENT_MESSAGES.fetch(event).call(comment)
 
       @project_instance.update!(deployment_status: event)
-      update_pull_request_info_comment(text) if @message_policy.github_comments?
+      Deployment::PullRequestNotificator.new(@project_instance).call(text) if @message_policy.pull_request_comments?
       Slack::Notificator.new(@project_instance).send_message(text) if @message_policy.slack?
-    end
-
-    private
-
-    def update_pull_request_info_comment(text)
-      pull_request = Github::PullRequest.new(@project.integration_id, @project_instance.attached_repo_path, @project_instance.attached_pull_request_number)
-      pull_request.update_info_comment(text)
     end
   end
 end
