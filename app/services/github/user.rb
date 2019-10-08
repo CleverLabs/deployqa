@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "github_user_client"
-
 module Github
   class User
     def initialize(auth_info_presenter)
@@ -29,7 +27,7 @@ module Github
     end
 
     def update_user_roles_for_projects(user)
-      installation_ids = Github::Events::UserInstallations.new(payload: GithubUserClient.new(user.token).find_user_installations.to_h).installations.map(&:id)
+      installation_ids = Github::Events::UserInstallations.new(payload: ::ProviderAPI::Github::UserClient.new(user.token).find_user_installations.to_h).installations.map(&:id)
 
       Project.where(integration_type: ProjectsConstants::Providers::GITHUB, integration_id: installation_ids).each do |project|
         ProjectUserRole.find_or_create_by(user: user, project: project) do |role|

@@ -5,7 +5,7 @@ module GitlabIntegration
     module Processors
       class UpdateMergeRequest
         def initialize(body)
-          @merge_request = GitlabIntegration::MergeRequest.new(body)
+          @merge_request = GitlabIntegration::Wrappers::MergeRequest.new(body)
         end
 
         def call

@@ -2,44 +2,46 @@
 
 module GitlabIntegration
   class MergeRequest
-    attr_reader :mr_attributes, :repository, :user
-
-    def initialize(payload)
-      @repository = payload["project"]
-      @mr_attributes = payload["object_attributes"]
-      @user = payload["user"]
+    def initialize(project_id, merge_request_id)
+      @project_id = project_id
+      @merge_request_id = merge_request_id
+      @gitlab_client = ::ProviderAPI::Gitlab::BotClient.new
     end
 
-    def number
-      mr_attributes["iid"]
+    def update_description(text)
+      original_desc = merge_request.description
+      new_desc = [original_desc, "\r\n\r\n", text].join
+      gitlab_client.update_mr_description(project_id, merge_request_id, new_desc)
     end
 
-    def repo_name
-      repository["name"]
+    def update_info_comment(text)
+      discussions = gitlab_client.merge_request_discussions(project_id, merge_request_id)
+      deployqa_comment = find_deployqa_comment(discussions)
+
+      deployqa_comment ? update_comment(deployqa_comment.id, deployqa_comment.notes.first["id"], text) : create_comment(text)
     end
 
-    def repo_id
-      repository["id"]
+    private
+
+    attr_reader :project_id, :merge_request_id, :gitlab_client
+
+    def find_deployqa_comment(discussions)
+      return unless discussions
+
+      user_discussions = discussions.filter { |discussion| discussion.notes.all? { |comment| comment["system"] == false } }
+      user_discussions.find { |discussion| discussion.notes.first.dig("author", "id") == ENV["GITLAB_DEPLOYQA_BOT_ID"].to_i }
     end
 
-    def full_repo_name
-      repository["path_with_namespace"]
+    def update_comment(discussion_id, note_id, text)
+      gitlab_client.update_mr_comment(project_id, merge_request_id, discussion_id, note_id, text)
     end
 
-    def branch
-      mr_attributes["source_branch"]
+    def create_comment(text)
+      gitlab_client.create_mr_comment(project_id, merge_request_id, text)
     end
 
-    def author_id
-      mr_attributes.fetch("author_id")
-    end
-
-    def edited_by_id
-      mr_attributes.fetch("last_edited_by_id") # Maybe the key must be "updated_by_id"
-    end
-
-    def user_name
-      user["name"]
+    def merge_request
+      gitlab_client.merge_request(project_id, merge_request_id)
     end
   end
 end

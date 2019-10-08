@@ -39,7 +39,7 @@ module GitlabIntegration
     end
 
     def gitlab_client_wrapper
-      GitlabIntegration::ClientWrapper.new(current_user.token)
+      ::ProviderAPI::Gitlab::UserClient.new(current_user.token)
     end
   end
 end

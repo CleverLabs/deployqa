@@ -37,7 +37,7 @@ module GitlabIntegration
       end
 
       def valid_signature?
-        request.token == GitlabIntegration::ClientWrapper.new.repository_webhook_token(request.body.dig("project", "id"))
+        request.token == ::ProviderAPI::Gitlab::BotClient.new.repository_webhook_token(request.body.dig("project", "id"))
       end
 
       def valid_event?

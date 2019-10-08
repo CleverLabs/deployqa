@@ -22,7 +22,7 @@ module GitlabIntegration
     attr_reader :project_params, :current_user
 
     def load_gitlab_repositories
-      GitlabIntegration::ClientWrapper.new(current_user.token).load_projects
+      ::ProviderAPI::Gitlab::UserClient.new(current_user.token).load_projects
     end
 
     def create_gitlab_repositories_info(project)

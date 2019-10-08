@@ -5,7 +5,7 @@ module GitlabIntegration
     module Processors
       class CreateMergeRequest
         def initialize(body)
-          @merge_request = GitlabIntegration::MergeRequest.new(body)
+          @merge_request = GitlabIntegration::Wrappers::MergeRequest.new(body)
         end
 
         def call
@@ -34,7 +34,7 @@ module GitlabIntegration
           comment = Notifications::Comment.new(result.object)
           text = result.ok? ? comment.header : comment.failure_header
 
-          GitlabIntegration::MergeRequestApi.new(repository.integration_id, @merge_request.number).update_description(text)
+          GitlabIntegration::MergeRequest.new(repository.integration_id, @merge_request.number).update_description(text)
         end
 
         def repository
