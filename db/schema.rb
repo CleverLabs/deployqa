@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 2019_10_11_085824) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "integration_id"
+    t.string "integration_id", null: false
     t.integer "integration_type", null: false
     t.string "private_key"
     t.string "public_key"

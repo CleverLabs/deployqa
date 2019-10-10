@@ -23,24 +23,23 @@ module Deployment
       def deploy_configuration(configuration, state)
         state = create_server(configuration, state)
         state = push_code_to_server(configuration, state)
-        create_infrastructure(configuration.application_name, configuration.web_processes, state)
+        create_infrastructure(configuration.application_name, configuration.web_processes, configuration, state)
       end
 
       def create_server(configuration, state)
         server = ServerAccess::Heroku.new(name: configuration.application_name)
         state = state
-                .add_state(:create_server) { server.create }
+                .add_state(:create_server) { server.create(configuration.docker?) }
                 .add_state(:update_env_variables) { server.update_env_variables(configuration.env_variables) }
 
         Deployment::Helpers::AddonsBuilder.new(configuration, state, server).call
       end
 
-      def create_infrastructure(app_name, web_processes, state)
+      def create_infrastructure(app_name, web_processes, configuration, state)
         server = ServerAccess::Heroku.new(name: app_name)
-        state
-          .add_state(:setup_db) { server.setup_db }
-          .add_state(:setup_worker) { server.setup_worker(web_processes) }
-          .add_state(:restart_server) { server.restart }
+        state.add_state(:setup_db) { server.setup_db }
+        state.add_state(:setup_worker) { server.setup_worker(web_processes) } unless configuration.docker?
+        state.add_state(:restart_server) { server.restart }
       end
 
       def push_code_to_server(configuration, state)

@@ -11,6 +11,7 @@ module Deployment
     attribute :addons, Array, of: Deployment::Addon
     attribute :web_processes, Array, of: Deployment::WebProcess
     attribute :repo_configuration, Deployment::RepoConfiguration
+    attribute :container, String
 
     def to_project_instance_configuration
       to_h.slice(:application_name, :repository_id, :application_url, :env_variables, :web_processes, :addons)
@@ -23,6 +24,10 @@ module Deployment
 
       repo_configuration.project_integration_id = private_key
       self
+    end
+
+    def docker?
+      container == RepositoryConstants::DOCKER
     end
   end
 end

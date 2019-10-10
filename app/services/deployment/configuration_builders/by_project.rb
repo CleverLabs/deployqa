@@ -20,10 +20,16 @@ module Deployment
         {
           application_name: name,
           env_variables: build_env_variables(repository, name),
-          addons: build_addons(repository),
-          web_processes: build_web_processes(repository),
           repository_id: repository.id,
           application_url: heroku_url(name),
+          container: repository.container
+        }.merge(build_dependencies(repository, branches))
+      end
+
+      def build_dependencies(repository, branches)
+        {
+          addons: build_addons(repository),
+          web_processes: build_web_processes(repository),
           repo_configuration: build_repo_configuration_by_project(repository, branches)
         }
       end

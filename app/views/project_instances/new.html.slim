@@ -13,7 +13,7 @@
     = simple_form_for @project_instance, url: project_project_instances_path, class: "row" do |form|
       - if @project_instance.errors.any?
         b = @project_instance.errors.full_messages
-      = form.input :name
+      = form.input :name, input_html: { autofocus: true }
       - @repositories.each do |repository|
         = form.simple_fields_for :configurations do |configurations_form|
           = configurations_form.input repository.name, label: "'#{repository.name}' branch", input_html: { value: "master" }, wrapper_html: { class: "w-50" }

@@ -11,12 +11,13 @@ module ServerAccess
       @level = ServerAccess::HerokuHelpers::Level.new
     end
 
-    def create
+    def create(docker_build)
       safely do
+        stack = docker_build ? "container" : nil
         if ENV["HEROKU_ORGANIZATION"].present?
-          @heroku.organization_app.create(name: @name, organization: ENV["HEROKU_ORGANIZATION"])
+          @heroku.organization_app.create(name: @name, organization: ENV["HEROKU_ORGANIZATION"], stack: stack)
         else
-          @heroku.app.create(name: @name)
+          @heroku.app.create(name: @name, stack: stack)
         end
       end
     end

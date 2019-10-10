@@ -4,7 +4,6 @@ require "clone_repo"
 
 class GitWrapper
   TEMP_FOLDER = "tmp"
-  PROCFILE_NAME = "Procfile"
 
   def self.clone_by_ssh(repo_path, private_key)
     clone_repo = CloneRepo.new(repo_path, private_key).tap(&:call)
@@ -23,11 +22,9 @@ class GitWrapper
     configure_git
   end
 
-  def add_procfile(web_processes)
-    return ReturnValue.ok if web_processes.blank?
-
-    generate_procfile(web_processes)
-    commit_procfile
+  def add_file(content:, filename:)
+    create_file(content, filename)
+    commit_file(filename)
     ReturnValue.ok
   end
 
@@ -36,11 +33,15 @@ class GitWrapper
     ReturnValue.ok
   end
 
-  def push_heroku(branch)
+  def select_branch(branch)
     @git_client.fetch("origin")
     @git_client.reset_hard("origin/master")
     @git_client.checkout(branch.to_s)
     @git_client.pull("origin", branch)
+    ReturnValue.ok
+  end
+
+  def push_heroku(branch)
     @git_client.push("heroku", "#{branch}:master", f: true)
     ReturnValue.ok
   end
@@ -58,15 +59,14 @@ class GitWrapper
     @git_client.config("commit.gpgsign", "false")
   end
 
-  def generate_procfile(web_processes)
-    file_text = web_processes.map(&:to_procfile_command).join("\n")
-    procfile = File.new(File.join(@repo_dir, PROCFILE_NAME), "w")
-    procfile.write(file_text)
+  def create_file(content, filename)
+    procfile = File.new(File.join(@repo_dir, filename), "w")
+    procfile.write(content)
     procfile.close
   end
 
-  def commit_procfile
-    @git_client.add(PROCFILE_NAME)
-    @git_client.commit("Add procfile")
+  def commit_file(filename)
+    @git_client.add(filename)
+    @git_client.commit("Add #{filename}")
   end
 end
