@@ -14,4 +14,5 @@ class Repository < ApplicationRecord
 
   enum status: RepositoryConstants::STATUSES
   enum integration_type: ProjectsConstants::Providers::ALL
+  enum container: RepositoryConstants::CONTAINERS
 end

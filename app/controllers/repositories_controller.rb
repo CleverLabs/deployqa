@@ -43,7 +43,7 @@ class RepositoriesController < ApplicationController
   end
 
   def repository_params
-    params.require(:repository).permit(:path, :env_variables, addon_ids: [], web_processes_attributes: %i[id name command])
+    params.require(:repository).permit(:path, :env_variables, :container, addon_ids: [], web_processes_attributes: %i[id name command])
   end
 
   def update_repo

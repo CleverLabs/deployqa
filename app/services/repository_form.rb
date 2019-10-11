@@ -12,6 +12,7 @@ class RepositoryForm
   attribute :project, Project
   attribute :addon_ids, Array, of: Integer
   attribute :web_processes_attributes, Array, of: Hash
+  attribute :container, String
 
   alias _env_variables= env_variables=
   def env_variables=(value)

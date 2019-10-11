@@ -7,4 +7,9 @@ module RepositoryConstants
     INACTIVE = "inactive",
     REMOVED = "removed"
   ].freeze
+
+  CONTAINERS = [
+    NO_CONTAINER = "no_container",
+    DOCKER = "docker"
+  ].freeze
 end
