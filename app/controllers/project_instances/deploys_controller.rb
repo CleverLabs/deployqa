@@ -8,7 +8,7 @@ module ProjectInstances
       return if params[:custom_deploy]
 
       deploy(@project_instance)
-      redirect_to pull_request_url(@project.integration_type, @project_instance)
+      redirect_to PullMergeRequestUrl.new(@project_instance).call
     end
 
     def create
@@ -46,14 +46,6 @@ module ProjectInstances
 
     def deploy(project_instance)
       Deployment::Processes::DeployNewInstance.new(project_instance).call(current_user)
-    end
-
-    def pull_request_url(integration_type, project_instance)
-      if integration_type == ProjectsConstants::Providers::GITHUB
-        github_router.pull_request_url(@project_instance.attached_repo_path, @project_instance.attached_pull_request_number)
-      elsif integration_type == ProjectsConstants::Providers::GITLAB
-        gitlab_router.merge_request_url(project_instance.attached_repo_path, project_instance.attached_pull_request_number)
-      end
     end
   end
 end
