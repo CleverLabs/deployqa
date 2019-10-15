@@ -27,6 +27,7 @@ module Deployqa
     config.eager_load_paths += %W[
       #{config.root}/lib/errors
       #{config.root}/lib/provider_api
+      #{config.root}/lib/utils
     ]
 
     config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.{rb,yml}").to_s]

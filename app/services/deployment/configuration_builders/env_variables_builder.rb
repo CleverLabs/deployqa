@@ -3,20 +3,36 @@
 module Deployment
   module ConfigurationBuilders
     class EnvVariablesBuilder
-      def initialize(deployment_configuration, application_name)
-        @deployment_configuration = deployment_configuration
+      def initialize(repository, application_name, active_repositories_with_names)
+        @repository = repository
         @application_name = application_name
+        @active_repositories_with_names = active_repositories_with_names
       end
 
       def call
-        return @deployment_configuration.env_variables unless @deployment_configuration.addons.find { |addon| addon.name == "AWS S3" }
+        @repository.env_variables.merge(
+          s3_variables,
+          application_variables
+        )
+      end
 
-        @deployment_configuration.env_variables.merge(
+      private
+
+      def s3_variables
+        return {} unless @repository.addons.find { |addon| addon.name == "AWS S3" }
+
+        {
           "S3_BUCKET" => AwsIntegration::S3Accessor::BUCKET_NAME.call(@application_name),
           "S3_KEY_ID" => ENV["AWS_ACCESS_KEY_ID"],
           "S3_ACCESS_KEY" => ENV["AWS_SECRET_ACCESS_KEY"],
           "S3_REGION" => ENV["AWS_REGION"]
-        )
+        }
+      end
+
+      def application_variables
+        @active_repositories_with_names.each_with_object({}) do |(repository, application_name), result|
+          result[Utils::NameSanitizer.sanitize_upcase(repository.path) + "_URL"] = "https://#{application_name}.herokuapp.com"
+        end
       end
     end
   end

@@ -8,18 +8,18 @@ module Deployment
       end
 
       def call(instance_name, branches)
-        @project.repositories.active.map do |active_repository|
-          Deployment::Configuration.new(configuration_hash(active_repository, instance_name, branches))
+        active_repositories = @project.repositories.active.map { |repository| [repository, build_name(repository, instance_name)] }
+        active_repositories.map do |active_repository, name|
+          Deployment::Configuration.new(configuration_hash(active_repository, name, branches, active_repositories))
         end
       end
 
       private
 
-      def configuration_hash(repository, instance_name, branches)
-        name = build_name(repository, instance_name)
+      def configuration_hash(repository, name, branches, active_repositories)
         {
           application_name: name,
-          env_variables: build_env_variables(repository, name),
+          env_variables: build_env_variables(repository, name, active_repositories),
           repository_id: repository.id,
           application_url: heroku_url(name),
           container: repository.container
@@ -38,8 +38,8 @@ module Deployment
         Deployment::ConfigurationBuilders::NameBuilder.new.call(@project.name, repository.name, instance_name)
       end
 
-      def build_env_variables(repository, name)
-        Deployment::ConfigurationBuilders::EnvVariablesBuilder.new(repository, name).call
+      def build_env_variables(repository, name, active_repositories)
+        Deployment::ConfigurationBuilders::EnvVariablesBuilder.new(repository, name, active_repositories).call
       end
 
       def build_addons(repository)

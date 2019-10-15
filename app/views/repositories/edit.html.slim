@@ -16,6 +16,7 @@
       - if @project.integration_type == ProjectsConstants::Providers::VIA_SSH
         = form.input :path, label: "Full git SSH link", input_html: { placeholder: "git@github.com:rails/rails.git" }
       = form.input :env_variables, input_html: {value: @repository.env_variables.map {|key, value| "#{key}: #{value}"}.join("\n")}
+      = form.input :container, collection: RepositoryConstants::CONTAINERS, label: "Containerization", include_hidden: false
       h4.mt-5 Processes
       .row
         = form.simple_fields_for :web_processes_attributes do |web_processes|

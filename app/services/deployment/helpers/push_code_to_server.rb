@@ -40,7 +40,7 @@ module Deployment
       def generate_config_file
         return ReturnValue.ok if configuration.web_processes.blank?
 
-        @git.add_file(*config_file_options(configuration))
+        @git.add_file(config_file_options(configuration))
       end
 
       def config_file_options(configuration)
