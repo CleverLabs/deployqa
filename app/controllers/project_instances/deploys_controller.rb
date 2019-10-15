@@ -8,7 +8,7 @@ module ProjectInstances
       return if params[:custom_deploy]
 
       deploy(@project_instance)
-      redirect_to PullMergeRequestUrl.new(@project_instance).call
+      redirect_to GitProviders::URL::PullMergeRequest.new(@project_instance).call
     end
 
     def create

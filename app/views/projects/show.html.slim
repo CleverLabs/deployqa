@@ -19,7 +19,7 @@
     .d-flex.align-items-center
       - if @project.integration_type == ProjectsConstants::Providers::GITHUB
         = link_to "Manage installation 🔗", github_router.installation_page_url(@project.integration_id, @project_github_entity), target: :_blank, class: "btn btn-primary mr-1"
-      = link_to "Add new configuration", new_configuration_url(@project), class: "btn btn-primary"
+      = link_to "Add new configuration", GitProviders::URL::NewRepository.new(@project).call, class: "btn btn-primary"
 
   .mt-4
     table.table.table-hover

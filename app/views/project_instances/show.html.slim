@@ -12,7 +12,7 @@
   h3
     = @project_instance.name
     span class=["ml-2 badge", status_badge_class(@project_instance.deployment_status)] = @project_instance.deployment_status
-    - pull_request_url = PullMergeRequestUrl.new(@project_instance).call
+    - pull_request_url = GitProviders::URL::PullMergeRequest.new(@project_instance).call
     - if pull_request_url
       | &nbsp;
       small
