@@ -45,5 +45,9 @@ Rails.application.routes.draw do
     end
   end
 
+  scope module: :gitlab_integration, path: "gitlab", as: "gitlab" do
+    resources :projects, only: %i[new create]
+  end
+
   resources :project_instances_counts, only: %i[index]
 end

@@ -29,8 +29,14 @@ module ProviderAPI
         gitlab_client.edit_team_member(repository.integration_id, ENV["GITLAB_DEPLOYQA_BOT_ID"], permission_code)
       end
 
-      def load_projects
-        gitlab_client.projects(membership: true)
+      def load_groups
+        gitlab_client.groups(min_access_level: GITLAB_MEMBER_PERMISSIONS[:maintainer])
+      end
+
+      def load_repositories(access_level = :maintainer)
+        Rails.cache.fetch("gitlab/#{Digest::MD5.hexdigest(gitlab_client.private_token)}#{access_level}/repositories", expires_in: 1.hour) do
+          gitlab_client.projects(min_access_level: GITLAB_MEMBER_PERMISSIONS[access_level])
+        end
       end
 
       def add_webhook_to_repo(repository)

@@ -52,7 +52,7 @@
           span aria-hidden="true" &times;
       .modal-body
         = link_to "Github", github_router.install_url, class: "btn btn-primary"
-        = link_to "Gitlab", new_project_path(provider: "gitlab"), class: "btn btn-primary ml-2"
+        = link_to "Gitlab", new_gitlab_project_path, class: "btn btn-primary ml-2"
         = link_to "Via SSH", new_project_path(provider: "via_ssh"), class: "btn btn-primary ml-2"
       .modal-footer
         button.btn.alert-dark data-dismiss="modal" type="button" Cancel

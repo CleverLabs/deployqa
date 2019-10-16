@@ -1,0 +1,15 @@
+.container
+  h1.mt-4 New project
+  = render partial: "shared/breadcrumb", locals: {\
+      text_link_hash: {\
+        "Projects" => projects_path,
+          "Create" => nil\
+      },
+          class: "mt-4" }
+
+  .mt-4
+    = simple_form_for @project, url: gitlab_projects_path, method: :post do |form|
+      - if @project.errors.any?
+        p = @project.errors.full_messages
+      = form.input :integration_id, collection: @names, label: "Name", include_blank: false
+      = form.button :submit, class: "btn btn-primary"

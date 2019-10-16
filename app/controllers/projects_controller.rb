@@ -19,7 +19,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    result = ProjectCreator.new(project_params, current_user).call
+    result = SshIntegration::ProjectCreator.new(project_params, current_user).call
     @project = result.object
 
     if result.ok?
