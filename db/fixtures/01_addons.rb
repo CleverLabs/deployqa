@@ -6,6 +6,11 @@ Addon.seed(:name) do |seed|
 end
 
 Addon.seed(:name) do |seed|
+  seed.name = "ClearDB (MySQL)"
+  seed.integration_provider = AddonConstants::IntegrationProviders::HEROKU
+end
+
+Addon.seed(:name) do |seed|
   seed.name = "Redis"
   seed.integration_provider = AddonConstants::IntegrationProviders::HEROKU
 end

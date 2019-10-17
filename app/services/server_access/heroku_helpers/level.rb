@@ -5,6 +5,7 @@ module ServerAccess
     class Level
       ADDONS_MAPPING = {
         "PostgreSQL" => ->(development) { development ? "heroku-postgresql:hobby-dev" : "heroku-postgresql:hobby-basic" },
+        "ClearDB (MySQL)" => ->(development) { development ? "cleardb:ignite" : "cleardb:punch" },
         "Redis" => ->(_) { "heroku-redis:hobby-dev" }
       }.freeze
 
