@@ -11,7 +11,8 @@ module ProjectInstanceConstants
     NOT_DEPLOYED = "not_deployed",
     DESTROYING = "destroying_instances",
     DESTROYED = "instances_destroyed",
-    CLOSED = "closed"
+    CLOSED = "closed",
+    CLOSED_NEVER_CREATED = "closed_and_never_created"
   ].freeze
 
   ACTION_STATUSES = {
@@ -23,5 +24,6 @@ module ProjectInstanceConstants
   }.freeze
 
   ACTIVE_INSTANCES = [RUNNING, FAILURE, DEPLOYING, UPDATING].freeze
-  NOT_DEPLOYED_INSTANCES = [EMPTY_RECORD_FOR_PR, NOT_DEPLOYED, DESTROYED, CLOSED].freeze
+  NOT_DEPLOYED_INSTANCES = [EMPTY_RECORD_FOR_PR, NOT_DEPLOYED, DESTROYED, CLOSED, CLOSED_NEVER_CREATED].freeze
+  HIDDEN_INSTANCES = [EMPTY_RECORD_FOR_PR, CLOSED_NEVER_CREATED].freeze
 end

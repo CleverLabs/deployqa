@@ -3,7 +3,7 @@
 class ProjectInstancesController < ApplicationController
   def index
     @project = find_project
-    @project_instances = @project.project_instances.where.not(deployment_status: ProjectInstanceConstants::EMPTY_RECORD_FOR_PR).order(created_at: :desc)
+    @project_instances = @project.project_instances.where.not(deployment_status: ProjectInstanceConstants::HIDDEN_INSTANCES).order(created_at: :desc)
   end
 
   def show
