@@ -15,7 +15,7 @@ module Omniauth
     end
 
     def full_name
-      @omniauth_hash.dig("info", "name")
+      @omniauth_hash.dig("info", "name").presence || @omniauth_hash.dig("info", "nickname")
     end
 
     def raw_info
