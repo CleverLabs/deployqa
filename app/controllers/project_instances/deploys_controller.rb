@@ -5,6 +5,7 @@ module ProjectInstances
     def show
       @project = find_project
       @project_instance = find_project_instance(@project)
+      return redirect_to_instance_with_error unless ProjectInstancePolicy.new(current_user, @project_instance).deploy_by_link?
       return if params[:custom_deploy]
 
       deploy(@project_instance)
@@ -14,6 +15,8 @@ module ProjectInstances
     def create
       @project = find_project
       @project_instance = find_project_instance(@project)
+
+      return redirect_to_instance_with_error unless ProjectInstancePolicy.new(current_user, @project_instance).deploy_by_link?
 
       if update_configurations(@project_instance)
         deploy(@project_instance)
@@ -30,7 +33,12 @@ module ProjectInstances
     end
 
     def find_project_instance(project)
-      authorize project.project_instances.find(params[:project_instance_id]), :deploy_by_link?, policy_class: ProjectInstancePolicy
+      project.project_instances.find(params[:project_instance_id])
+    end
+
+    def redirect_to_instance_with_error
+      flash.notice = "Application already deployed"
+      redirect_to project_project_instance_path(@project, @project_instance)
     end
 
     def project_instance_params

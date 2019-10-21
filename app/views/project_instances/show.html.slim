@@ -8,6 +8,8 @@
       },
       class: "mt-4" }
 
+  - if flash.notice
+    .alert.alert-info = flash.notice
   h1.mt-4 = @project_instance.project.name
   h3
     = @project_instance.name
