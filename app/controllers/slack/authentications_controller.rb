@@ -23,7 +23,7 @@ module Slack
     def slack_entity_params
       [
         request.env["omniauth.auth"],
-        request.env["omniauth.strategy"],
+        request.env["omniauth.strategy"].access_token,
         request.env["omniauth.params"]
       ]
     end
