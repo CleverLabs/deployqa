@@ -51,7 +51,7 @@ class RepositoriesController < ApplicationController
     if @project.integration_type == ProjectsConstants::Providers::VIA_SSH
       @repository.update(form.attributes)
     else
-      @repository.update(form.attributes.slice(:env_variables, :addon_ids, :web_processes_attributes))
+      @repository.update(form.attributes.slice(:env_variables, :addon_ids, :web_processes_attributes, :container))
     end
   end
 end

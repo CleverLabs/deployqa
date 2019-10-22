@@ -30,7 +30,7 @@ module Deployment
         server = ServerAccess::Heroku.new(name: configuration.application_name)
         state = state
                 .add_state(:create_server) { server.create(configuration.docker?) }
-                .add_state(:update_env_variables) { server.update_env_variables(configuration.env_variables) }
+                .add_state(:update_env_variables) { server.update_env_variables(env_variables(configuration)) }
 
         Deployment::Helpers::AddonsBuilder.new(configuration, state, server).call
       end
@@ -45,6 +45,15 @@ module Deployment
 
       def push_code_to_server(configuration, state)
         Deployment::Helpers::PushCodeToServer.new(configuration, state).call
+      end
+
+      def env_variables(configuration)
+        repo_configuration = configuration.repo_configuration
+        return configuration.env_variables unless repo_configuration.project_integration_type == ProjectsConstants::Providers::GITHUB
+
+        configuration.env_variables.merge(
+          "BUNDLE_GITHUB__COM" => ::ProviderAPI::Github::AppClient.new(repo_configuration.project_integration_id).token_for_gem_bundle
+        )
       end
     end
   end

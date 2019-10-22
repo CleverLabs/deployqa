@@ -17,6 +17,10 @@ module ProviderAPI
         "https://x-access-token:#{client.access_token}@github.com/#{repo_path}.git"
       end
 
+      def token_for_gem_bundle
+        "x-access-token:#{client.access_token}"
+      end
+
       private
 
       def client

@@ -15,5 +15,5 @@
       - @build_action_logs.each do |log|
         .log-item
           code.small.text-info = "[#{log.context}] "
-          code.small class="#{(log.status == BuildActionConstants::Log::ERROR) ? 'text-danger' : 'text-secondary'}" = log.message
+          pre.small.d-inline class="#{(log.status == BuildActionConstants::Log::ERROR) ? 'text-danger' : 'text-secondary'}" = log.message
 
