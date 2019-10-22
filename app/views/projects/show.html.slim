@@ -27,11 +27,11 @@
         tr
           th.by-content #
           th Name
-          th Status
-          th
+          th style="width: 20%" Status
+          th style="width: 20%"
       tbody
         - @repositories.each_with_index do |repository, index|
-          tr
+          tr class="#{repository.status == RepositoryConstants::ACTIVE ? '' : 'table-secondary'}"
             td.text-center = index + 1
             td
               - if repository.status == RepositoryConstants::REMOVED
@@ -39,9 +39,13 @@
               - else
                 = link_to edit_project_repository_path(@project, repository) do
                   = repository.name
-            td = repository.status.humanize
             td
-              - if repository.status.in? [RepositoryConstants::INSTALLED, RepositoryConstants::INACTIVE]
+              - if repository.build_type == RepositoryConstants::PRIVATE_GEM
+                = RepositoryConstants::PRIVATE_GEM.humanize
+              - else
+                = repository.status.humanize
+            td
+              - if repository.status.in?([RepositoryConstants::INSTALLED, RepositoryConstants::INACTIVE]) && repository.build_type != RepositoryConstants::PRIVATE_GEM
                 = link_to "Activate", project_repository_status_path(@project, repository, status: RepositoryConstants::ACTIVE), method: :patch
               - if repository.status == RepositoryConstants::ACTIVE
                 = link_to "Deactivate", project_repository_status_path(@project, repository, status: RepositoryConstants::INACTIVE), method: :patch

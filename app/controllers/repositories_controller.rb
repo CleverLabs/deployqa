@@ -43,15 +43,15 @@ class RepositoriesController < ApplicationController
   end
 
   def repository_params
-    params.require(:repository).permit(:path, :env_variables, :container, addon_ids: [], web_processes_attributes: %i[id name command])
+    params.require(:repository).permit(:path, :env_variables, :build_type, addon_ids: [], web_processes_attributes: %i[id name command])
   end
 
   def update_repo
-    form = RepositoryForm.new(repository_params.merge(project: @project, integration_id: @repository.integration_id))
+    form = RepositoryForm.new(repository_params.merge(project: @project, integration_id: @repository.integration_id, status: @repository.status))
     if @project.integration_type == ProjectsConstants::Providers::VIA_SSH
       @repository.update(form.attributes)
     else
-      @repository.update(form.attributes.slice(:env_variables, :addon_ids, :web_processes_attributes, :container))
+      @repository.update(form.attributes.slice(:env_variables, :addon_ids, :web_processes_attributes, :build_type, :status))
     end
   end
 end

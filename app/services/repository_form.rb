@@ -12,7 +12,7 @@ class RepositoryForm
   attribute :project, Project
   attribute :addon_ids, Array, of: Integer
   attribute :web_processes_attributes, Array, of: Hash
-  attribute :container, String
+  attribute :build_type, String
 
   alias _env_variables= env_variables=
   def env_variables=(value)
@@ -26,6 +26,11 @@ class RepositoryForm
                                 .select { |attributes| attributes[:command].present? || attributes[:_destroy] }
 
     @attributes[:web_processes_attributes] = @web_processes_attributes
+  end
+
+  alias _status= status=
+  def status=(value)
+    self._status = build_type == RepositoryConstants::PRIVATE_GEM ? RepositoryConstants::INACTIVE : value
   end
 
   private

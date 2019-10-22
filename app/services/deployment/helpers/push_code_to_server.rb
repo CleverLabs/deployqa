@@ -45,7 +45,9 @@ module Deployment
 
       def config_file_options(configuration)
         if configuration.docker?
-          { content: ServerAccess::HerokuHelpers::DockerDeployConfigGenerator.new(configuration.web_processes).call, filename: "heroku.yml" }
+          private_gem_detected = @configuration.build_configuration.private_gem_detected
+          content = ServerAccess::HerokuHelpers::DockerDeployConfigGenerator.new(configuration.web_processes, @repo_configuration.project_integration_id, private_gem_detected).call
+          { content: content, filename: "heroku.yml" }
         else
           { content: ServerAccess::HerokuHelpers::ProcfileGenerator.new(configuration.web_processes).call, filename: "Procfile" }
         end

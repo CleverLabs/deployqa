@@ -11,8 +11,16 @@ class Repository < ApplicationRecord
   accepts_nested_attributes_for :web_processes, allow_destroy: true
 
   validates :name, :path, :status, :integration_id, :integration_type, presence: true
+  validate :validate_github_gem
 
   enum status: RepositoryConstants::STATUSES
   enum integration_type: ProjectsConstants::Providers::ALL
-  enum container: RepositoryConstants::CONTAINERS
+  enum build_type: RepositoryConstants::BUILD_TYPES
+
+  def validate_github_gem
+    return if build_type != RepositoryConstants::PRIVATE_GEM
+
+    errors.add(:build_type, "Private gem is only available in GitHub") if integration_type != ProjectsConstants::Providers::GITHUB
+    errors.add(:build_type, "Private gem can only have 'inactive' status") if status != RepositoryConstants::INACTIVE
+  end
 end

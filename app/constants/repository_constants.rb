@@ -8,8 +8,9 @@ module RepositoryConstants
     REMOVED = "removed"
   ].freeze
 
-  CONTAINERS = [
+  BUILD_TYPES = [
     NO_CONTAINER = "no_container",
-    DOCKER = "docker"
+    DOCKER = "docker",
+    PRIVATE_GEM = "private_gem"
   ].freeze
 end

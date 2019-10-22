@@ -3,14 +3,29 @@
 module ServerAccess
   module HerokuHelpers
     class DockerDeployConfigGenerator
-      def initialize(web_processes)
+      def initialize(web_processes, project_integration_id, private_gem_detected)
         @web_processes = web_processes
+        @private_gem_detected = private_gem_detected
+        @project_integration_id = project_integration_id
       end
 
       def call
-        @web_processes.each_with_object(build: { docker: { web: "Dockerfile" } }, run: {}) do |web_process, config|
+        @web_processes.each_with_object(default_config) do |web_process, config|
           config[:run][web_process.name.to_sym] = web_process.name == "web" ? web_process.command : { command: [web_process.command], image: "web" }
         end.deep_stringify_keys.to_yaml
+      end
+
+      private
+
+      def default_config
+        config = @private_gem_detected ? { "BUNDLE_GITHUB__COM" => ::ProviderAPI::Github::AppClient.new(@project_integration_id).token_for_gem_bundle } : {}
+        {
+          build: {
+            docker: { web: "Dockerfile" },
+            config: config
+          },
+          run: {}
+        }
       end
     end
   end

@@ -11,10 +11,10 @@ module Deployment
     attribute :addons, Array, of: Deployment::Addon
     attribute :web_processes, Array, of: Deployment::WebProcess
     attribute :repo_configuration, Deployment::RepoConfiguration
-    attribute :container, String
+    attribute :build_configuration, Deployment::BuildConfiguration
 
     def to_project_instance_configuration
-      to_h.slice(:application_name, :repository_id, :application_url, :env_variables, :web_processes, :addons)
+      to_h.slice(:application_name, :repository_id, :application_url, :env_variables, :web_processes, :addons, :build_configuration)
           .merge(repo_configuration.to_h.slice(:git_reference, :repo_path))
     end
 
@@ -27,7 +27,7 @@ module Deployment
     end
 
     def docker?
-      container == RepositoryConstants::DOCKER
+      build_configuration.build_type == RepositoryConstants::DOCKER
     end
   end
 end

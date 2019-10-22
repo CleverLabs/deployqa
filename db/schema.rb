@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_11_085824) do
+ActiveRecord::Schema.define(version: 2019_10_22_113650) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -113,7 +113,7 @@ ActiveRecord::Schema.define(version: 2019_10_11_085824) do
     t.jsonb "env_variables", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "container", default: 0, null: false
+    t.integer "build_type", default: 0, null: false
     t.index ["project_id", "integration_id", "integration_type"], name: "index_repositories_on_project_id_integration_id_and_type", unique: true
     t.index ["project_id", "path"], name: "index_repositories_on_project_id_and_path", unique: true
     t.index ["project_id"], name: "index_repositories_on_project_id"

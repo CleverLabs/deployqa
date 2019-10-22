@@ -13,11 +13,10 @@
     = simple_form_for @repository, url: project_gitlab_repositories_path(@page.project) do |f|
       = f.input :integration_id, collection: @page.gitlab_repositories_collection, label: "GitLab repository", include_blank: false
 
+      = f.input :build_type, collection: RepositoryConstants::BUILD_TYPES, label: "Build type", include_hidden: false
       = f.input :env_variables, input_html: { value: @repository.env_variables.map {|key, value| "#{key}: #{value}"}.join("\n"), placeholder: "KEY: value\nANOTHER_KEY: value" }
 
       h4.mt-5 Processes
-      div
-        = f.input :container, collection: RepositoryConstants::CONTAINERS, label: "Containerization", include_hidden: false
       .row
         = f.simple_fields_for :web_processes_attributes do |web_processes|
           - processes = @repository.web_processes.to_a

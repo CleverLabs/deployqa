@@ -18,8 +18,6 @@ module Deployment
 
       private
 
-      attr_reader :logger
-
       def deploy_configuration(configuration, state)
         state = create_server(configuration, state)
         state = push_code_to_server(configuration, state)
@@ -49,7 +47,7 @@ module Deployment
 
       def env_variables(configuration)
         repo_configuration = configuration.repo_configuration
-        return configuration.env_variables unless repo_configuration.project_integration_type == ProjectsConstants::Providers::GITHUB
+        return configuration.env_variables if !configuration.build_configuration.private_gem_detected || configuration.docker?
 
         configuration.env_variables.merge(
           "BUNDLE_GITHUB__COM" => ::ProviderAPI::Github::AppClient.new(repo_configuration.project_integration_id).token_for_gem_bundle

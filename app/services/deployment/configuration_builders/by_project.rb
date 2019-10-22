@@ -21,8 +21,7 @@ module Deployment
           application_name: name,
           env_variables: build_env_variables(repository, name, active_repositories),
           repository_id: repository.id,
-          application_url: heroku_url(name),
-          container: repository.container
+          application_url: heroku_url(name)
         }.merge(build_dependencies(repository, branches))
       end
 
@@ -30,7 +29,8 @@ module Deployment
         {
           addons: build_addons(repository),
           web_processes: build_web_processes(repository),
-          repo_configuration: build_repo_configuration_by_project(repository, branches)
+          repo_configuration: build_repo_configuration_by_project(repository, branches),
+          build_configuration: build_build_configuration(repository)
         }
       end
 
@@ -62,6 +62,13 @@ module Deployment
           git_reference: branches.fetch(repository.name, "master"),
           project_integration_id: @project.integration_id,
           project_integration_type: @project.integration_type
+        )
+      end
+
+      def build_build_configuration(repository)
+        Deployment::BuildConfiguration.new(
+          build_type: repository.build_type,
+          private_gem_detected: @project.repositories.any? { |configuration| configuration.build_type == RepositoryConstants::PRIVATE_GEM }
         )
       end
     end

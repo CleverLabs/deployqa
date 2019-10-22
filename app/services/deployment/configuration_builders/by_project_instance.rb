@@ -23,9 +23,8 @@ module Deployment
       end
 
       def configuration_hash(repository, configuration)
-        configuration.attributes.slice("application_name", "application_url", "env_variables", "web_processes", "addons").merge(
+        configuration.attributes.slice("application_name", "application_url", "env_variables", "web_processes", "addons", "build_configuration").merge(
           repository_id: repository.id,
-          container: repository.container,
           repo_configuration: build_repo_configuration_by_project_instance(configuration, @project_instance.project)
         ).symbolize_keys
       end
