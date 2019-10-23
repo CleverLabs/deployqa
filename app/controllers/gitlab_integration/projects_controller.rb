@@ -4,7 +4,7 @@ module GitlabIntegration
   class ProjectsController < ApplicationController
     def new
       @project = Project.new
-      @names = ProjectPage.new(current_user).build_project_names
+      @names = GitlabIntegration::ProjectPage.new(current_user).build_project_names
     end
 
     def create
