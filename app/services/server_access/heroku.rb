@@ -49,11 +49,11 @@ module ServerAccess
     end
 
     def migrate_db
-      safely { execute_command("RAILS_ENV=production rails db:migrate", {}) }
+      safely_with_log { execute_command("RAILS_ENV=production rails db:migrate", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1, "SAFETY_ASSURED" => 1) }
     end
 
     def setup_db
-      safely { execute_command("rails db:schema:load", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1) }
+      safely_with_log { execute_command("rails db:schema:load", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1, "SAFETY_ASSURED" => 1) }
     end
 
     def setup_processes(web_processes)
@@ -72,14 +72,27 @@ module ServerAccess
     private
 
     def execute_command(command, env)
-      dyno_id = @heroku.dyno.create(@name, command: command, env: env).fetch("id")
+      logs_url = @heroku.dyno.create(@name, command: command, env: env, attach: true).fetch("attach_url")
 
-      sleep(COMMAND_CHECK_DELAY) while @heroku.dyno.list(@name).find { |dyno| dyno.fetch("id") == dyno_id }
+      begin
+        rendezvous_client = Rendezvous.new(input: StringIO.new, output: StringIO.new, url: logs_url, activity_timeout: 15.minutes.to_i)
+        rendezvous_client.start
+        rendezvous_client.output.rewind
+        "Log for '#{command}':\n#{rendezvous_client.output.read}"
+      rescue StandardError
+        "Error capturing output for command '#{command}'"
+      end
     end
 
     def safely(&block)
       block.call
       ReturnValue.ok
+    rescue Excon::Error::UnprocessableEntity, Excon::Error::NotFound => error
+      ReturnValue.error(errors: error.response.data[:body])
+    end
+
+    def safely_with_log(&block)
+      ReturnValue.ok(block.call)
     rescue Excon::Error::UnprocessableEntity, Excon::Error::NotFound => error
       ReturnValue.error(errors: error.response.data[:body])
     end
