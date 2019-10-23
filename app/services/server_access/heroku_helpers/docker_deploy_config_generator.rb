@@ -3,8 +3,9 @@
 module ServerAccess
   module HerokuHelpers
     class DockerDeployConfigGenerator
-      def initialize(web_processes, project_integration_id, private_gem_detected)
-        @web_processes = web_processes
+      def initialize(configuration, project_integration_id, private_gem_detected)
+        @web_processes = configuration.web_processes
+        @build_env_variables = configuration.build_configuration.env_variables
         @private_gem_detected = private_gem_detected
         @project_integration_id = project_integration_id
       end
@@ -22,7 +23,7 @@ module ServerAccess
         {
           build: {
             docker: { web: "Dockerfile" },
-            config: config
+            config: @build_env_variables.merge(config)
           },
           run: {}
         }

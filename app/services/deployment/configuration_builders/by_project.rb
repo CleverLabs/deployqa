@@ -68,6 +68,7 @@ module Deployment
       def build_build_configuration(repository)
         Deployment::BuildConfiguration.new(
           build_type: repository.build_type,
+          env_variables: repository.build_env_variables,
           private_gem_detected: @project.repositories.any? { |configuration| configuration.build_type == RepositoryConstants::PRIVATE_GEM }
         )
       end

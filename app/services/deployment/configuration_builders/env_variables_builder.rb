@@ -10,7 +10,7 @@ module Deployment
       end
 
       def call
-        @repository.env_variables.merge(
+        @repository.runtime_env_variables.merge(
           s3_variables,
           application_variables
         )

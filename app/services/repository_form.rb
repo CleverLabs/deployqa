@@ -4,7 +4,8 @@ class RepositoryForm
   include ShallowAttributes
 
   attribute :path, String
-  attribute :env_variables, Hash
+  attribute :runtime_env_variables, Hash
+  attribute :build_env_variables, Hash
   attribute :name, String, default: ->(form, _attribute) { form.path.present? && form.path.split(":").last.gsub(/\.git$/, "") }
   attribute :status, String, default: RepositoryConstants::ACTIVE
   attribute :integration_type, String, default: ProjectsConstants::Providers::VIA_SSH
@@ -14,9 +15,14 @@ class RepositoryForm
   attribute :web_processes_attributes, Array, of: Hash
   attribute :build_type, String
 
-  alias _env_variables= env_variables=
-  def env_variables=(value)
-    self._env_variables = Hash[value.split("\n").map { |line| line.tr("\r", "").split(": ") }]
+  alias _runtime_env_variables= runtime_env_variables=
+  def runtime_env_variables=(value)
+    self._runtime_env_variables = Hash[value.split("\n").map { |line| line.tr("\r", "").split(": ") }]
+  end
+
+  alias _build_env_variables= build_env_variables=
+  def build_env_variables=(value)
+    self._build_env_variables = Hash[value.split("\n").map { |line| line.tr("\r", "").split(": ") }]
   end
 
   def web_processes_attributes=(params)
