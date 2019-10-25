@@ -13,6 +13,7 @@ class RepositoryForm
   attribute :project, Project
   attribute :addon_ids, Array, of: Integer
   attribute :web_processes_attributes, Array, of: Hash
+  attribute :heroku_buildpacks, Array, of: String
   attribute :build_type, String
 
   alias _runtime_env_variables= runtime_env_variables=
@@ -23,6 +24,11 @@ class RepositoryForm
   alias _build_env_variables= build_env_variables=
   def build_env_variables=(value)
     self._build_env_variables = Hash[value.split("\n").map { |line| line.tr("\r", "").split(": ") }]
+  end
+
+  alias _heroku_buildpacks= heroku_buildpacks=
+  def heroku_buildpacks=(value)
+    self._heroku_buildpacks = value.split(" ")
   end
 
   def web_processes_attributes=(params)

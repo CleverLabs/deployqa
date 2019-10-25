@@ -5,6 +5,7 @@ en:
       build_heroku_addons: "Build heroku addons"
       build_s3_addon: "Build S3 bucket"
       update_env_variables: "Update env variables"
+      push_buildpacks: "Set heroku buildpacks"
       setup_db: "Setup database"
       setup_processes: "Setup processes"
       restart_server: "Restart server"

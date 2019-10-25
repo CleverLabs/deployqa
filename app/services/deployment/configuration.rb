@@ -12,6 +12,7 @@ module Deployment
     attribute :web_processes, Array, of: Deployment::WebProcess
     attribute :repo_configuration, Deployment::RepoConfiguration
     attribute :build_configuration, Deployment::BuildConfiguration
+    attribute :heroku_buildpacks, Array, of: String
 
     def to_project_instance_configuration
       to_h.slice(:application_name, :repository_id, :application_url, :env_variables, :web_processes, :addons, :build_configuration)

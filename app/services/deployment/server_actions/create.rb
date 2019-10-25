@@ -20,6 +20,7 @@ module Deployment
 
       def deploy_configuration(configuration, state)
         state = create_server(configuration, state)
+        state = push_buildpacks(configuration, state)
         state = push_code_to_server(configuration, state)
         create_infrastructure(configuration.application_name, configuration.web_processes, state)
       end
@@ -39,6 +40,13 @@ module Deployment
           .add_state(:setup_db) { server.setup_db }
           .add_state(:setup_processes) { server.setup_processes(web_processes) }
           .add_state(:restart_server) { server.restart }
+      end
+
+      def push_buildpacks(configuration, state)
+        return state unless configuration.heroku_buildpacks.present?
+
+        server = ServerAccess::Heroku.new(name: configuration.application_name)
+        state.add_state(:push_buildpacks) { server.push_buildpacks(configuration.heroku_buildpacks) }
       end
 
       def push_code_to_server(configuration, state)

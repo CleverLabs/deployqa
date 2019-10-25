@@ -21,6 +21,7 @@ module Deployment
           application_name: name,
           env_variables: build_env_variables(repository, name, active_repositories),
           repository_id: repository.id,
+          heroku_buildpacks: repository.heroku_buildpacks,
           application_url: heroku_url(name)
         }.merge(build_dependencies(repository, branches))
       end

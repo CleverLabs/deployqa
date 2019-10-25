@@ -22,6 +22,13 @@ module ServerAccess
       end
     end
 
+    def push_buildpacks(buildpacks)
+      updates = buildpacks.map { |buildpack| { buildpack: buildpack } }
+      safely do
+        @heroku.buildpack_installation.update(@name, updates: updates)
+      end
+    end
+
     def build_addons(addons)
       safely do
         addons.each do |addon|
@@ -49,11 +56,11 @@ module ServerAccess
     end
 
     def migrate_db
-      safely_with_log { execute_command("RAILS_ENV=production rails db:migrate", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1, "SAFETY_ASSURED" => 1) }
+      safely_with_log { execute_command("RAILS_ENV=production bundle exec rails db:migrate", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1) }
     end
 
     def setup_db
-      safely_with_log { execute_command("rails db:schema:load", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1, "SAFETY_ASSURED" => 1) }
+      safely_with_log { execute_command("bundle exec rails db:schema:load", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1, "SAFETY_ASSURED" => 1) }
     end
 
     def setup_processes(web_processes)
