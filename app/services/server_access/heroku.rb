@@ -56,15 +56,15 @@ module ServerAccess
     end
 
     def migrate_db
-      safely_with_log { execute_command("RAILS_ENV=production bundle exec rails db:migrate", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1) }
+      safely_with_result { execute_command("RAILS_ENV=production bundle exec rails db:migrate", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1) }
     end
 
     def setup_db
-      safely_with_log { execute_command("bundle exec rails db:schema:load", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1, "SAFETY_ASSURED" => 1) }
+      safely_with_result { execute_command("bundle exec rails db:schema:load", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1, "SAFETY_ASSURED" => 1) }
     end
 
     def run_command(command)
-      safely_with_log { execute_command(command, "SAFETY_ASSURED" => 1) }
+      safely_with_result { execute_command(command, "SAFETY_ASSURED" => 1) }
     end
 
     def setup_processes(web_processes)
@@ -78,6 +78,10 @@ module ServerAccess
         end
         @heroku.formation.batch_update(@name, updates: formations)
       end
+    end
+
+    def app_env_variables
+      safely_with_result { @heroku.config_var.info_for_app(@name) }
     end
 
     private
@@ -102,7 +106,7 @@ module ServerAccess
       ReturnValue.error(errors: error.response.data[:body])
     end
 
-    def safely_with_log(&block)
+    def safely_with_result(&block)
       ReturnValue.ok(block.call)
     rescue Excon::Error::UnprocessableEntity, Excon::Error::NotFound => error
       ReturnValue.error(errors: error.response.data[:body])

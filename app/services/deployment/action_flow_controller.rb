@@ -30,10 +30,11 @@ module Deployment
       self
     end
 
-    def finalize
+    def finalize(configurations = nil)
       if last_state.status.ok?
         @logger.info(I18n.t("build_actions.log.success"), context: context_name)
         @instance_events.create_event(@deployment_statuses.fetch(:success))
+        @project_instance.update(configurations: configurations) if configurations
       else
         @instance_events.create_event(@deployment_statuses.fetch(:failure))
       end

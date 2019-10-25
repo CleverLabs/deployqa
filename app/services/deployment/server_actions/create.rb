@@ -13,7 +13,8 @@ module Deployment
           @state_machine.context = configuration
           deploy_configuration(configuration, state)
         end
-        @state_machine.finalize
+
+        @state_machine.finalize(configurations_with_credentials)
       end
 
       private
@@ -63,6 +64,26 @@ module Deployment
         configuration.env_variables.merge(
           "BUNDLE_GITHUB__COM" => ::ProviderAPI::Github::AppClient.new(repo_configuration.project_integration_id).token_for_gem_bundle
         )
+      end
+
+      def configurations_with_credentials
+        configurations_with_credentials = nil
+
+        @state_machine.add_state(:fetch_addons_credentials) do
+          configurations_with_credentials = add_credentials_to_configurations
+          ReturnValue.ok
+        end
+
+        configurations_with_credentials
+      end
+
+      def add_credentials_to_configurations
+        @configurations.map do |configuration|
+          server = ServerAccess::Heroku.new(name: configuration.application_name)
+          addons_with_credentials = ::Deployment::Helpers::AddonsCredentialsParser.new(server, configuration.addons).call
+          configuration.addons = addons_with_credentials.map(&:attributes)
+          configuration.to_project_instance_configuration
+        end
       end
     end
   end

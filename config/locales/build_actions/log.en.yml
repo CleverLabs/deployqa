@@ -19,4 +19,5 @@ en:
       run_seeds: "Run seeds"
       destroy_addons: "Destroy addons"
       destroy_server: "Destroy server"
+      fetch_addons_credentials: "Fetch addons credentials"
       success: "Success!"

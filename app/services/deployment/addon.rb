@@ -6,5 +6,7 @@ module Deployment
 
     attribute :name, String
     attribute :integration_provider, String
+    attribute :credentials_names, Array, of: String
+    attribute :credentials, Hash
   end
 end

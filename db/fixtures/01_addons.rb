@@ -3,16 +3,19 @@
 Addon.seed(:name) do |seed|
   seed.name = "PostgreSQL"
   seed.integration_provider = AddonConstants::IntegrationProviders::HEROKU
+  seed.credentials_names = %W(DATABASE_URL)
 end
 
 Addon.seed(:name) do |seed|
   seed.name = "ClearDB (MySQL)"
   seed.integration_provider = AddonConstants::IntegrationProviders::HEROKU
+  seed.credentials_names = %W(DATABASE_URL)
 end
 
 Addon.seed(:name) do |seed|
   seed.name = "Redis"
   seed.integration_provider = AddonConstants::IntegrationProviders::HEROKU
+  seed.credentials_names = %W(REDIS_URL)
 end
 
 Addon.seed(:name) do |seed|

@@ -21,7 +21,9 @@
         = link_to "Pull request", pull_request_url, target: :_blank
 
   .mt-4
-    .application-links.mt-5.row
+    .addons
+      = link_to "Addons", project_project_instance_addons_path(@project, @project_instance)
+    .row.mt-3.application-links
       - @project_instance.configurations.each do |configuration|
         .col-6
           h5 = configuration.repo_path
