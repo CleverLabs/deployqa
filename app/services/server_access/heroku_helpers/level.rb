@@ -18,7 +18,7 @@ module ServerAccess
       end
 
       def dyno_type
-        @development ? "Free" : "standard-1X"
+        @development ? "Free" : "Hobby"
       end
     end
   end
