@@ -28,7 +28,7 @@ class ActionStateMachine
   private
 
   def create_state(state_name, status, errors, on_error_callback, backtrace: nil)
-    on_error_callback.call(errors, backtrace.join("\n")) if status.error?
+    on_error_callback.call(errors, Array(backtrace).join("\n")) if status.error?
     @states << State.new(state_name, status, context)
     self
   end

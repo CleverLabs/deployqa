@@ -26,6 +26,7 @@ module Deployment
         configuration.attributes.slice("application_name", "application_url", "env_variables", "web_processes", "addons", "build_configuration").merge(
           repository_id: repository.id,
           heroku_buildpacks: repository.heroku_buildpacks,
+          migration_command: repository.migration_command,
           repo_configuration: build_repo_configuration_by_project_instance(configuration, @project_instance.project)
         ).symbolize_keys
       end

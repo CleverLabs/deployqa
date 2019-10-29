@@ -63,6 +63,10 @@ module ServerAccess
       safely_with_log { execute_command("bundle exec rails db:schema:load", "DISABLE_DATABASE_ENVIRONMENT_CHECK" => 1, "SAFETY_ASSURED" => 1) }
     end
 
+    def run_command(command)
+      safely_with_log { execute_command(command, "SAFETY_ASSURED" => 1) }
+    end
+
     def setup_processes(web_processes)
       safely do
         formations = web_processes.map do |web_process|

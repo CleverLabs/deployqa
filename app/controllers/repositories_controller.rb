@@ -43,7 +43,9 @@ class RepositoriesController < ApplicationController
   end
 
   def repository_params
-    params.require(:repository).permit(:path, :heroku_buildpacks, :runtime_env_variables, :build_env_variables, :build_type, addon_ids: [], web_processes_attributes: %i[id name command])
+    params.require(:repository).permit(
+      :path, :heroku_buildpacks, :runtime_env_variables, :build_env_variables, :build_type, :migration_command, addon_ids: [], web_processes_attributes: %i[id name command]
+    )
   end
 
   def update_repo
@@ -51,7 +53,7 @@ class RepositoriesController < ApplicationController
     if @project.integration_type == ProjectsConstants::Providers::VIA_SSH
       @repository.update(form.attributes)
     else
-      @repository.update(form.attributes.slice(:runtime_env_variables, :build_env_variables, :addon_ids, :web_processes_attributes, :build_type, :heroku_buildpacks, :status))
+      @repository.update(form.attributes.slice(:runtime_env_variables, :build_env_variables, :addon_ids, :web_processes_attributes, :build_type, :heroku_buildpacks, :status, :migration_command))
     end
   end
 end
