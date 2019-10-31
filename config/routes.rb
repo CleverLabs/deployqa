@@ -16,7 +16,6 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => "/sidekiq"
   end
 
-  resources :home, only: %i[index]
   resource :sessions, only: %i[show create destroy]
 
   namespace :webhooks do
