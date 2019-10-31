@@ -6,6 +6,8 @@
       },
       class: "mt-4" }
 
+  - if flash.notice
+    .alert.alert-info = flash.notice
   h1.mt-4
     = @project.name
     = " "
@@ -80,9 +82,9 @@
         button.close aria-label="Close" data-dismiss="modal" type="button"
           span aria-hidden="true" &times;
       .modal-body
-        = simple_form_for @project.project_user_roles.build, url: project_project_user_roles_path(@project) do |form|
-          = form.input :user_id, collection: User.where.not(id: @project.project_user_roles.map(&:user_id)).pluck(:full_name, :id)
-          = form.input :role, selected: ProjectUserRoleConstants::REGULAR_USER
+        = simple_form_for :project_user_role, url: project_project_user_roles_path(@project) do |form|
+          = form.input :email
+          = form.input :role, collection: humanized_constants(ProjectUserRoleConstants::ROLES), selected: ProjectUserRoleConstants::REGULAR_USER
           = form.button :submit, "Add user", class: "btn btn-primary btn-block"
       .modal-footer
         button.btn.alert-dark data-dismiss="modal" type="button" Cancel
