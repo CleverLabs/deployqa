@@ -3,6 +3,8 @@
 module ServerAccess
   class Heroku
     COMMAND_CHECK_DELAY = 7
+    MAX_NUMBER_OF_TRIES = 3
+    TIME_TO_SLEEP_BEFORE_RETRY = 3
 
     def initialize(name:)
       @heroku = PlatformAPI.connect_oauth(ENV["HEROKU_API_KEY"], cache: Moneta.new(:Null))
@@ -100,9 +102,14 @@ module ServerAccess
     end
 
     def safely(&block)
+      number_of_tries ||= 0
       block.call
       ReturnValue.ok
     rescue Excon::Error::UnprocessableEntity, Excon::Error::NotFound => error
+      if (number_of_tries += 1) < MAX_NUMBER_OF_TRIES
+        sleep TIME_TO_SLEEP_BEFORE_RETRY
+        retry
+      end
       ReturnValue.error(errors: error.response.data[:body])
     end
 
