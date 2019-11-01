@@ -28,7 +28,7 @@ class ReturnValue
   end
 
   def errors=(value)
-    @errors = value.is_a?(::Hash) ? value : Array(value)
+    @errors = value.is_a?(Array) ? value : [value]
     @attributes[:errors] = @errors
   end
 

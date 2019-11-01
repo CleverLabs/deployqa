@@ -5,6 +5,7 @@ module ServerAccess
     COMMAND_CHECK_DELAY = 7
     MAX_NUMBER_OF_TRIES = 3
     TIME_TO_SLEEP_BEFORE_RETRY = 3
+    SUCCESS_EXIT_CODE = 0
 
     def initialize(name:)
       @heroku = PlatformAPI.connect_oauth(ENV["HEROKU_API_KEY"], cache: Moneta.new(:Null))
@@ -89,34 +90,51 @@ module ServerAccess
     private
 
     def execute_command(command, env)
-      logs_url = @heroku.dyno.create(@name, command: command, env: env, attach: true).fetch("attach_url")
+      logs_url = @heroku.dyno.create(@name, command: "#{command}; echo $?", env: env, attach: true).fetch("attach_url")
 
-      begin
-        rendezvous_client = Rendezvous.new(input: StringIO.new, output: StringIO.new, url: logs_url, activity_timeout: 15.minutes.to_i)
-        rendezvous_client.start
-        rendezvous_client.output.rewind
-        "Log for '#{command}':\n#{rendezvous_client.output.read}"
-      rescue StandardError
-        "Error capturing output for command '#{command}'"
-      end
+      log_string, exit_code = dyno_log_and_exit_code(command, logs_url)
+
+      raise ::Heroku::OneOffDynoError, log_string unless exit_code == SUCCESS_EXIT_CODE
+
+      log_string
+    end
+
+    def dyno_log_and_exit_code(command, logs_url)
+      rendezvous_client = Rendezvous.new(input: StringIO.new, output: StringIO.new, url: logs_url, activity_timeout: 15.minutes.to_i)
+      rendezvous_client.start
+      rendezvous_client.output.rewind
+      logs = rendezvous_client.output.read.strip
+      ["Log for '#{command}':\n#{logs.chop}", logs[-1].to_i]
+    rescue StandardError
+      ["Error capturing output for command '#{command}'", 1]
     end
 
     def safely(&block)
+      result = safe_call(&block)
+      return ReturnValue.ok if result.ok?
+      result
+    end
+
+    def safely_with_result(&block)
+      safe_call(&block)
+    end
+
+    def safe_call(&block)
       number_of_tries ||= 0
-      block.call
-      ReturnValue.ok
+      result = block.call
+
+      return ReturnValue.ok(Hash[(0...result.size).zip result]) if result.is_a?(Array)
+
+      ReturnValue.ok(result) # Think how to handle non-objects
     rescue Excon::Error::UnprocessableEntity, Excon::Error::NotFound => error
       if (number_of_tries += 1) < MAX_NUMBER_OF_TRIES
         sleep TIME_TO_SLEEP_BEFORE_RETRY
         retry
       end
-      ReturnValue.error(errors: error.response.data[:body])
-    end
 
-    def safely_with_result(&block)
-      ReturnValue.ok(block.call)
-    rescue Excon::Error::UnprocessableEntity, Excon::Error::NotFound => error
       ReturnValue.error(errors: error.response.data[:body])
+    rescue ::Heroku::OneOffDynoError => error
+      ReturnValue.error(errors: error.message)
     end
   end
 end

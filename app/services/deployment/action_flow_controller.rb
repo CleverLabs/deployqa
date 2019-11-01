@@ -24,7 +24,7 @@ module Deployment
         state_name,
         before: -> { @logger.info(I18n.t("build_actions.log.#{state_name}"), context: context_name) },
         on_log: ->(message) { @logger.info(message, context: context_name) },
-        on_error: ->(errors, backtrace) { @logger.error(errors.to_s, context: context_name, error_backtrace: backtrace) },
+        on_error: ->(errors, backtrace) { @logger.error(errors.join("\n"), context: context_name, error_backtrace: backtrace) },
         &block
       )
       self
