@@ -19,8 +19,7 @@
       - else
         - @addons_per_app.each do |app_name, addons|
           .row.border-bottom
-            .col-12.col-md-3
-              = app_name
+            code.col-12.col-md-3 = app_name
             .col-12.col-md-9
               - addons.each do |addon|
                 .row
@@ -28,5 +27,4 @@
                     = addon["name"]
                   .col-12.col-md-9.text-break
                     - addon["credentials"].each do |key, value|
-                      div
-                        = "#{key}: #{value}"
+                      code.text-info = "#{key}: #{value}"

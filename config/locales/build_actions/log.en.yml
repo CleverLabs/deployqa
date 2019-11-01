@@ -20,4 +20,4 @@ en:
       destroy_addons: "Destroy addons"
       destroy_server: "Destroy server"
       fetch_addons_credentials: "Fetch addons credentials"
-      success: "Success!"
+      success: "Success! Action time: %{time}"

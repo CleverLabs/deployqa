@@ -12,10 +12,12 @@ module Deployment
       @logger = Deployment::BuildActionLogger.new(build_action)
       @deployment_statuses = deployment_statuses
       @instance_events = ProjectInstanceEvents.new(@project_instance)
+      @start_time = nil
     end
 
     def start
       @instance_events.create_event(@deployment_statuses.fetch(:running))
+      @start_time = Time.current
       self
     end
 
@@ -32,7 +34,7 @@ module Deployment
 
     def finalize(configurations = nil)
       if last_state.status.ok?
-        @logger.info(I18n.t("build_actions.log.success"), context: context_name)
+        @logger.info(I18n.t("build_actions.log.success", time: time_since_start), context: context_name)
         @instance_events.create_event(@deployment_statuses.fetch(:success))
         @project_instance.update(configurations: configurations) if configurations
       else
@@ -50,6 +52,10 @@ module Deployment
       return "Global" unless context
 
       context.application_name
+    end
+
+    def time_since_start
+      Time.at((Time.now - @start_time).to_i).utc.strftime("%H:%M:%S")
     end
   end
 end
