@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "sidekiq/web"
-require "routes/logged_user_constrait"
+require "routes/logged_user_constraint"
 
 Rails.application.routes.draw do
   default_url_options host: ENV["HOST_NAME"], protocol: "https"
@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   get "/auth/:provider/callback", to: "sessions#create"
   get "/auth/:provider", to: "sessions#show", as: "omniauth"
 
-  constraints Routes::LoggedUserConstrait.new(SidekiqPolicy) do
+  constraints Routes::LoggedUserConstraint.new(SidekiqPolicy) do
     mount Sidekiq::Web => "/sidekiq"
   end
 

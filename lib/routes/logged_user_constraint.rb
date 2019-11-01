@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Routes
-  class LoggedUserConstrait
+  class LoggedUserConstraint
     def initialize(policy_class)
       @policy_class = policy_class
     end
