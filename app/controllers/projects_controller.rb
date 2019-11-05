@@ -45,7 +45,7 @@ class ProjectsController < ApplicationController
     statuses = ProjectInstanceConstants::ACTIVE_INSTANCES.map { |status| ProjectInstance.deployment_statuses[status] }.join(", ")
 
     Project
-      .select("projects.*, COUNT(project_instances) as builds")
+      .select("projects.*, COUNT(project_instances) as active_instances")
       .joins("LEFT JOIN project_instances ON project_instances.project_id = projects.id AND project_instances.deployment_status in (#{statuses})")
       .joins(:project_user_roles)
       .where(project_user_roles: { user_id: current_user.id })

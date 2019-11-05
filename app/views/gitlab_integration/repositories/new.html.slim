@@ -2,9 +2,8 @@
   = render partial: "shared/breadcrumb", locals: {\
       text_link_hash: {\
         "Projects" => projects_path,
-          @page.project.name => project_path(@page.project),
-          "Configurations" => project_path(@page.project),
-          "Create" => nil\
+        "\"#{@project.name}\" configuration" => project_path(@project),
+        "New repository" => nil\
       },
           class: "mt-4" }
 

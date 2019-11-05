@@ -2,8 +2,7 @@
   = render partial: "shared/breadcrumb", locals: {\
       text_link_hash: {\
         "Projects" => projects_path,
-        @project.name => project_path(@project),
-        "Builds" => project_project_instances_path(@project),
+        @project.name => project_project_instances_path(@project),
         @project_instance.name => project_project_instance_path(@project, @project_instance),
         "Dumps" => nil\
       },

@@ -2,14 +2,13 @@
   = render partial: "shared/breadcrumb", locals: {\
       text_link_hash: {\
         "Projects" => projects_path,
-        @project.name => project_path(@project),
-        "Builds" => nil\
+        @project.name => project_project_instances_path(@project)\
       },
       class: "mt-4" }
 
   h1.mt-4 = @project.name
   .d-flex.justify-content-between
-    h3 Builds
+    h3 Instances
     .d-flex.align-items-center.mt-2
       = link_to "Create", new_project_project_instance_path(@project), class: "btn btn-primary"
 

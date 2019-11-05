@@ -2,13 +2,12 @@
   = render partial: "shared/breadcrumb", locals: {\
       text_link_hash: {\
         "Projects" => projects_path,
-        @project.name => project_path(@project),
-        "Builds" => project_project_instances_path(@project),
+        @project.name => project_project_instances_path(@project),
         "Create" => nil\
       },
       class: "mt-4" }
 
-  h1.mt-4 New build
+  h1.mt-4 New instance
   .mt-4
     = simple_form_for @project_instance, url: project_project_instances_path, class: "row" do |form|
       - if @project_instance.errors.any?

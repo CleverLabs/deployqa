@@ -15,7 +15,7 @@
         tr
           th.by-content
           th Name
-          th.by-content Active Builds
+          th.by-content Active Instances
           th.by-content Configure
       tbody
         - if @installing_project
@@ -35,7 +35,7 @@
                 = project.name
             td.text-center
               = link_to project_project_instances_path(project) do
-                = project.builds
+                = project.active_instances
             td.text-center
               - if ProjectPolicy.new(current_user, project).edit?
                 = link_to project_path(project) do

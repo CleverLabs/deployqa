@@ -28,4 +28,8 @@ class ProjectInstancePolicy < ApplicationPolicy
   def deploy_by_link?
     record.deployment_status == ProjectInstanceConstants::EMPTY_RECORD_FOR_PR
   end
+
+  def show_heroku_link?
+    user.system_role == UserConstants::SystemRoles::ADMIN
+  end
 end

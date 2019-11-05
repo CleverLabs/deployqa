@@ -2,8 +2,7 @@
   = render partial: "shared/breadcrumb", locals: {\
       text_link_hash: {\
         "Projects" => projects_path,
-        @project.name => project_path(@project),
-        "Builds" => project_project_instances_path(@project),
+        @project.name => project_project_instances_path(@project),
         @project_instance.name => nil\
       },
       class: "mt-4" }
@@ -31,6 +30,9 @@
           p.mb-0
             = "Link: "
             = link_to configuration.application_name, configuration.application_url, target: "_blank", rel: "noopener noreferrer"
+          - if @project_instance_policy.show_heroku_link?
+            p.mb-0
+              = link_to "Heroku configuration link", "https://dashboard.heroku.com/apps/#{configuration.application_name}", target: :_blank
 
     .d-flex.justify-content-between.mt-5
 
@@ -38,9 +40,9 @@
         - if @project_instance_policy.redeploy?
           = link_to "Redeploy", project_project_instance_redeploy_path(@project, @project_instance), method: :post, class: "btn btn-outline-primary"
         = link_to "Reload", project_project_instance_reload_path(@project, @project_instance), method: :post, class: "btn btn-outline-primary #{'disabled' unless @project_instance_policy.reload?}"
-        = link_to "Update", project_project_instance_update_path(@project, @project_instance), method: :post, class: "btn btn-outline-primary #{'disabled' unless @project_instance_policy.update_server?}"
+        = link_to "Update code", project_project_instance_update_path(@project, @project_instance), method: :post, class: "btn btn-outline-primary #{'disabled' unless @project_instance_policy.update_server?}"
         = link_to "Dumps", project_project_instance_database_dumps_path(@project, @project_instance), class: "btn btn-outline-secondary #{'disabled' unless @project_instance_policy.dumps?}"
-        = link_to "Edit env keys", edit_project_project_instance_configuration_path(@project, @project_instance), class: "btn btn-outline-secondary #{'disabled' unless @project_instance_policy.edit?}"
+        = link_to "Edit ENV keys", edit_project_project_instance_configuration_path(@project, @project_instance), class: "btn btn-outline-secondary #{'disabled' unless @project_instance_policy.edit?}"
         = link_to "Addons", project_project_instance_addons_path(@project, @project_instance), class: "btn btn-outline-secondary #{'disabled' unless @project_instance_policy.dumps?}"
       = link_to "Terminate", project_project_instance_path(@project, @project_instance), method: :delete, class: "btn btn-outline-danger #{'disabled' unless @project_instance_policy.terminate?}"
 
