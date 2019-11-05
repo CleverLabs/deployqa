@@ -14,6 +14,6 @@
     = simple_form_for @project_instance, url: project_project_instance_configuration_path(@project, @project_instance) do |form|
       - @project_instance.configurations.each do |configuration|
         = form.simple_fields_for :configurations do |configurations_form|
-          = configurations_form.input configuration.application_name, as: :text, input_html: { value: configuration.env_variables.map { |key, value| "#{key}: #{value}" }.join("\n"), rows: 8 }
+          = configurations_form.input configuration.application_name, as: :text, input_html: { value: configuration.env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 8 }
 
       = form.button :submit, "Update and reload instance", class: "btn btn-primary"

@@ -36,7 +36,7 @@ module ProjectInstances
     def update_project_instance
       configurations_params.each do |application_name, env_variables|
         configuration = @project_instance.configurations.find { |configuration_to_find| configuration_to_find.application_name == application_name }
-        configuration.env_variables = Hash[env_variables.split("\n").map { |line| line.tr("\r", "").split(": ") }]
+        configuration.env_variables = Hash[env_variables.split("\n").map { |line| line.tr("\r", "").split("=") }]
       end
 
       @project_instance.save

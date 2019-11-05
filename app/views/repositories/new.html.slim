@@ -17,9 +17,9 @@
       = form.input :build_type, collection: RepositoryConstants::BUILD_TYPES, label: "Build type", include_hidden: false
       .row
         .col-6
-          = form.input :runtime_env_variables, input_html: { value: @repository.runtime_env_variables.map {|key, value| "#{key}: #{value}"}.join("\n"), placeholder: "KEY: value\nANOTHER_KEY: value" }
+          = form.input :runtime_env_variables, input_html: { value: @repository.runtime_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
         .col-6
-          = form.input :build_env_variables, input_html: { value: @repository.build_env_variables.map {|key, value| "#{key}: #{value}"}.join("\n"), placeholder: "KEY: value\nANOTHER_KEY: value" }
+          = form.input :build_env_variables, input_html: { value: @repository.build_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
       .form-group.deployment_configuration_private_key
         label for="deployment_configuration_private_key" Add this SSH key to your repository
         #deployment_configuration_private_key.card.text-white.bg-info.mb-3

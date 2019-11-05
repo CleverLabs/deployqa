@@ -56,6 +56,7 @@ module Deployment
       end
 
       def env_variables(configuration)
+        Deployment::Helpers::EnvAliasing.new(configuration).modify!
         repo_configuration = configuration.repo_configuration
         return configuration.env_variables if !configuration.build_configuration.private_gem_detected || configuration.docker?
 

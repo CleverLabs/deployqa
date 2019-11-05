@@ -19,12 +19,12 @@ class RepositoryForm
 
   alias _runtime_env_variables= runtime_env_variables=
   def runtime_env_variables=(value)
-    self._runtime_env_variables = Hash[value.split("\n").map { |line| line.tr("\r", "").split(": ") }]
+    self._runtime_env_variables = Hash[value.split("\n").map { |line| line.tr("\r", "").split("=") }]
   end
 
   alias _build_env_variables= build_env_variables=
   def build_env_variables=(value)
-    self._build_env_variables = Hash[value.split("\n").map { |line| line.tr("\r", "").split(": ") }]
+    self._build_env_variables = Hash[value.split("\n").map { |line| line.tr("\r", "").split("=") }]
   end
 
   alias _heroku_buildpacks= heroku_buildpacks=

@@ -16,9 +16,9 @@
       = f.input :build_type, collection: RepositoryConstants::BUILD_TYPES, label: "Build type", include_hidden: false
       .row
         .col-6
-          = f.input :runtime_env_variables, input_html: { value: @repository.runtime_env_variables.map {|key, value| "#{key}: #{value}"}.join("\n"), placeholder: "KEY: value\nANOTHER_KEY: value" }
+          = f.input :runtime_env_variables, input_html: { value: @repository.runtime_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
         .col-6
-          = f.input :build_env_variables, input_html: { value: @repository.build_env_variables.map {|key, value| "#{key}: #{value}"}.join("\n"), placeholder: "KEY: value\nANOTHER_KEY: value" }
+          = f.input :build_env_variables, input_html: { value: @repository.build_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
 
       h4.mt-5 Processes
       .row
