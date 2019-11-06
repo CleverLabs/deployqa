@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class ProjectPolicy < ApplicationPolicy
+  def create?
+    user.system_role != UserConstants::SystemRoles::GUEST
+  end
+
   def edit?
     project_admin?
   end

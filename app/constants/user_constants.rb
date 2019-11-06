@@ -3,6 +3,7 @@
 module UserConstants
   module SystemRoles
     ALL = [
+      GUEST = "guest",
       USER = "user",
       ADMIN = "admin"
     ].freeze

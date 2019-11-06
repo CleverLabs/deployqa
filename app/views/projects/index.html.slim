@@ -5,10 +5,16 @@
       },
       class: "mt-4" }
 
+  - unless ProjectPolicy.new(current_user, :project).create?
+    .alert.alert-warning
+      | DeployQA is now in Beta. If you want to create a new project please contact us at &nbsp;
+      a [href="mailto:contact@cleverlabs.io"] contact@cleverlabs.io
+
   .d-flex.justify-content-between.mt-4
     h1 Projects
-    .d-flex.align-items-center
-      button.btn.btn-primary type="button" data-toggle="modal" data-target="#createNewProjectModal" Create new Project
+    .d-flex.flex-column.align-items-center
+      button.btn.btn-primary type="button" data-toggle="modal" data-target="#createNewProjectModal" disabled=(ProjectPolicy.new(current_user, :project).create? ? nil : true)
+        | Create new Project
   .mt-4
     table.table.table-hover.table-clickable
       thead

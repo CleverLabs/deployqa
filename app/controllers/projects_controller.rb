@@ -7,6 +7,8 @@ class ProjectsController < ApplicationController
   end
 
   def new
+    authorize :project, :create?, policy_class: ProjectPolicy
+
     @provider = find_provider
     @project = Project.new
   end
@@ -19,6 +21,8 @@ class ProjectsController < ApplicationController
   end
 
   def create
+    authorize :project, :create?, policy_class: ProjectPolicy
+
     result = SshIntegration::ProjectCreator.new(project_params, current_user).call
     @project = result.object
 
