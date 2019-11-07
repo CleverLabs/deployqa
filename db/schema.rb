@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_30_155523) do
+ActiveRecord::Schema.define(version: 2019_11_08_094956) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,7 +29,10 @@ ActiveRecord::Schema.define(version: 2019_10_30_155523) do
     t.jsonb "data", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_auth_infos_on_user_id", unique: true
+    t.integer "provider", null: false
+    t.string "token", null: false
+    t.string "uid", null: false
+    t.index ["user_id", "provider"], name: "index_auth_infos_on_user_id_and_provider", unique: true
   end
 
   create_table "build_action_logs", force: :cascade do |t|
@@ -142,11 +145,9 @@ ActiveRecord::Schema.define(version: 2019_10_30_155523) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "auth_provider", null: false
-    t.string "auth_uid", null: false
     t.string "full_name"
-    t.string "token"
     t.integer "system_role", default: 0, null: false
+    t.string "email", null: false
   end
 
   create_table "versions", force: :cascade do |t|

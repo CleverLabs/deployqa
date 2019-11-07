@@ -19,8 +19,7 @@ class SessionsController < ApplicationController
   protected
 
   def user_from_omniauth
-    provider_user = ::Omniauth::UserFactory.provider_user(params[:provider], auth_hash)
-    provider_user.identify
+    ::Omniauth::UserCreator.new(::Omniauth::AuthInfoPresenter.new(auth_hash)).identify
   end
 
   def auth_hash

@@ -6,4 +6,6 @@ module OmniauthConstants
     GITLAB = "gitlab",
     SLACK = "slack"
   ].freeze
+
+  LOGIN_PROVIDERS = [GITHUB, GITLAB].freeze
 end

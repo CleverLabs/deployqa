@@ -25,6 +25,6 @@ class DeployKeysWorkflow
   end
 
   def client
-    @_client ||= Octokit::Client.new(access_token: @user.token)
+    @_client ||= Octokit::Client.new(access_token: @user.gitlab_auth_info.token)
   end
 end
