@@ -41,7 +41,8 @@ module ProviderAPI
 
       def add_webhook_to_repo(repository)
         gitlab_client.add_project_hook(repository.integration_id,
-                                       Rails.application.routes.url_helpers.webhooks_gitlab_integrations_url,
+                                       "https://2645c10d.ngrok.io/webhooks/gitlab_integrations", # ToDo delete this
+                                       # Rails.application.routes.url_helpers.webhooks_gitlab_integrations_url,
                                        push_events: false,
                                        merge_requests_events: true,
                                        token: repository_webhook_token(repository.integration_id))

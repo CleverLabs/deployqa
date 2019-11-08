@@ -9,7 +9,7 @@ class ProjectUserRolesController < ApplicationController
 
   def create
     project = find_project
-    user = find_user(project)
+    user = User.find_by(email: params[:project_user_role][:email])
 
     unless user
       flash.notice = "User not found"
@@ -24,13 +24,6 @@ class ProjectUserRolesController < ApplicationController
 
   def find_project
     authorize Project.find(params[:project_id]), :edit?, policy_class: ProjectPolicy
-  end
-
-  def find_user(project)
-    User
-      .joins(:auth_info)
-      .where(auth_provider: project.integration_type) # TODO: remove when we will merge users with different providers
-      .find_by("auth_infos.data->>'email' = ?", params[:project_user_role][:email])
   end
 
   def project_user_role_params

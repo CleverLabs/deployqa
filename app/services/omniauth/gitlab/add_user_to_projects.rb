@@ -7,9 +7,7 @@ module Omniauth
         @user = user
       end
 
-      def call
-
-      end
+      def call; end
     end
   end
 end

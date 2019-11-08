@@ -19,7 +19,7 @@ module Omniauth
 
       def user_installations_ids
         installations_hash = ::ProviderAPI::Github::UserClient.new(@user.github_auth_info.token).find_user_installations.to_h
-        Github::Events::UserInstallations.new(payload: installations_hash).installations.map(&:id)
+        ::Github::Events::UserInstallations.new(payload: installations_hash).installations.map(&:id)
       end
     end
   end

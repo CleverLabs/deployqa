@@ -19,7 +19,7 @@ module Github
         private
 
         def find_user
-          ::User.find_or_create_by(auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: Integer(@wrapped_body.initiator_info.id)).tap do |user|
+          ::AuthInfo.github.find_by(uid: @wrapped_body.initiator_info.id).user.tap do |user|
             GithubEntity.ensure_info_exists(user, @wrapped_body.raw_initiator_info)
           end
         end

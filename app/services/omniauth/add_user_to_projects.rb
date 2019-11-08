@@ -13,8 +13,8 @@ module Omniauth
     end
 
     def call
-      handler = PROVIDER_USERPROJECTS_HANDLERS.fetch(provider)
-      handler.new(user).call
+      handler = PROVIDER_USERPROJECTS_HANDLERS.fetch(@provider)
+      handler.new(@user).call
     end
   end
 end

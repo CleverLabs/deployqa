@@ -6,6 +6,7 @@ module Github
       class AddNewRepo
         def initialize(body)
           @wrapped_body = Github::Events::Installation.new(payload: body)
+          binding.pry
           @project = ::Project.find_by(integration_type: ProjectsConstants::Providers::GITHUB, integration_id: @wrapped_body.installation_id)
         end
 

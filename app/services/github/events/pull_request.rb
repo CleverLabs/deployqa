@@ -8,6 +8,7 @@ module Github
 
         attribute :id, Integer
         attribute :login, String
+        attribute :email, String
       end
 
       include ShallowAttributes
