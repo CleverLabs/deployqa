@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="description" content="DeployQA is a platform built to automate creation of on-demand QA, Demo and sandbox environments." />
+  <meta property="og:title" content="DeployQA on-demand environments" />
+  <meta property="og:description" content="Deploy on-demand environments easily. DeployQA is a platform built to automate creation of on-demand QA, Demo and sandbox environments." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://deployqa.dev/" />
+  <meta property="og:image" content="https://deployqa.dev/static/images/logo.svg" />
+
+  <link rel="stylesheet" href="static/css/main.css">
+
+  <title>DeployQA on-demand environments</title>
+</head>
+
+<body>
+<div class="wrapper">
+  <div class="wrapper__wrap">
+    <header class="header">
+      <div class="header_inner container">
+        <img class="header_logo" src="static/images/logo.svg" alt>
+        <div class="header_wrap">
+          <div class="header_info-item">
+            <div class="header_info">
+              <h1 class="title_sub header_title">
+                Deploy on-demand environments easily
+              </h1>
+              <p class="text header_text">
+                DeployQA is a platform built to automate creation
+                of QA, Demo and sandbox environments.
+              </p>
+              <% if current_user.present? %>
+                <%= link_to "Go to App", projects_path, class: "btn btn-violet" %>
+              <% else %>
+                <form action="/landings" method="GET" class="email-field ">
+                  <input type="email" class="email-input" name="email" placeholder="Your Email" required>
+                  <input type="submit" class="btn btn-violet" value="Request Access">
+                </form>
+                <small class="header_text--small">
+                  DeployQA is in private beta right now. You can leave your email to get access.
+                </small>
+              <% end %>
+            </div>
+          </div>
+          <div class="header_img-item">
+            <div class="header_img">
+              <img src="static/images/header-img.png" alt>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="wrapper__inner">
+
+<section class="start">
+  <div class="container">
+    <h2 class="title start_title">
+      How to start
+    </h2>
+    <span class="text start_small">
+      DeployQA does all the hard and important work of delivering files from your repositories to your server.
+      No magic. Easy to do in 3 steps.
+    </span>
+    <div class="start-row">
+      <div class="start_item start_item-1">
+        <h4 class="title_item">
+          Connect repository
+        </h4>
+        <p class="text_sub">
+          Install DeployQA application on GitHub repo, GitLab repo, or link to your self-hosted repo.
+        </p>
+      </div>
+      <div class="start_item start_item-2">
+        <h4 class="title_item">
+          Configure via UI
+        </h4>
+        <p class="text_sub">
+          Set up ENV variables, addons and
+          start-up commands for your
+          application.
+        </p>
+      </div>
+      <div class="start_item start_item-3">
+        <h4 class="title_item">
+          Deploy by one click
+        </h4>
+        <p class="text_sub">
+          Click "Deploy" button in Pull Request
+          and use newly created environment.
+          You can also create an instance in our application with specified branch.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="use">
+  <div class="container">
+    <h2 class="title use_title">
+      Who can use
+    </h2>
+
+    <div class="use_wrap">
+      <div class="use-item-wrap">
+        <div class="use-item use-item-1">
+          <h4 class="title_item">QA engineers</h4>
+          <span class="text">
+            For manual application testing on production-like environment.
+          </span>
+        </div>
+        <div class="use-item use-item-2">
+          <h4 class="title_item">Developers</h4>
+          <span class="text">
+            For application testing and as a sandbox for customers.
+          </span>
+        </div>
+      </div>
+      <div class="use-item-wrap">
+        <div class="use-item use-item-3">
+          <h4 class="title_item">Designers</h4>
+          <span class="text">
+            To check design and layout of designed application.
+          </span>
+        </div>
+        <div class="use-item use-item-4">
+          <h4 class="title_item">Demo-makers</h4>
+          <span class="text">
+            Sales managers and product owners. For demos of web-application to customers.
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="why">
+  <div class="container">
+    <h2 class="title why_title">
+      Why us
+    </h2>
+    <div class="why-row">
+      <div class="why-col-lg-4">
+        <div class="why_item">
+          <div class="why_title-wrap why_title-wrap-1">
+            <h5 class="text_sub why_title-item">
+              Faster QA
+            </h5>
+          </div>
+          <span class="text">
+            Configuring QA environments is hard. Multiple stagings, local environments, production-like environments - it's all complicated.
+          </span>
+          <span class="text why_text-icon">
+            DeployQA makes it all for you!
+          </span>
+          <span class="text">
+            No need to deal with server and deployment. You only need to follow our installation.
+          </span>
+        </div>
+      </div>
+      <div class="why-col-lg-4">
+        <div class="why_item">
+          <div class="why_title-wrap why_title-wrap-2">
+            <h5 class="text_sub why_title-item why_title-item--padding">
+              On-demand demo
+            </h5>
+          </div>
+          <span class="text">
+            How to make a good demo of web application? There is a many ways: you can setup all what you need locally
+            on your machine, or make a new server and setup it here. Or even do it on production - setup all the data
+            restlessly clicking on the buttons. If you are lucky enough, your team has already automated this process.
+            But what if not?
+          </span>
+          <span class="text why_text-icon">
+            DeployQA can handle it for you!
+          </span>
+          <span class="text">
+            Just click the button, and a new clean and shiny demo environment is ready to be shown!
+          </span>
+        </div>
+
+      </div>
+      <div class="why-col-lg-4">
+        <div class="why_item">
+          <div class="why_title-wrap why_title-wrap-3">
+            <h5 class="text_sub why_title-item">
+              Faster QA
+            </h5>
+          </div>
+          <span class="text">
+            Do you want to make a sandbox of your application? For example, let customer test your API on
+            a separate clean server?
+          </span>
+          <span class="text why_text-icon">
+            DeployQA can handle it for you too!
+          </span>
+          <span class="text">
+            You can have a freshly created environment ready to be used for integration by your customer.
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+<section class="features">
+  <div class="container">
+    <h2 class="title features_title">
+      Features
+    </h2>
+
+    <div class="features_wrap">
+      <div class="features-col">
+        <div class="features_item">
+          <img class="features_icon" src="static/images/features/features-1.svg" alt>
+          <h5 class="title_item">
+            Minimal configuration
+          </h5>
+          <span class="text_sub features_text">
+            You don't need an in-depth understanding of deployment process. DeployQA requires bare minimum to deploy your application.
+          </span>
+        </div>
+        <div class="features_item">
+          <img class="features_icon" src="static/images/features/features-2.svg" alt>
+          <h5 class="title_item">
+            No need
+            <span>of additional infrastructure</span>
+          </h5>
+          <span class="text_sub features_text">
+            DeployQA handles everything about server infrastructure and deployment.
+          </span>
+        </div>
+      </div>
+      <div class="features-col">
+        <div class="features_item">
+          <img class="features_icon" src="static/images/features/features-3.svg" alt>
+          <h5 class="title_item">
+            Addons
+          </h5>
+          <span class="text_sub features_text">
+            Addon system will help to provide creation and management of additional infrastructure like databases and cloud storages.
+          </span>
+        </div>
+        <div class="features_item features-m-0">
+          <img class="features_icon" src="static/images/features/features-4.svg" alt>
+          <h5 class="title_item">
+            Notifications:
+            <span>Slack, Pull requests</span>
+          </h5>
+          <span class="text_sub features_text features-w-80">
+            Get notified about instance gets created, updated or destroyed
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+<section class="ready">
+  <div class="container">
+    <div class="ready_wrap">
+      <div class="ready_info">
+        <h4 class="ready_title">
+          Ready to get started?
+        </h4>
+        <span class="ready_text">
+            DeployQA is in private beta right now. You can leave your email to get access.
+          </span>
+      </div>
+      <div class="ready_input">
+        <form action="/landings" method="GET" class="email-field">
+          <input type="email" placeholder="Your Email" name="email" class="email-input" required>
+          <input type="submit" class="btn btn-violet" value="Request Access">
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer_wrap">
+      <div class="footer_item-copy">
+        <img src="static/images/logo.svg" alt>
+        <small class="footer_copyright">
+          ©2019 DeployQA. All rights reserved.
+        </small>
+      </div>
+
+      <a class="footer_contact" href="mailto:deployqa@cleverlabs.io">
+        deployqa@cleverlabs.io
+      </a>
+    </div>
+  </div>
+</footer>
+
+
+</div></div></body>
+
+</html>

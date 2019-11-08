@@ -8,7 +8,8 @@ module ProjectInstanceHelper
     ProjectInstanceConstants::FAILURE => "badge-danger",
     ProjectInstanceConstants::NOT_DEPLOYED => "badge-danger",
     ProjectInstanceConstants::DESTROYING => "badge-secondary",
-    ProjectInstanceConstants::DESTROYED => "badge-dark"
+    ProjectInstanceConstants::DESTROYED => "badge-dark",
+    ProjectInstanceConstants::CLOSED => "badge-dark"
   }.freeze
 
   def status_badge_class(status)

@@ -6,7 +6,9 @@ require "routes/logged_user_constraint"
 Rails.application.routes.draw do
   default_url_options host: ENV["HOST_NAME"], protocol: "https"
 
-  root "projects#index"
+  root "landings#index"
+  get "/landings", to: "landings#create"
+
   get "/auth/slack/callback", to: "slack/authentications#create"
   get "/auth/failure", to: "slack/authentications#show"
   get "/auth/:provider/callback", to: "sessions#create"

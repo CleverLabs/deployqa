@@ -1,14 +1,11 @@
 nav.navbar.navbar-expand-lg.navbar-light.bg-light
-  = link_to '/', class: "navbar-brand" do
+  = link_to projects_path, class: "navbar-brand" do
     = image_pack_tag 'media/images/logos/deployqa-icon.svg', class: "mr-2", size: "32x32"
     | DeployQA
   button.navbar-toggler type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
     span.navbar-toggler-icon
   #navbarNav.collapse.navbar-collapse.justify-content-end
     ul.navbar-nav
-      li.nav-item
-        = link_to "Projects", projects_path, class: "nav-link"
-
       li.nav-item.dropdown
         a.nav-link.dropdown-toggle href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
           = current_user.full_name
