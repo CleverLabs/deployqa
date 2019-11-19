@@ -7,20 +7,26 @@ class SessionsController < ApplicationController
   def show; end
 
   def create
-    request.session[:user_id] = user_from_omniauth.id
-    redirect_to "/"
+    result = user_from_omniauth
+
+    if result.error?
+      flash.notice = result.errors.join("/n")
+      return redirect_to sessions_path
+    end
+
+    request.session[:user_id] = result.object.id
+    redirect_to projects_path
   end
 
   def destroy
     request.session[:user_id] = nil
-    redirect_to "/"
+    redirect_to root_path
   end
 
   protected
 
   def user_from_omniauth
-    provider_user = ::Omniauth::UserFactory.provider_user(params[:provider], auth_hash)
-    provider_user.identify
+    ::Auth::UserAuthenticator.new(::Auth::OmniAuthInfoPresenter.new(auth_hash)).call
   end
 
   def auth_hash

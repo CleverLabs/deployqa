@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Omniauth
-  class AuthInfoPresenter
+module Auth
+  class OmniAuthInfoPresenter
     def initialize(auth_hash)
       @omniauth_hash = auth_hash
     end
@@ -20,6 +20,22 @@ module Omniauth
 
     def raw_info
       @omniauth_hash.dig("extra", "raw_info")
+    end
+
+    def email
+      @omniauth_hash.dig("info", "email")
+    end
+
+    def provider
+      @omniauth_hash.fetch("provider")
+    end
+
+    def to_auth_info_params
+      {
+        token: token,
+        email: email,
+        data: raw_info
+      }
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_11_140212) do
+ActiveRecord::Schema.define(version: 2019_11_28_143717) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,11 +25,14 @@ ActiveRecord::Schema.define(version: 2019_11_11_140212) do
   end
 
   create_table "auth_infos", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.jsonb "data", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_auth_infos_on_user_id", unique: true
+    t.string "token", null: false
+    t.boolean "primary", default: false, null: false
+    t.string "email", null: false
+    t.bigint "user_reference_id", null: false
+    t.index ["user_reference_id"], name: "index_auth_infos_on_user_reference_id", unique: true
   end
 
   create_table "build_action_logs", force: :cascade do |t|
@@ -141,11 +144,19 @@ ActiveRecord::Schema.define(version: 2019_11_11_140212) do
     t.index ["project_id"], name: "index_slack_entities_on_project_id", unique: true
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string "auth_provider", null: false
+  create_table "user_references", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "full_name", null: false
     t.string "auth_uid", null: false
+    t.integer "auth_provider", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["auth_uid", "auth_provider"], name: "index_user_references_on_auth_uid_and_auth_provider", unique: true
+    t.index ["user_id"], name: "index_user_references_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
     t.string "full_name"
-    t.string "token"
     t.integer "system_role", default: 0, null: false
   end
 
@@ -185,7 +196,7 @@ ActiveRecord::Schema.define(version: 2019_11_11_140212) do
     t.integer "integration_type", null: false
   end
 
-  add_foreign_key "auth_infos", "users"
+  add_foreign_key "auth_infos", "user_references"
   add_foreign_key "build_action_logs", "build_actions"
   add_foreign_key "gitlab_repositories_infos", "projects"
   add_foreign_key "project_user_roles", "projects"
@@ -194,5 +205,6 @@ ActiveRecord::Schema.define(version: 2019_11_11_140212) do
   add_foreign_key "repositories_addons", "addons"
   add_foreign_key "repositories_addons", "repositories"
   add_foreign_key "slack_entities", "projects"
+  add_foreign_key "user_references", "users"
   add_foreign_key "web_processes", "repositories"
 end

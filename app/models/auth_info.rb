@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AuthInfo < ApplicationRecord
-  belongs_to :user, required: true
+  belongs_to :user_reference, required: true
 
-  validates :data, presence: true
+  validates :data, :token, presence: true
 end

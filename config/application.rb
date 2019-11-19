@@ -20,6 +20,7 @@ module Deployqa
 
     config.autoload_paths += %W[
       #{config.root}/app/constants
+      #{config.root}/app/errors
       #{config.root}/app/pages
       #{config.root}/lib
     ]
