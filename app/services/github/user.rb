@@ -19,7 +19,15 @@ module Github
     def create_or_update_auth_info(user)
       auth_info = AuthInfo.find_or_initialize_by(user: user)
       auth_info.data = @auth_info_presenter.raw_info
+
+      # Temporary measure
+      auth_info.data["email"] = github_email unless auth_info.data["email"].present?
+
       auth_info.save!
+    end
+
+    def github_email
+      ProviderAPI::Github::UserClient.new(@auth_info_presenter.token).emails.find { |email_info| email_info[:primary] }.fetch(:email)
     end
 
     def user_uniq_id
