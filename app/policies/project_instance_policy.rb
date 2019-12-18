@@ -18,7 +18,7 @@ class ProjectInstancePolicy < ApplicationPolicy
   end
 
   def edit?
-    record.deployment_status.in?([ProjectInstanceConstants::RUNNING])
+    record.deployment_status.in?([ProjectInstanceConstants::RUNNING, ProjectInstanceConstants::FAILURE, ProjectInstanceConstants::NOT_DEPLOYED])
   end
 
   def redeploy?

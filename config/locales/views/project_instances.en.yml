@@ -1,0 +1,7 @@
+en:
+  project_instances:
+    edit_configuration:
+      update:
+        not_deployed: Update and recreate instance
+        running: Update and reload instance
+        failure: Update and reload instance

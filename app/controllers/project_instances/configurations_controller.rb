@@ -12,7 +12,7 @@ module ProjectInstances
       @project_instance = find_project_instance(@project)
 
       if update_project_instance
-        Deployment::Processes::ReloadProjectInstance.new(@project_instance, current_user).call
+        Deployment::Processes::UpdateProjectInstanceConfiguration.new(@project_instance, current_user).call
         redirect_to project_project_instance_path(@project, @project_instance)
       else
         render :edit

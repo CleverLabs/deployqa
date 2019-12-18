@@ -41,8 +41,8 @@
           = link_to "Redeploy", project_project_instance_redeploy_path(@project, @project_instance), method: :post, class: "btn btn-outline-primary"
         = link_to "Reload", project_project_instance_reload_path(@project, @project_instance), method: :post, class: "btn btn-outline-primary #{'disabled' unless @project_instance_policy.reload?}"
         = link_to "Update code", project_project_instance_update_path(@project, @project_instance), method: :post, class: "btn btn-outline-primary #{'disabled' unless @project_instance_policy.update_server?}"
-        = link_to "Dumps", project_project_instance_database_dumps_path(@project, @project_instance), class: "btn btn-outline-secondary #{'disabled' unless @project_instance_policy.dumps?}"
         = link_to "Edit ENV keys", edit_project_project_instance_configuration_path(@project, @project_instance), class: "btn btn-outline-secondary #{'disabled' unless @project_instance_policy.edit?}"
+        = link_to "Dumps", project_project_instance_database_dumps_path(@project, @project_instance), class: "btn btn-outline-secondary #{'disabled' unless @project_instance_policy.dumps?}"
         = link_to "Addons", project_project_instance_addons_path(@project, @project_instance), class: "btn btn-outline-secondary #{'disabled' unless @project_instance_policy.dumps?}"
       = link_to "Terminate", project_project_instance_path(@project, @project_instance), method: :delete, class: "btn btn-outline-danger #{'disabled' unless @project_instance_policy.terminate?}"
 

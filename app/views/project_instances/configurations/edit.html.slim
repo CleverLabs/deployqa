@@ -15,4 +15,4 @@
         = form.simple_fields_for :configurations do |configurations_form|
           = configurations_form.input configuration.application_name, as: :text, input_html: { value: configuration.env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 8 }
 
-      = form.button :submit, "Update and reload instance", class: "btn btn-primary"
+      = form.button :submit, I18n.t("project_instances.edit_configuration.update.#{@project_instance.deployment_status}"), class: "btn btn-primary"
