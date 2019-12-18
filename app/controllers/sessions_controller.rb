@@ -14,22 +14,26 @@ class SessionsController < ApplicationController
       return redirect_to sessions_path
     end
 
-    request.session[:user_id] = result.object.id
+    setup_session(request.session, result.object)
     redirect_to projects_path
   end
 
   def destroy
-    request.session[:user_id] = nil
+    ::Auth::SessionHandler.new(request.session).clear!
     redirect_to root_path
   end
 
   protected
 
-  def user_from_omniauth
-    ::Auth::UserAuthenticator.new(::Auth::OmniAuthInfoPresenter.new(auth_hash)).call
+  def setup_session(session, user)
+    ::Auth::SessionHandler.new(session).set!(user_id: user.id, provider: auth_info_presenter.provider)
   end
 
-  def auth_hash
-    request.env["omniauth.auth"]
+  def user_from_omniauth
+    ::Auth::UserAuthenticator.new(auth_info_presenter).call
+  end
+
+  def auth_info_presenter
+    @_auth_info_presenter ||= ::Auth::OmniAuthInfoPresenter.new(request.env["omniauth.auth"])
   end
 end

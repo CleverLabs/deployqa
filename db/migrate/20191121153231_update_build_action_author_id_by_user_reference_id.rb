@@ -5,9 +5,8 @@ class UpdateBuildActionAuthorIdByUserReferenceId  < ActiveRecord::Migration[5.2]
   def up
     user_references = UserReference.where(user_id: BuildAction.pluck(:author_id)).to_a # Load all records at once, since there is small amount of them
 
-    BuildAction.find_each do |build_action|
-      user_reference = user_references.find { |reference| reference.user_id == build_action.author_id }
-      build_action.update(author_id: user_reference.id)
+    user_references.each do |user_reference|
+      BuildAction.where(author_id: user_reference.user_id).update_all(author_id: user_reference.id)
     end
   end
 

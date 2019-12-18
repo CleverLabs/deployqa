@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module Auth
-  class AddUserToProjects
+  class SetupUserProjectsMembership
     PROVIDER_USERPROJECTS_HANDLERS = {
-      OmniauthConstants::GITHUB => ::Auth::Github::AddUserToProjects,
-      OmniauthConstants::GITLAB => ::Auth::Gitlab::AddUserToProjects
+      OmniauthConstants::GITHUB => ::Auth::Github::SetupUserProjectsMembership,
+      OmniauthConstants::GITLAB => ::Auth::Gitlab::SetupUserProjectsMembership
     }.freeze
 
     def initialize(user, provider)

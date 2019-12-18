@@ -12,7 +12,10 @@ class ApplicationController < ActionController::Base
   def current_user
     return if session[:user_id].blank?
 
-    @_current_user ||= User.find(session[:user_id])
+    @_current_user ||= begin
+      user = User.find(session[:user_id])
+      ::Auth::UserWrapper.new(user, session[:provider])
+    end
   end
   helper_method :current_user
 

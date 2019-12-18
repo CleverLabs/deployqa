@@ -7,7 +7,8 @@ class MoveUsersAuthUidAuthProviderToUserReferences  < ActiveRecord::Migration[5.
 
   def up
     User.find_each do |user|
-      UserReference.create!(user_id: user.id, auth_provider: user.auth_provider, auth_uid: user.auth_uid, full_name: user.full_name)
+      user_id = user.token.present? ? user.id : nil
+      UserReference.create!(user_id: user_id, auth_provider: user.auth_provider, auth_uid: user.auth_uid, full_name: user.full_name)
     end
   end
 

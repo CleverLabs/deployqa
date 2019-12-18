@@ -21,9 +21,9 @@ module Auth
 
     def create_or_update_auth_info
       if @user_reference.auth_info.present?
-        @user_reference.auth_info.update!(@auth_info_presenter.to_auth_info_params)
+        @user_reference.auth_info.update!(auth_info_params)
       else
-        AuthInfo.create!(@auth_info_presenter.to_auth_info_params.merge(user_reference: @user_reference, primary: true))
+        AuthInfo.create!(auth_info_params.merge(primary: true))
       end
     end
 
@@ -34,6 +34,10 @@ module Auth
       else
         User.create!(full_name: @auth_info_presenter.full_name)
       end
+    end
+
+    def auth_info_params
+      Auth::AuthInfoParamsBuilder.new(@auth_info_presenter, @user_reference).call
     end
   end
 end
