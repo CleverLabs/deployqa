@@ -13,7 +13,6 @@ module GitlabIntegration
 
       @git_client_wrapper.add_deployqa_bot_to_repo(repository, permission: :maintainer)
       @git_client_wrapper.add_webhook_to_repo(repository)
-      @git_client_wrapper.change_deployqa_bot_permission(repository, permission: :developer)
 
       ReturnValue.ok(repository)
     end

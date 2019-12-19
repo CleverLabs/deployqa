@@ -23,12 +23,6 @@ module ProviderAPI
         gitlab_client.add_team_member(repository.integration_id, ENV["GITLAB_DEPLOYQA_BOT_ID"], permission_code)
       end
 
-      def change_deployqa_bot_permission(repository, permission: :guest)
-        permission_code = GITLAB_MEMBER_PERMISSIONS.fetch(permission)
-
-        gitlab_client.edit_team_member(repository.integration_id, ENV["GITLAB_DEPLOYQA_BOT_ID"], permission_code)
-      end
-
       def load_groups
         gitlab_client.groups(min_access_level: GITLAB_MEMBER_PERMISSIONS[:maintainer])
       end
