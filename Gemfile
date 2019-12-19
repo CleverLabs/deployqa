@@ -27,7 +27,7 @@ gem "omniauth-rails_csrf_protection", "~> 0.1.2" # Remove after https://github.c
 gem "paper_trail"
 gem "pg"
 gem "platform-api"
-gem "puma", "~> 3.11"
+gem "puma", "~> 3.12"
 gem "pundit", "~> 2.0", ">= 2.0.1"
 gem "rails", "~> 5.2.3"
 gem "redis-rails"
