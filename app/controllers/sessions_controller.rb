@@ -30,7 +30,9 @@ class SessionsController < ApplicationController
   end
 
   def user_from_omniauth
-    ::Auth::UserAuthenticator.new(auth_info_presenter).call
+    user = ::Auth::UserAuthenticator.new(auth_info_presenter).call
+    ::Auth::SetupUserProjectsMembership.new(user, auth_info_presenter.provider).call
+    user
   end
 
   def auth_info_presenter

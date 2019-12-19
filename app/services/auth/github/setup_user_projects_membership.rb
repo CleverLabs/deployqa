@@ -2,7 +2,7 @@
 
 module Auth
   module Github
-    class AddUserToProjects
+    class SetupUserProjectsMembership
       def initialize(user)
         @user = user
       end
