@@ -23,7 +23,7 @@ module Auth
       end
 
       def user_auth_token
-        @user.user_references.where(auth_provider: OmniauthConstants::GITHUB).first.auth_info.token
+        @user.user_references.find_by(auth_provider: OmniauthConstants::GITHUB).auth_info.token
       end
     end
   end

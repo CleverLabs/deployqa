@@ -20,7 +20,7 @@ module SshIntegration
     attr_reader :project_params, :current_user
 
     def create_project_user_role(project)
-      ProjectUserRole.create!(project: project, user: current_user, role: ProjectUserRoleConstants::ADMIN)
+      ProjectUserRole.create!(project: project, user_id: current_user.id, role: ProjectUserRoleConstants::ADMIN)
     end
 
     def build_project_params(controller_params)

@@ -9,9 +9,14 @@ module Github
         end
 
         def call
-          user = ::User.find_by(auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: @wrapped_body.id)
-          user.project_user_roles.destroy_all
+          user_reference.user.project_user_roles.destroy_all
           ReturnValue.ok
+        end
+
+        private
+
+        def user_reference
+          @_user_reference ||= ::UserReference.find_by(auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: @wrapped_body.id)
         end
       end
     end

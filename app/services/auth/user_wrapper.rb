@@ -10,7 +10,7 @@ module Auth
     end
 
     def user_reference
-      @_user_reference ||= @user.user_references.find_by(auth_provider: @provider)
+      @_user_reference ||= @user.user_references.eager_load(:auth_info).find_by(auth_provider: @provider)
     end
 
     def auth_info

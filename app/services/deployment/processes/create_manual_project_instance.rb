@@ -3,9 +3,9 @@
 module Deployment
   module Processes
     class CreateManualProjectInstance
-      def initialize(project, current_user)
+      def initialize(project, user_reference)
         @project = project
-        @current_user = current_user
+        @user_reference = user_reference
       end
 
       def call(project_instance_name:, branches:)
@@ -19,8 +19,6 @@ module Deployment
 
       private
 
-      attr_reader :current_user
-
       def create_project_instance(project_instance_name, configurations)
         Deployment::Repositories::ProjectInstanceRepository.new(@project).create(
           name: project_instance_name,
@@ -30,7 +28,7 @@ module Deployment
       end
 
       def deploy_instance(instance, configurations)
-        build_action = BuildAction.create!(project_instance: instance, author: current_user, action: BuildActionConstants::CREATE_INSTANCE)
+        build_action = BuildAction.create!(project_instance: instance, author: @user_reference, action: BuildActionConstants::CREATE_INSTANCE)
         ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, configurations.map(&:to_h), build_action)
       end
     end

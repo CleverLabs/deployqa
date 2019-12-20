@@ -53,7 +53,7 @@ module ProjectInstances
     end
 
     def deploy(project_instance)
-      Deployment::Processes::DeployNewInstance.new(project_instance).call(current_user)
+      Deployment::Processes::DeployNewInstance.new(project_instance).call(current_user.user_reference)
     end
   end
 end

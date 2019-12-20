@@ -13,15 +13,15 @@ module Github
           return ReturnValue.ok unless RepositoryStatus.new(@project).active?(@wrapped_body.full_repo_name)
 
           project_instance = @project.project_instances.find_by(attached_pull_request_number: @wrapped_body.number)
-          Deployment::Processes::DestroyProjectInstance.new(project_instance, get_user(@wrapped_body.sender)).call if project_instance
+          Deployment::Processes::DestroyProjectInstance.new(project_instance, user_reference(@wrapped_body.sender)).call if project_instance
           ReturnValue.ok
         end
 
         private
 
-        def get_user(sender)
-          ::User.find_or_create_by!(auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: sender.id) do |user|
-            user.full_name = sender.login
+        def user_reference(sender)
+          ::UserReference.find_or_create_by!(auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: sender.id) do |user_reference|
+            user_reference.full_name = sender.login
           end
         end
       end

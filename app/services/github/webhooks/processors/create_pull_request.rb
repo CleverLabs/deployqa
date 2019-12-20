@@ -23,7 +23,7 @@ module Github
           name = "pr#{@wrapped_body.number}"
           branches = { @wrapped_body.repo_name => @wrapped_body.branch }
 
-          Deployment::Processes::CreateAttachedProjectInstance.new(@project, nil).call(
+          Deployment::Processes::CreateAttachedProjectInstance.new(@project).call(
             project_instance_name: name,
             branches: branches,
             attached_pull_request_number: @wrapped_body.number,

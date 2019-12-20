@@ -6,7 +6,7 @@ module ProjectInstances
       project = find_project
       project_instance = find_project_instance(project)
 
-      Deployment::Processes::UpdateProjectInstance.new(project_instance, current_user).call
+      Deployment::Processes::UpdateProjectInstance.new(project_instance, current_user.user_reference).call
       redirect_to project_project_instance_path(project, project_instance)
     end
 

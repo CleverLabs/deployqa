@@ -20,7 +20,7 @@ class ProjectInstancesController < ApplicationController
 
   def create
     @project = find_project
-    result = Deployment::Processes::CreateManualProjectInstance.new(@project, current_user).call(project_instance_name: project_instance_name, branches: branches)
+    result = create_project_instance(@project).call(project_instance_name: project_instance_name, branches: branches)
 
     if result.ok?
       redirect_to project_project_instance_path(@project, result.object)
@@ -35,11 +35,15 @@ class ProjectInstancesController < ApplicationController
     @project = find_project
     @project_instance = @project.project_instances.find(params[:id])
 
-    Deployment::Processes::DestroyProjectInstance.new(@project_instance, current_user).call
+    Deployment::Processes::DestroyProjectInstance.new(@project_instance, current_user.user_reference).call
     redirect_to project_project_instances_path(@project)
   end
 
   private
+
+  def create_project_instance(project)
+    Deployment::Processes::CreateManualProjectInstance.new(project, current_user.user_reference)
+  end
 
   def find_project
     authorize Project.find(params[:project_id]), :show?, policy_class: ProjectPolicy

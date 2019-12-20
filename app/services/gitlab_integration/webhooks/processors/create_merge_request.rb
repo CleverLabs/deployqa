@@ -22,7 +22,7 @@ module GitlabIntegration
           name = "mr#{@merge_request.number}"
           branches = { @merge_request.repo_name => @merge_request.branch }
 
-          ::Deployment::Processes::CreateAttachedProjectInstance.new(repository.project, nil).call(
+          ::Deployment::Processes::CreateAttachedProjectInstance.new(repository.project).call(
             project_instance_name: name,
             branches: branches,
             attached_pull_request_number: @merge_request.number,

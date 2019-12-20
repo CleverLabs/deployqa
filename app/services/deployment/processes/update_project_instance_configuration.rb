@@ -18,14 +18,14 @@ module Deployment
         }
       }.freeze
 
-      def initialize(project_instance, current_user)
+      def initialize(project_instance, user_reference)
         @project_instance = project_instance
-        @current_user = current_user
+        @user_reference = user_reference
       end
 
       def call
         configurations = Deployment::ConfigurationBuilders::ByProjectInstance.new(@project_instance).call.map(&:to_h)
-        build_action = BuildAction.create!(project_instance: @project_instance, author: @current_user, action: action)
+        build_action = BuildAction.create!(project_instance: @project_instance, author: @user_reference, action: action)
         ServerActionsCallJob.perform_later(worker_class.to_s, configurations, build_action)
       end
 

@@ -31,7 +31,8 @@ module GitlabIntegration
     end
 
     def create_project_user_role(project)
-      ProjectUserRole.create!(project: project, user: current_user, role: ProjectUserRoleConstants::ADMIN)
+      # current_user is the wrapper, therefore using direct ID to reference the user
+      ProjectUserRole.create!(project: project, user_id: current_user.id, role: ProjectUserRoleConstants::ADMIN)
     end
   end
 end

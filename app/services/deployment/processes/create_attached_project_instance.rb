@@ -3,9 +3,8 @@
 module Deployment
   module Processes
     class CreateAttachedProjectInstance
-      def initialize(project, current_user)
+      def initialize(project)
         @project = project
-        @current_user = current_user
       end
 
       def call(project_instance_name:, branches:, attached_repo_path:, attached_pull_request_number:)
@@ -18,10 +17,6 @@ module Deployment
           deployment_status: ProjectInstanceConstants::EMPTY_RECORD_FOR_PR
         )
       end
-
-      private
-
-      attr_reader :current_user
     end
   end
 end
