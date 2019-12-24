@@ -10,4 +10,5 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light
         a.nav-link.dropdown-toggle href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
           = current_user.full_name
         .dropdown-menu aria-labelledby="navbarDropdown"
+          = link_to "User preferences", user_path(current_user.actual_user), class: "dropdown-item"
           = link_to "Log out", sessions_path, method: :delete, class: "dropdown-item"

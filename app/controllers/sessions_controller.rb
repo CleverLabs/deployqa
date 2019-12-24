@@ -7,14 +7,14 @@ class SessionsController < ApplicationController
   def show; end
 
   def create
-    result = user_from_omniauth
+    result = current_user ? connect_user : user_from_omniauth
 
     if result.error?
       flash.notice = result.errors.join("/n")
       return redirect_to sessions_path
     end
 
-    setup_session(request.session, result.object)
+    setup_session(result.object)
     redirect_to projects_path
   end
 
@@ -25,8 +25,14 @@ class SessionsController < ApplicationController
 
   protected
 
-  def setup_session(session, user)
-    ::Auth::SessionHandler.new(session).set!(user_id: user.id, provider: auth_info_presenter.provider)
+  def setup_session(user)
+    return if current_user
+
+    ::Auth::SessionHandler.new(request.session).set!(user_id: user.id, provider: auth_info_presenter.provider)
+  end
+
+  def connect_user
+    Auth::AnotherServiceConnection.new(auth_info_presenter, current_user).call
   end
 
   def user_from_omniauth

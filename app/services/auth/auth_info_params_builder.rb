@@ -24,8 +24,9 @@ module Auth
     def load_email(params)
       return if params[:email].present?
 
+      # TODO: why do we need USER_API_CLIENT? GitLab always have an email and there is no :email method in ProviderAPI::Gitlab::UserClient
       api_client = USER_API_CLIENT.fetch(@omniauth_info_presenter.provider).new(@omniauth_info_presenter.token)
-      email = api_client.emails.find { |email_info| email_info[:primary] }.fetch(:email)
+      email = api_client.emails.find { |email_info| email_info[:primary] }[:email]
       params[:email] = email
     end
   end

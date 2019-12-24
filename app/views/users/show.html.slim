@@ -1,0 +1,23 @@
+.container
+  = render partial: "shared/breadcrumb", locals: {\
+      text_link_hash: {\
+        "User" => nil\
+      },
+      class: "mt-4" }
+
+
+  .d-flex.justify-content-between.mt-4
+    h1 = current_user.full_name
+  .mt-4
+    p
+      = image_pack_tag("media/images/logos/github-logo.svg", size: "32x32", class: "mr-2")
+      - if @github_auth.present?
+        span.text-success Github integration connected!
+      - else
+        = link_to "Click to connect Github", omniauth_path("github"), method: :post
+    p
+      = image_pack_tag("media/images/logos/gitlab-logo.svg", size: "32x32", class: "mr-2")
+      - if @gitlab_auth.present?
+        span.text-success Gitlab integration connected!
+      - else
+        = link_to "Click to connect Gitlab", omniauth_path("gitlab", some_data: "123"), method: :post

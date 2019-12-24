@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UserReference < ApplicationRecord
-  belongs_to :user, dependent: :destroy, required: false
+  belongs_to :user, required: false
   has_one :auth_info, dependent: :destroy
 
   validates :full_name, :auth_uid, :auth_provider, presence: true

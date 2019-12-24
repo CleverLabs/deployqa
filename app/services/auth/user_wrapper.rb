@@ -24,5 +24,9 @@ module Auth
     def token
       auth_info.token
     end
+
+    def actual_user
+      @user
+    end
   end
 end

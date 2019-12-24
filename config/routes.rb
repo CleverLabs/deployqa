@@ -12,13 +12,14 @@ Rails.application.routes.draw do
   get "/auth/slack/callback", to: "slack/authentications#create"
   get "/auth/failure", to: "slack/authentications#show"
   get "/auth/:provider/callback", to: "sessions#create"
-  get "/auth/:provider", to: "sessions#show", as: "omniauth"
+  post "/auth/:provider", to: "sessions#show", as: "omniauth"
 
   constraints Routes::LoggedUserConstraint.new(SidekiqPolicy) do
     mount Sidekiq::Web => "/sidekiq"
   end
 
   resource :sessions, only: %i[show create destroy]
+  resources :users, only: %i[show]
 
   namespace :webhooks do
     resources :github, only: %i[create]

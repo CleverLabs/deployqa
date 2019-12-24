@@ -4,10 +4,12 @@ module Auth
   class UserAuthenticator
     def initialize(auth_info_presenter)
       @auth_info_presenter = auth_info_presenter
+      @checker = Auth::AccessibilityCheck.new(user_reference, @auth_info_presenter.email)
     end
 
     def call
-      Auth::AccessibilityCheck.new(user_reference, @auth_info_presenter.email).call
+      @checker.ensure_user_doesnt_exists!
+      @checker.ensure_reference_is_not_secondary!
 
       if user_reference.blank?
         ::Auth::UserCreator.new(@auth_info_presenter).call
