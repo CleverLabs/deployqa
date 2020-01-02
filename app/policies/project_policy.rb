@@ -13,6 +13,10 @@ class ProjectPolicy < ApplicationPolicy
     project_member?
   end
 
+  def create_instance?
+    record.repositories.where(status: RepositoryConstants::ACTIVE).limit(1).present? # Limit 1, to make sure at least one active repository exist
+  end
+
   private
 
   def project_admin?

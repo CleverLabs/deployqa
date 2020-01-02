@@ -4,6 +4,7 @@ class ProjectInstancesController < ApplicationController
   def index
     @project = find_project
     @project_instances = @project.project_instances.where.not(deployment_status: ProjectInstanceConstants::HIDDEN_INSTANCES).order(created_at: :desc)
+    @new_instance_allowed = ProjectPolicy.new(current_user, @project).create_instance?
   end
 
   def show
@@ -20,6 +21,8 @@ class ProjectInstancesController < ApplicationController
 
   def create
     @project = find_project
+    verify_creation_allowed(@project)
+
     result = create_project_instance(@project).call(project_instance_name: project_instance_name, branches: branches)
 
     if result.ok?
@@ -40,6 +43,10 @@ class ProjectInstancesController < ApplicationController
   end
 
   private
+
+  def verify_creation_allowed(project)
+    authorize project, :create_instance?, policy_class: ProjectPolicy
+  end
 
   def create_project_instance(project)
     Deployment::Processes::CreateManualProjectInstance.new(project, current_user.user_reference)
