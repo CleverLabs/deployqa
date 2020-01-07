@@ -8,6 +8,7 @@ module Deployment
       end
 
       def call(user_reference)
+        Deployment::Helpers::RefreshProjectInstanceConfiguration.new(@project_instance).call
         configurations = Deployment::ConfigurationBuilders::ByProjectInstance.new(@project_instance).call
         build_action = BuildAction.create!(project_instance: @project_instance, author: user_reference, action: BuildActionConstants::CREATE_INSTANCE)
         ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, configurations.map(&:to_h), build_action)
