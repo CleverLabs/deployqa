@@ -17,6 +17,7 @@ module ProjectInstanceConstants
 
   ACTION_STATUSES = {
     Deployment::ServerActions::Create.to_s => { running: DEPLOYING, success: RUNNING, failure: NOT_DEPLOYED },
+    NomadIntegration::Create.to_s => { running: DEPLOYING, success: RUNNING, failure: NOT_DEPLOYED },
     Deployment::ServerActions::Recreate.to_s => { running: DEPLOYING, success: RUNNING, failure: NOT_DEPLOYED },
     Deployment::ServerActions::Update.to_s => { running: UPDATING, success: RUNNING, failure: FAILURE },
     Deployment::ServerActions::Restart.to_s => { running: UPDATING, success: RUNNING, failure: RUNNING },
