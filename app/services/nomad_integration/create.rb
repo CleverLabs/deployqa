@@ -12,6 +12,7 @@ module NomadIntegration
     end
 
     def call
+      @state_machine.start
       @state_machine.add_state(:create_server) do
         job_name = build_job
         wait_until_build_is_done(job_name)
@@ -55,14 +56,12 @@ module NomadIntegration
     def wait_until_build_is_done(job_name)
       while Nomad.job.read(job_name).status.in? ["pending", "running"]
         puts Nomad.job.read(job_name).status
-        sleep 10
+        sleep 100
       end
     end
 
     def instance_job
-      id = SecureRandom.hex
-      id = @name
-      job_name = "instance-" + id
+      job_name = "instance-" + @name
       job_specification = {
         job: {
           name: job_name,
@@ -75,13 +74,19 @@ module NomadIntegration
               count: 1,
               tasks: [
                 {
-                  name: job_name,
+                  name: "web",
                   driver: "docker",
                   config: { image: "#{ENV['REGISTRY_ADDESS']}/deployqa-builds-testing:latest", args: ["bundle", "exec", "rails", "s", "-b", "0.0.0.0", "-p", "80"], port_map: [{ http: 80 }] },
-                  port_map: { http: 80 },
-                  env: { RAILS_ENV: "production", SECRET_KEY_BASE: SecureRandom.hex },
-                  services: [{ name: job_name, tags: ["global", "instance", "urlprefix-/#{id}"], portlabel: "http", checks: [{ name: "alive", type: "tcp", interval: 10000000000, timeout: 2000000000 }] }],
-                  resources: { cpu: 500, memory: 512, networks: [{ mbits: 20, dynamicports: [{ label: "http" }] }] }
+                  env: { RAILS_LOG_TO_STDOUT: "true", RAILS_ENV: "production", SECRET_KEY_BASE: SecureRandom.hex, DATABASE_URL: "postgres://postgres:temp_pass@${NOMAD_ADDR_database_db}/postgres" },
+                  services: [{ name: job_name, tags: ["global", "instance", "urlprefix-/#{@name}"], portlabel: "http", checks: [{ name: "alive", type: "tcp", interval: 10000000000, timeout: 2000000000 }] }],
+                  resources: { cpu: 1000, memorymb: 1024, networks: [{ mbits: 20, dynamicports: [{ label: "http" }] }] }
+                },
+                {
+                  name: "database",
+                  driver: "docker",
+                  config: { image: "postgres", port_map: [{ db: 5432 }] },
+                  env: { POSTGRES_PASSWORD: "temp_pass" },
+                  resources: { cpu: 250, memorymb: 100, networks: [{ mbits: 20, dynamicports: [{ label: "db" }] }] },
                 }
               ]
             }
@@ -92,3 +97,6 @@ module NomadIntegration
     end
   end
 end
+
+
+
