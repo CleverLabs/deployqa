@@ -34,7 +34,7 @@
             = web_processes.input :command, label: "Worker command", required: false, input_html: { name: "repository[web_processes_attributes][1][command]", value: processes.second&.command }
       .row
         .col-6
-          = form.input :migration_command, input_html: { placeholder: "example: bundle exec rails db:seed" }
+          = form.input :seeds_command, input_html: { placeholder: "example: bundle exec rails db:seed" }
 
       h4.mt-5 Addons
       = form.input :addon_ids, collection: @addons, label: "Selected addons", include_hidden: false, input_html: { multiple: true }

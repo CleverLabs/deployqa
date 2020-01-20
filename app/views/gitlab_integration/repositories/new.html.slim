@@ -34,7 +34,7 @@
 
       .row
         .col-6
-          = f.input :migration_command, input_html: { placeholder: "example: bundle exec rails db:seed" }
+          = f.input :seeds_command, input_html: { placeholder: "example: bundle exec rails db:seed" }
 
       h4.mt-5 Addons
       = f.input :addon_ids, collection: @page.addons, label: "Selected addons", include_hidden: false, input_html: { multiple: true }

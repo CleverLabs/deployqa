@@ -23,7 +23,7 @@ module Deployment
         state = create_server(configuration, state)
         state = push_buildpacks(configuration, state)
         state = push_code_to_server(configuration, state)
-        create_infrastructure(configuration.application_name, configuration.web_processes, configuration.migration_command, state)
+        create_infrastructure(configuration.application_name, configuration.web_processes, configuration.seeds_command, state)
       end
 
       def create_server(configuration, state)
@@ -35,11 +35,11 @@ module Deployment
         Deployment::Helpers::AddonsBuilder.new(configuration, state, server).call
       end
 
-      def create_infrastructure(app_name, web_processes, migration_command, state)
+      def create_infrastructure(app_name, web_processes, seeds_command, state)
         server = ServerAccess::Heroku.new(name: app_name)
 
         state.add_state(:setup_db) { server.setup_db }
-        state.add_state(:run_seeds) { server.run_command(migration_command) } if migration_command.present?
+        state.add_state(:run_seeds) { server.run_command(seeds_command) } if seeds_command.present?
 
         state.add_state(:setup_processes) { server.setup_processes(web_processes) }
       end

@@ -36,7 +36,7 @@ module GitlabIntegration
 
     def repository_params
       params.require(:repository).permit(
-        :integration_id, :runtime_env_variables, :build_env_variables, :build_type, :migration_command, addon_ids: [], web_processes_attributes: %i[id name command]
+        :integration_id, :runtime_env_variables, :build_env_variables, :build_type, :seeds_command, addon_ids: [], web_processes_attributes: %i[id name command]
       )
     end
 

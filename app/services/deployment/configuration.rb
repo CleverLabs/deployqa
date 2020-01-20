@@ -8,7 +8,7 @@ module Deployment
     attribute :env_variables, Hash
     attribute :repository_id, Integer
     attribute :application_url, String
-    attribute :migration_command, String
+    attribute :seeds_command, String
     attribute :addons, Array, of: Deployment::Addon
     attribute :web_processes, Array, of: Deployment::WebProcess
     attribute :repo_configuration, Deployment::RepoConfiguration

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_20_082826) do
+ActiveRecord::Schema.define(version: 2020_01_20_094447) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -127,7 +127,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_082826) do
     t.integer "build_type", default: 0, null: false
     t.jsonb "build_env_variables", default: {}, null: false
     t.string "heroku_buildpacks", default: [], null: false, array: true
-    t.string "migration_command"
+    t.string "seeds_command"
     t.index ["project_id", "integration_id", "integration_type"], name: "index_repositories_on_project_id_integration_id_and_type", unique: true
     t.index ["project_id", "path"], name: "index_repositories_on_project_id_and_path", unique: true
     t.index ["project_id"], name: "index_repositories_on_project_id"

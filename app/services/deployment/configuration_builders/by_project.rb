@@ -22,7 +22,7 @@ module Deployment
           env_variables: build_env_variables(repository, name, active_repositories),
           repository_id: repository.id,
           heroku_buildpacks: repository.heroku_buildpacks,
-          migration_command: repository.migration_command,
+          seeds_command: repository.seeds_command,
           application_url: heroku_url(name)
         }.merge(build_dependencies(repository, branches))
       end

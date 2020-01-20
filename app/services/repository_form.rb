@@ -15,7 +15,7 @@ class RepositoryForm
   attribute :web_processes_attributes, Array, of: Hash
   attribute :heroku_buildpacks, Array, of: String
   attribute :build_type, String
-  attribute :migration_command, String
+  attribute :seeds_command, String
 
   alias _runtime_env_variables= runtime_env_variables=
   def runtime_env_variables=(value)
