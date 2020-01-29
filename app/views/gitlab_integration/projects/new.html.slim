@@ -11,5 +11,5 @@
     = simple_form_for @project, url: gitlab_projects_path, method: :post do |form|
       - if @project.errors.any?
         p = @project.errors.full_messages
-      = form.input :integration_id, collection: @names, label: "Name", include_blank: false
+      = form.input :integration_id, collection: @names, label: "Name of organization", include_blank: false
       = form.button :submit, class: "btn btn-primary"

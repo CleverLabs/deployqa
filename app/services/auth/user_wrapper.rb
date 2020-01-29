@@ -21,8 +21,8 @@ module Auth
       auth_info.email
     end
 
-    def token
-      auth_info.token
+    def token_for(provider)
+      @user.user_references.find { |user_reference| user_reference.auth_provider == provider }.auth_info.token
     end
 
     def actual_user

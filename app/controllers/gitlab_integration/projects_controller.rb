@@ -26,7 +26,7 @@ module GitlabIntegration
 
     def complete_project_params
       project_params.merge(
-        name: ProjectPage.new(current_user).namespace_by_id(project_params[:integration_id]).name,
+        name: GitlabIntegration::ProjectPage.new(current_user).namespace_by_id(project_params[:integration_id]).path,
         integration_type: ProjectsConstants::Providers::GITLAB
       )
     end

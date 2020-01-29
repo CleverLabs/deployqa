@@ -22,7 +22,7 @@ module GitlabIntegration
     attr_reader :project_params, :current_user
 
     def load_gitlab_repositories
-      repositories = ::ProviderAPI::Gitlab::UserClient.new(current_user.token).load_repositories
+      repositories = ::ProviderAPI::Gitlab::UserClient.new(current_user.token_for(::ProjectsConstants::Providers::GITLAB)).load_repositories
       repositories.filter { |repository| repository.namespace.id == @project_params[:integration_id].to_i }
     end
 

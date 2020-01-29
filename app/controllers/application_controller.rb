@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :login_if_not
   before_action :set_paper_trail_whodunnit
 
-  helper_method :github_router
+  helper_method :github_router, :gitlab_router
 
   private
 

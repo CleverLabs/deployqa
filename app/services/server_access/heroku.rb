@@ -21,7 +21,7 @@ module ServerAccess
     end
 
     def push_buildpacks(buildpacks)
-      return ReturnValue.ok unless buildpacks.any? { |buildpack| buildpack.present? }
+      return ReturnValue.ok unless buildpacks.any?(&:present?)
 
       updates = buildpacks.map { |buildpack| { buildpack: buildpack } }
       safe_call.safely do

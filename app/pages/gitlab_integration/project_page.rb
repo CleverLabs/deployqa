@@ -4,7 +4,7 @@ module GitlabIntegration
   class ProjectPage
     def initialize(current_user)
       @current_user = current_user
-      @gitlab_client = ::ProviderAPI::Gitlab::UserClient.new(@current_user.token)
+      @gitlab_client = ::ProviderAPI::Gitlab::UserClient.new(current_user.token_for(::ProjectsConstants::Providers::GITLAB))
     end
 
     def build_project_names
