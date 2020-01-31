@@ -23,23 +23,22 @@ module Deployment
         state = create_server(configuration, state)
         state = push_buildpacks(configuration, state)
         state = push_code_to_server(configuration, state)
-        create_infrastructure(configuration.application_name, configuration.web_processes, configuration.seeds_command, state)
+        create_infrastructure(configuration.application_name, configuration.web_processes, configuration, state)
       end
 
       def create_server(configuration, state)
         server = ServerAccess::Heroku.new(name: configuration.application_name)
-        state = state
-                .add_state(:create_server) { server.create(configuration.docker?) }
-                .add_state(:update_env_variables) { server.update_env_variables(env_variables(configuration)) }
 
-        Deployment::Helpers::AddonsBuilder.new(configuration, state, server).call
+        state = state.add_state(:create_server) { server.create(configuration.docker?) }
+        state = Deployment::Helpers::AddonsBuilder.new(configuration, state, server).call
+        state.add_state(:update_env_variables) { update_env_variables(configuration, server) }
       end
 
-      def create_infrastructure(app_name, web_processes, seeds_command, state)
+      def create_infrastructure(app_name, web_processes, configuration, state)
         server = ServerAccess::Heroku.new(name: app_name)
 
-        state.add_state(:setup_db) { server.setup_db }
-        state.add_state(:run_seeds) { server.run_command(seeds_command) } if seeds_command.present?
+        state.add_state(:setup_db) { server.setup_db } if configuration.db_addon_present?
+        state.add_state(:run_seeds) { server.run_command(configuration.seeds_command) } if configuration.fill_seeds?
 
         state.add_state(:setup_processes) { server.setup_processes(web_processes) }
       end
@@ -55,8 +54,22 @@ module Deployment
         Deployment::Helpers::PushCodeToServer.new(configuration, state).call
       end
 
+      def update_env_variables(configuration, server)
+        env_variables_result = server.app_env_variables
+        return env_variables_result unless env_variables_result.ok?
+
+        configuration.env_variables.merge!(env_variables_result.object)
+
+        # TODO: temp solution. Probably should be another addon
+        if configuration.env_variables["CLEARDB_DATABASE_URL"]
+          configuration.env_variables["CLEARDB_DATABASE_URL"] = configuration.env_variables["CLEARDB_DATABASE_URL"].gsub("mysql", "mysql2").gsub("?reconnect=true", "")
+        end
+
+        server.update_env_variables(env_variables(configuration))
+      end
+
       def env_variables(configuration)
-        Deployment::Helpers::EnvAliasing.new(configuration).modify!
+        Deployment::Helpers::EnvAliasing.new(configuration.env_variables).modify!
         repo_configuration = configuration.repo_configuration
         return configuration.env_variables if !configuration.build_configuration.private_gem_detected || configuration.docker?
 

@@ -9,7 +9,7 @@ class ProjectUserRolesController < ApplicationController
 
   def create
     project = find_project
-    user = find_user(project)
+    user = find_user
 
     unless user
       flash.notice = "User not found"
@@ -26,7 +26,7 @@ class ProjectUserRolesController < ApplicationController
     authorize Project.find(params[:project_id]), :edit?, policy_class: ProjectPolicy
   end
 
-  def find_user(project)
+  def find_user
     User
       .joins(user_references: :auth_info)
       .where(auth_infos: { email: params[:project_user_role][:email] })

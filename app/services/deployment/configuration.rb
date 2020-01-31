@@ -31,5 +31,13 @@ module Deployment
     def docker?
       build_configuration.build_type == RepositoryConstants::DOCKER
     end
+
+    def db_addon_present?
+      addons.find { |addon| addon.addon_type == AddonConstants::Types::RELATIONAL_DB }
+    end
+
+    def fill_seeds?
+      db_addon_present? && configuration.seeds_command.present?
+    end
   end
 end

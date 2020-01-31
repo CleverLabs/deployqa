@@ -7,4 +7,12 @@ module AddonConstants
       AMAZON = "amazon"
     ].freeze
   end
+
+  module Types
+    ALL = [
+      RELATIONAL_DB = "relational_db",
+      KEY_VALUE_DB = "key_value_db",
+      CLOUD_STORAGE = "cloud_storage"
+    ].freeze
+  end
 end
