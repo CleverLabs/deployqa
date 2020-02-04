@@ -121,7 +121,10 @@ module NomadIntegration
 
 
     def instance_job
-      domain = "#{@name}.#{ENV["INSTANCE_EXPOSURE_DOMAIN"]}"
+      domain = "#{@name}.#{ENV['INSTANCE_EXPOSURE_DOMAIN']}"
+
+      # TODO: assign, not rand
+      db_port = rand(10000..20000)
       job_name = "instance-" + @name
       job_specification = {
         job: {
@@ -146,7 +149,8 @@ module NomadIntegration
                     RAILS_LOG_TO_STDOUT: "true",
                     RAILS_ENV: "production",
                     SECRET_KEY_BASE: SecureRandom.hex,
-                    DATABASE_URL: "postgres://postgres:temp_pass@#{domain}:5432"
+                    RAILS_SERVE_STATIC_FILES: "true",
+                    DATABASE_URL: "postgres://postgres:temp_pass@#{ENV['DB_EXPOSURE_IP']}:#{db_port}/postgres"
                     # DATABASE_URL: "postgres://postgres:temp_pass@${NOMAD_ADDR_database_db}/postgres"
                   },
                   services: [{ name: job_name, tags: ["global", "instance", "urlprefix-#{domain}/"], portlabel: "http", checks: [{ name: "alive", type: "tcp", interval: 10000000000, timeout: 2000000000 }] }],
@@ -157,7 +161,7 @@ module NomadIntegration
                   driver: "docker",
                   config: { image: "postgres", port_map: [{ db: 5432 }], args: ["postgres", "-c", "log_connections=true", "-c", "log_disconnections=true", "-c", "log_error_verbosity=VERBOSE"] },
                   env: { POSTGRES_PASSWORD: "temp_pass" },
-                  services: [{ name: job_name + "-db", tags: ["global", "instance_db", "urlprefix-#{domain}:5432 proto=tcp"], portlabel: "db", checks: [{ name: "alive", type: "tcp", interval: 10000000000, timeout: 2000000000 }] }],
+                  services: [{ name: job_name + "-db", tags: ["global", "instance_db", "urlprefix-#{ENV['DB_EXPOSURE_IP']}:#{db_port} proto=tcp"], portlabel: "db", checks: [{ name: "alive", type: "tcp", interval: 10000000000, timeout: 2000000000 }] }],
                   resources: { cpu: 100, memorymb: 100, networks: [{ mbits: 10, dynamicports: [{ label: "db" }] }] },
                 }
               ]
