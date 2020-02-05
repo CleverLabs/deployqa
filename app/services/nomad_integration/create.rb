@@ -10,6 +10,13 @@ module NomadIntegration
       @logger = @state_machine.logger
 
       @name = configurations.first.application_name
+
+      @db_name = SecureRandom.alphanumeric
+      @db_user = SecureRandom.alphanumeric
+      @db_password = SecureRandom.alphanumeric
+
+      # TODO: assign, not rand
+      @db_port = rand(10000..20000)
     end
 
     def call
@@ -18,6 +25,7 @@ module NomadIntegration
         # git_clone_job
         # build_job
         instance_job
+        db_setup_job
         # clean_up_job
         ReturnValue.ok
       end
@@ -109,6 +117,21 @@ module NomadIntegration
       end
     end
 
+    def wait_until_task_is_running(evaluation)
+      allocation = Nomad.evaluation.allocations_for(evaluation.eval_id).last
+
+      (1..10).each do |_|
+        allocation = Nomad.allocation.read(allocation.id)
+        return if allocation.task_states.all? do |_task_name, state|
+          state.events.any? { |event| event.type == "Started" }
+        end
+
+        sleep 3
+      end
+
+      raise "Task not started"
+    end
+
     def read_logs(allocation, task_name, type, offset)
       logs = Nomad.client.get("/v1/client/fs/logs/#{allocation}", task: task_name, type: type, plain: true, offset: offset)
       logs.split(/\n|\r/).each { |message| @logger.info(uncolorize(message), context: "#{type}-#{task_name}") }
@@ -123,12 +146,6 @@ module NomadIntegration
     def instance_job
       domain = "#{@name}.#{ENV['INSTANCE_EXPOSURE_DOMAIN']}"
 
-      db_name = SecureRandom.alphanumeric
-      db_user = SecureRandom.alphanumeric
-      db_password = SecureRandom.alphanumeric
-
-      # TODO: assign, not rand
-      db_port = rand(10000..20000)
       job_name = "instance-" + @name
       job_specification = {
         job: {
@@ -154,8 +171,7 @@ module NomadIntegration
                     RAILS_ENV: "production",
                     SECRET_KEY_BASE: SecureRandom.hex,
                     RAILS_SERVE_STATIC_FILES: "true",
-                    DATABASE_URL: "postgres://#{db_user}:#{db_password}@#{ENV['DB_EXPOSURE_IP']}:#{db_port}/#{db_name}"
-                    # DATABASE_URL: "postgres://postgres:temp_pass@${NOMAD_ADDR_database_db}/postgres"
+                    DATABASE_URL: "postgres://#{@db_user}:#{@db_password}@#{ENV['DB_EXPOSURE_IP']}:#{@db_port}/#{@db_name}"
                   },
                   services: [{ name: job_name, tags: ["global", "instance", "urlprefix-#{domain}/"], portlabel: "http", checks: [{ name: "alive", type: "tcp", interval: 10000000000, timeout: 2000000000 }] }],
                   resources: { cpu: 300, memorymb: 300, networks: [{ mode: "none", mbits: 20, dynamicports: [{ label: "http" }] }] }
@@ -164,8 +180,8 @@ module NomadIntegration
                   name: "database",
                   driver: "docker",
                   config: { image: "postgres", port_map: [{ db: 5432 }], args: ["postgres", "-c", "log_connections=true", "-c", "log_disconnections=true", "-c", "log_error_verbosity=VERBOSE"] },
-                  env: { POSTGRES_PASSWORD: db_password, POSTGRES_DB: db_name, POSTGRES_USER: db_user },
-                  services: [{ name: job_name + "-db", tags: ["global", "instance_db", "urlprefix-#{ENV['DB_LB_LOCAL_IP']}:#{db_port} proto=tcp"], portlabel: "db", checks: [{ name: "alive", type: "tcp", interval: 10000000000, timeout: 2000000000 }] }],
+                  env: { POSTGRES_PASSWORD: @db_password, POSTGRES_DB: @db_name, POSTGRES_USER: @db_user },
+                  services: [{ name: job_name + "-db", tags: ["global", "instance_db", "urlprefix-#{ENV['DB_LB_LOCAL_IP']}:#{@db_port} proto=tcp"], portlabel: "db", checks: [{ name: "alive", type: "tcp", interval: 10000000000, timeout: 2000000000 }] }],
                   resources: { cpu: 100, memorymb: 100, networks: [{ mbits: 10, dynamicports: [{ label: "db" }] }] },
                 }
               ]
@@ -173,7 +189,45 @@ module NomadIntegration
           ]
         }
       }
-      Nomad.job.create(job_specification)
+      wait_until_task_is_running(Nomad.job.create(job_specification))
+    end
+
+    def db_setup_job
+      job_name = "db-setup-instance-" + @name
+      job_specification = {
+        job: {
+          name: job_name,
+          id: job_name,
+          type: "batch",
+          datacenters: ["dc1"],
+          taskgroups: [
+            {
+              name: job_name,
+              count: 1,
+              tasks: [
+                {
+                  name: "db_setup",
+                  driver: "docker",
+                  config: {
+                    image: "#{ENV['REGISTRY_ADDESS']}/deployqa-builds-testing:latest",
+                    args: ["bundle", "exec", "rails", "db:schema:load"]
+                  },
+                  resources: { cpu: 3000, memorymb: 1024 },
+                  env: {
+                    RAILS_LOG_TO_STDOUT: "true",
+                    RAILS_ENV: "production",
+                    SECRET_KEY_BASE: SecureRandom.hex,
+                    SAFETY_ASSURED: "true",
+                    DATABASE_URL: "postgres://#{@db_user}:#{@db_password}@#{ENV['DB_EXPOSURE_IP']}:#{@db_port}/#{@db_name}"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+
+      wait_until_build_is_done(Nomad.job.create(job_specification), task_name: "db_setup")
     end
 
     def clean_up_job
