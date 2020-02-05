@@ -123,6 +123,10 @@ module NomadIntegration
     def instance_job
       domain = "#{@name}.#{ENV['INSTANCE_EXPOSURE_DOMAIN']}"
 
+      db_name = SecureRandom.alphanumeric
+      db_user = SecureRandom.alphanumeric
+      db_password = SecureRandom.alphanumeric
+
       # TODO: assign, not rand
       db_port = rand(10000..20000)
       job_name = "instance-" + @name
@@ -150,7 +154,7 @@ module NomadIntegration
                     RAILS_ENV: "production",
                     SECRET_KEY_BASE: SecureRandom.hex,
                     RAILS_SERVE_STATIC_FILES: "true",
-                    DATABASE_URL: "postgres://postgres:temp_pass@#{ENV['DB_EXPOSURE_IP']}:#{db_port}/postgres"
+                    DATABASE_URL: "postgres://#{db_user}:#{db_password}@#{ENV['DB_EXPOSURE_IP']}:#{db_port}/#{db_name}"
                     # DATABASE_URL: "postgres://postgres:temp_pass@${NOMAD_ADDR_database_db}/postgres"
                   },
                   services: [{ name: job_name, tags: ["global", "instance", "urlprefix-#{domain}/"], portlabel: "http", checks: [{ name: "alive", type: "tcp", interval: 10000000000, timeout: 2000000000 }] }],
@@ -160,8 +164,8 @@ module NomadIntegration
                   name: "database",
                   driver: "docker",
                   config: { image: "postgres", port_map: [{ db: 5432 }], args: ["postgres", "-c", "log_connections=true", "-c", "log_disconnections=true", "-c", "log_error_verbosity=VERBOSE"] },
-                  env: { POSTGRES_PASSWORD: "temp_pass" },
-                  services: [{ name: job_name + "-db", tags: ["global", "instance_db", "urlprefix-#{ENV['DB_EXPOSURE_IP']}:#{db_port} proto=tcp"], portlabel: "db", checks: [{ name: "alive", type: "tcp", interval: 10000000000, timeout: 2000000000 }] }],
+                  env: { POSTGRES_PASSWORD: db_password, POSTGRES_DB: db_name, POSTGRES_USER: db_user },
+                  services: [{ name: job_name + "-db", tags: ["global", "instance_db", "urlprefix-#{ENV['DB_LB_LOCAL_IP']}:#{db_port} proto=tcp"], portlabel: "db", checks: [{ name: "alive", type: "tcp", interval: 10000000000, timeout: 2000000000 }] }],
                   resources: { cpu: 100, memorymb: 100, networks: [{ mbits: 10, dynamicports: [{ label: "db" }] }] },
                 }
               ]
