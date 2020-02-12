@@ -11,6 +11,7 @@ module Github
         def call
           user = find_user
           project = find_project
+          perform_plugins_callback(project)
           ProjectUserRole.find_or_create_by(user: user, project: project).update!(role: ProjectUserRoleConstants::ADMIN)
           @wrapped_body.repos.each { |repo_info| create_repo(repo_info, project) }
           ReturnValue.ok
@@ -30,6 +31,11 @@ module Github
             project.update!(name: @wrapped_body.organization_info.name) if project.name != @wrapped_body.organization_info.name
             GithubEntity.ensure_info_exists(project, @wrapped_body.raw_organization_info)
           end
+        end
+
+        def perform_plugins_callback(project)
+          project_info = Plugins::Adapters::NewProject.build(project)
+          Plugins::Entry::OnProjectCreation.new(project_info).call
         end
 
         def create_repo(repo_info, project)

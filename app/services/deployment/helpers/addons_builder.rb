@@ -30,7 +30,8 @@ module Deployment
 
       def build_s3_addon
         @state.add_state(:build_s3_addon) do
-          AwsIntegration::S3Accessor.new.create_bucket(@configuration.application_name)
+          info = Plugins::Adapters::NewInstance.new(application_name: @configuration.application_name)
+          Plugins::Entry::OnInstanceCreation.new(info).call
         end
       end
     end

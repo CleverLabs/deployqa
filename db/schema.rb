@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_04_085607) do
+ActiveRecord::Schema.define(version: 2020_02_11_111129) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +79,17 @@ ActiveRecord::Schema.define(version: 2020_02_04_085607) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_gitlab_repositories_infos_on_project_id"
+  end
+
+  create_table "project_addon_infos", force: :cascade do |t|
+    t.jsonb "tokens", default: {}, null: false
+    t.bigint "project_id", null: false
+    t.bigint "addon_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["addon_id"], name: "index_project_addon_infos_on_addon_id"
+    t.index ["project_id", "addon_id"], name: "index_project_addon_infos_on_project_id_and_addon_id", unique: true
+    t.index ["project_id"], name: "index_project_addon_infos_on_project_id"
   end
 
   create_table "project_instances", force: :cascade do |t|
@@ -207,6 +218,8 @@ ActiveRecord::Schema.define(version: 2020_02_04_085607) do
   add_foreign_key "auth_infos", "user_references"
   add_foreign_key "build_action_logs", "build_actions"
   add_foreign_key "gitlab_repositories_infos", "projects"
+  add_foreign_key "project_addon_infos", "addons"
+  add_foreign_key "project_addon_infos", "projects"
   add_foreign_key "project_user_roles", "projects"
   add_foreign_key "project_user_roles", "users"
   add_foreign_key "repositories", "projects"

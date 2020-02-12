@@ -91,7 +91,10 @@ module ServerAccess
     end
 
     def safe_call
-      @_safe_call ||= ::ServerAccess::HerokuHelpers::SafeCall.new
+      @_safe_call ||= ::ServerAccess::HerokuHelpers::SafeCall.new(
+        exceptions: [Excon::Error::UnprocessableEntity, Excon::Error::NotFound],
+        errors_processor: ->(error) { error.response.data[:body] }
+      )
     end
   end
 end

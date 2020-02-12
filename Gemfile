@@ -7,7 +7,8 @@ ruby "2.6.3"
 
 gem "dotenv-rails", groups: %i[development test]
 
-gem "aws-sdk"
+gem "aws-sdk-iam"
+gem "aws-sdk-s3"
 gem "bootsnap", ">= 1.4.4", require: false
 gem "enumerize"
 gem "ginjo-omniauth-slack", require: "omniauth-slack"

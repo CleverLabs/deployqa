@@ -10,6 +10,7 @@ module GitlabIntegration
     def call
       ActiveRecord::Base.transaction do
         project = Project.create!(project_params)
+        perform_plugins_callback(project)
         create_project_user_role(project)
         create_gitlab_repositories_info(project)
 
@@ -20,6 +21,11 @@ module GitlabIntegration
     private
 
     attr_reader :project_params, :current_user
+
+    def perform_plugins_callback(project)
+      project_info = Plugins::Adapters::NewProject.build(project)
+      Plugins::Entry::OnProjectCreation.new(project_info).call
+    end
 
     def load_gitlab_repositories
       repositories = ::ProviderAPI::Gitlab::UserClient.new(current_user.token_for(::ProjectsConstants::Providers::GITLAB)).load_repositories

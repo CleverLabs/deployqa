@@ -25,7 +25,7 @@ module Deployment
       end
 
       def build_name(repository, instance_name)
-        Deployment::ConfigurationBuilders::NameBuilder.new.call(@project.name, repository.name, instance_name)
+        Deployment::ConfigurationBuilders::NameBuilder.new.call(@project.name, @project.id, repository.name, instance_name)
       end
     end
   end

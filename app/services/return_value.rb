@@ -12,6 +12,7 @@ class ReturnValue
 
   alias _status= status=
   alias _errors= errors=
+  alias _object= object=
 
   def self.ok(object = nil)
     new(status: :ok, object: object)
@@ -30,6 +31,11 @@ class ReturnValue
   def errors=(value)
     @errors = value.is_a?(Array) ? value : [value]
     @attributes[:errors] = @errors
+  end
+
+  def object=(value)
+    @object = value
+    @attributes[:object] = @object
   end
 
   def then(&block)
