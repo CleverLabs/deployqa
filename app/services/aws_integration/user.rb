@@ -25,7 +25,7 @@ module AwsIntegration
 
     def add_registry_access
       @safe_call.safely_with_result do
-        resource = "arn:aws:ecr:#{ENV['AWS_REGION']}:#{ENV['AWS_ACCOUNT_ID']}:repository/#{@project_name}"
+        resource = "arn:aws:ecr:#{ENV['AWS_REGION']}:#{ENV['AWS_ACCOUNT_ID']}:repository/deployqa-repo-#{@project_name}"
 
         @client.put_user_policy(
           policy_document: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"ecr:*\",\"Resource\":\"#{resource}\"}]}",
@@ -37,7 +37,7 @@ module AwsIntegration
 
     def add_s3_access(repo_prefix:)
       @safe_call.safely_with_result do
-        resource = "arn:aws:s3:::#{AwsIntegration::S3Accessor::BUCKET_NAME.call(repo_prefix)}"
+        resource = "arn:aws:s3:::#{repo_prefix}"
 
         @client.put_user_policy(
           policy_document: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"s3:*\",\"Resource\":\"#{resource}\"}]}",

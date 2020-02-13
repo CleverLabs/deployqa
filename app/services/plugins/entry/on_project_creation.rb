@@ -30,7 +30,9 @@ module Plugins
       end
 
       def s3_repos_prefix
-        Deployment::ConfigurationBuilders::NameBuilder.new.call(@project_info.project_name, @project_info.project_id, "*", "*")
+        name_builder = Deployment::ConfigurationBuilders::NameBuilder.new
+        application_name = name_builder.application_name(@project_info.project_name, @project_info.project_id, "*", "*")
+        name_builder.external_resource_name(application_name)
       end
 
       def create_plugin_info!(access_key_hash)

@@ -16,7 +16,7 @@ module Plugins
       end
 
       def uniq_name
-        @_uniq_name ||= "#{project_name}_#{project_id}"
+        @_uniq_name ||= Deployment::ConfigurationBuilders::NameBuilder.new.external_project_name(project_name, project_id)
       end
     end
   end

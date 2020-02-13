@@ -25,7 +25,7 @@ module Deployment
 
         tokens = ProjectAddonInfo.find_by(project: @project, addon: s3_addon).tokens
         {
-          "S3_BUCKET" => AwsIntegration::S3Accessor::BUCKET_NAME.call(@application_name),
+          "S3_BUCKET" => Deployment::ConfigurationBuilders::NameBuilder.new.external_resource_name(@application_name),
           "S3_KEY_ID" => tokens.fetch("access_key_id"),
           "S3_ACCESS_KEY" => tokens.fetch("secret_access_key"),
           "S3_REGION" => ENV["AWS_REGION"]
