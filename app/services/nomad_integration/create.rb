@@ -17,6 +17,9 @@ module NomadIntegration
 
       # TODO: assign, not rand
       @db_port = rand(10000..20000)
+
+      @repo_addres = "#{ENV['AWS_ACCOUNT_ID']}.dkr.ecr.#{ENV['AWS_REGION']}.amazonaws.com/deployqa-builds-testing"
+      @container_addres = @repo_addres + ":latest"
     end
 
     def call
@@ -82,13 +85,17 @@ module NomadIntegration
                   name: "build",
                   driver: "docker",
                   config: {
-                    image: "gcr.io/kaniko-project/executor:latest",
-                    args: ["--dockerfile=/workspace/Dockerfile", "--context=/workspace", "--destination=#{ENV['REGISTRY_ADDESS']}/deployqa-builds-testing:latest", "--force", "--cache=true"],
-                    # args: ["--dockerfile=/workspace/Dockerfile", "--context=/workspace", "--destination=#{ENV['REGISTRY_ADDESS']}/deployqa-builds-testing:latest", "--force"],
+                    image: "gcr.io/kaniko-project/executor:v0.16.0",
+                    args: ["--dockerfile=/workspace/Dockerfile", "--context=/workspace", "--destination=#{@container_addres}", "--force", "--cache=true", "--cache-repo=#{@repo_addres}"],
                     mounts: [
                       { type: "bind", source: "/mnt/shared_volume/#{@name}", target: "/workspace", readonly: false },
-                      { type: "bind", source: "/mnt/shared_volume/kaniko_cache", target: "/cache", readonly: false }
+                      { type: "bind", source: "/mnt/shared_volume/kaniko_cache", target: "/cache", readonly: false },
+                      { type: "bind", source: "/home/ubuntu/client_configuration_files/.docker", target: "/kaniko/.docker", readonly: false }
                     ]
+                  },
+                  env: {
+                    AWS_ACCESS_KEY_ID: ProjectAddonInfo.last.tokens["access_key_id"],
+                    AWS_SECRET_ACCESS_KEY: ProjectAddonInfo.last.tokens["secret_access_key"]
                   },
                   resources: { cpu: 3000, memorymb: 1024 }
                 }
@@ -162,7 +169,7 @@ module NomadIntegration
                   name: "web",
                   driver: "docker",
                   config: {
-                    image: "#{ENV['REGISTRY_ADDESS']}/deployqa-builds-testing:latest",
+                    image: @container_addres,
                     args: ["bundle", "exec", "rails", "s", "-b", "0.0.0.0", "-p", "80"],
                     port_map: [{ http: 80 }],
                   },
@@ -209,7 +216,7 @@ module NomadIntegration
                   name: "db_setup",
                   driver: "docker",
                   config: {
-                    image: "#{ENV['REGISTRY_ADDESS']}/deployqa-builds-testing:latest",
+                    image: @container_addres,
                     args: ["bundle", "exec", "rails", "db:schema:load"]
                   },
                   resources: { cpu: 3000, memorymb: 1024 },
