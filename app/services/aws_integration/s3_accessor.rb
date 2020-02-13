@@ -6,7 +6,7 @@ module AwsIntegration
 
     def initialize
       @s3_client = Aws::S3::Client.new
-      @safe_call = ::ServerAccess::HerokuHelpers::SafeCall.new(exceptions: [StandardError])
+      @safe_call = Utils::SafeCall.new(exceptions: [StandardError])
     end
 
     def create_bucket(application_name)

@@ -5,7 +5,7 @@ module AwsIntegration
     def initialize(project_name)
       @client = Aws::IAM::Client.new
       @project_name = project_name
-      @safe_call = ::ServerAccess::HerokuHelpers::SafeCall.new(exceptions: [StandardError], max_number_of_tries: 1)
+      @safe_call = Utils::SafeCall.new(exceptions: [StandardError], max_number_of_tries: 1)
     end
 
     def create
