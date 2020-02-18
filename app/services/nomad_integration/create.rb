@@ -28,7 +28,7 @@ module NomadIntegration
         # git_clone_job
         # build_job
         instance_job
-        db_setup_job
+        # db_setup_job
         # clean_up_job
         ReturnValue.ok
       end

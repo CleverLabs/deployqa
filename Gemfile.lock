@@ -55,6 +55,9 @@ GEM
       aws-partitions (~> 1.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
+    aws-sdk-ecr (1.20.0)
+      aws-sdk-core (~> 3, >= 3.61.1)
+      aws-sigv4 (~> 1.1)
     aws-sdk-iam (1.30.0)
       aws-sdk-core (~> 3, >= 3.61.1)
       aws-sigv4 (~> 1.1)
@@ -371,6 +374,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aws-sdk-ecr
   aws-sdk-iam
   aws-sdk-s3
   bootsnap (>= 1.4.4)

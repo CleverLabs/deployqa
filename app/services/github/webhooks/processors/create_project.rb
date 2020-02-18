@@ -39,6 +39,9 @@ module Github
         end
 
         def create_repo(repo_info, project)
+          wrapper_repo = Plugins::Adapters::NewRepo.new(project, repo_info.name)
+          Plugins::Entry::OnRepoCreation.new(wrapper_repo).call
+
           configuration = ::Repository.create!(
             project: project,
             path: repo_info.full_name,
