@@ -23,17 +23,23 @@ module NomadIntegration
     end
 
     def call
-      @state_machine.start
-      @state_machine.add_state(:create_server) do
-        # git_clone_job
-        # build_job
-        instance_job
-        # db_setup_job
-        # clean_up_job
-        ReturnValue.ok
-      end
+      data = Utils::Encryptor.new.encrypt(@configurations.to_json)
+      Sidekiq::Client.push({ "class" => "Robad::Workers::Create", "queue" => "asd", "args" => [data] })
 
+      @state_machine.start
+      @state_machine.add_state(:create_server) { ReturnValue.ok }
       @state_machine.finalize
+      # @state_machine.start
+      # @state_machine.add_state(:create_server) do
+      #   # git_clone_job
+      #   # build_job
+      #   instance_job
+      #   # db_setup_job
+      #   # clean_up_job
+      #   ReturnValue.ok
+      # end
+
+      # @state_machine.finalize
     end
 
     private

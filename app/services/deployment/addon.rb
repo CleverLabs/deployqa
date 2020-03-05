@@ -9,5 +9,6 @@ module Deployment
     attribute :credentials_names, Array, of: String
     attribute :credentials, Hash
     attribute :addon_type, String
+    attribute :specific_configuration, Hash
   end
 end

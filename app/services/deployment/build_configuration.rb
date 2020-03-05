@@ -7,5 +7,6 @@ module Deployment
     attribute :build_type, String
     attribute :private_gem_detected, "Boolean"
     attribute :env_variables, Hash
+    attribute :docker_repo_address, String
   end
 end
