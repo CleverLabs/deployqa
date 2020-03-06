@@ -8,17 +8,16 @@ module Deployment
 
     attr_reader :logger # temporary
 
-    def initialize(build_action, deployment_statuses)
+    def initialize(build_action)
       @state_machine = ::ActionStateMachine.new
       @project_instance = build_action.project_instance
       @logger = Deployment::BuildActionLogger.new(build_action)
-      @deployment_statuses = deployment_statuses
-      @instance_events = ProjectInstanceEvents.new(@project_instance)
+      @instance_events = Deployment::ProjectInstanceEvents.new(build_action)
       @start_time = nil
     end
 
     def start
-      @instance_events.create_event(@deployment_statuses.fetch(:running))
+      @instance_events.create_event(:running)
       @start_time = Time.current
       self
     end
@@ -37,10 +36,10 @@ module Deployment
     def finalize(configurations = nil)
       if last_state.status.ok?
         @logger.info(I18n.t("build_actions.log.success", time: time_since_start), context: context_name)
-        @instance_events.create_event(@deployment_statuses.fetch(:success))
+        @instance_events.create_event(:success)
         @project_instance.update(configurations: configurations) if configurations
       else
-        @instance_events.create_event(@deployment_statuses.fetch(:failure))
+        @instance_events.create_event(:failure)
       end
 
       last_state.status

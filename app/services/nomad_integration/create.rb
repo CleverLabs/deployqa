@@ -24,7 +24,7 @@ module NomadIntegration
 
     def call
       data = Utils::Encryptor.new.encrypt(@configurations.to_json)
-      Sidekiq::Client.push({ "class" => "Robad::Workers::Create", "queue" => "asd", "args" => [data] })
+      Sidekiq::Client.push({ "class" => "Robad::Workers::Create", "queue" => "asd", "args" => [data, @logger.serialize[:build_action].id] })
 
       @state_machine.start
       @state_machine.add_state(:create_server) { ReturnValue.ok }

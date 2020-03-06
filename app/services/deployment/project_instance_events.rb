@@ -12,17 +12,18 @@ module Deployment
       ProjectInstanceConstants::DESTROYED => ->(_comment) { "Application has been destroyed" }
     }.freeze
 
-    def initialize(project_instance)
-      @project_instance = project_instance
-      @project = project_instance.project
+    def initialize(build_action)
+      @project_instance = build_action.project_instance
+      @statuses = ProjectInstanceConstants::ACTION_STATUSES.fetch(build_action.action)
       @message_policy = ProjectInstanceMessagePolicy.new(nil, @project_instance)
     end
 
     def create_event(event)
+      status = @statuses.fetch(event.to_sym)
       comment = Notifications::Comment.new(@project_instance)
-      text = COMMENT_MESSAGES.fetch(event).call(comment)
+      text = COMMENT_MESSAGES.fetch(status).call(comment)
 
-      @project_instance.update!(deployment_status: event)
+      @project_instance.update!(deployment_status: status)
       Deployment::PullRequestNotificator.new(@project_instance).call(text) if @message_policy.pull_request_comments?
       Slack::Notificator.new(@project_instance).send_message(text) if @message_policy.slack?
     end
