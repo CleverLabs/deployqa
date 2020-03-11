@@ -11,7 +11,7 @@ module Deployment
 
       def call
         build_heroku_addons
-        build_s3_addon if s3_addon_present?
+        build_addons
 
         @state
       end
@@ -24,12 +24,8 @@ module Deployment
         end
       end
 
-      def s3_addon_present?
-        @configuration.addons.find { |addon| addon.name == "AWS S3" }
-      end
-
-      def build_s3_addon
-        @state.add_state(:build_s3_addon) do
+      def build_addons
+        @state.add_state(:build_addons) do
           info = Plugins::Adapters::NewInstance.new(application_name: @configuration.application_name)
           Plugins::Entry::OnInstanceCreation.new(info).call
         end

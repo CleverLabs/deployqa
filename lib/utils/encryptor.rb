@@ -22,5 +22,9 @@ module Utils
       cipher.key = @key
       cipher.update(unpacked_string) + cipher.final
     end
+
+    def decrypt_json(string)
+      JSON.parse(decrypt(string))
+    end
   end
 end
