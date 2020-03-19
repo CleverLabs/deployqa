@@ -14,7 +14,12 @@ module Deployment
 
         configurations = Deployment::ConfigurationBuilders::ByProjectInstance.new(@project_instance).call.map(&:to_h)
         build_action = BuildAction.create!(project_instance: @project_instance, author: @user_reference, action: BuildActionConstants::DESTROY_INSTANCE)
-        ServerActionsCallJob.perform_later(Deployment::ServerActions::Destroy.to_s, configurations, build_action)
+        
+        if Features::Accessor.new.docker_deploy_performed?(@project_instance)
+          Robad::Executor.new(build_action).call(configurations)
+        else
+          ServerActionsCallJob.perform_later(Deployment::ServerActions::Destroy.to_s, configurations, build_action)
+        end
       end
 
       private

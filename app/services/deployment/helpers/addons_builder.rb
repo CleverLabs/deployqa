@@ -26,7 +26,7 @@ module Deployment
 
       def build_addons
         @state.add_state(:build_addons) do
-          info = Plugins::Adapters::NewInstance.new(application_name: @configuration.application_name)
+          info = Plugins::Adapters::NewInstance.by_configuration(@configuration)
           Plugins::Entry::OnInstanceCreation.new(info).call
         end
       end

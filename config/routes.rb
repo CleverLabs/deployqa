@@ -18,6 +18,10 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => "/sidekiq"
   end
 
+  constraints Routes::LoggedUserConstraint.new(FeaturesPolicy) do
+    mount Flipper::UI.app(Flipper) => "/flipper"
+  end
+
   resource :sessions, only: %i[show create destroy]
   resources :users, only: %i[show]
 

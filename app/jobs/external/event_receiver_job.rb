@@ -10,7 +10,7 @@ module External
       Deployment::ProjectInstanceEvents.new(build_action).create_event(event.split("/").last)
 
       if event == "deployment/status/running"
-        configuration = Utils::Encryptor.new.decrypt_json(payload.fetch("encrypted_configuration")).first
+        configuration = Utils::Encryptor.new.decrypt_json(payload.fetch("encrypted_configuration"))
         info = Plugins::Adapters::NewInstance.by_configuration(configuration)
         Plugins::Entry::OnInstanceCreation.new(info).call
       end

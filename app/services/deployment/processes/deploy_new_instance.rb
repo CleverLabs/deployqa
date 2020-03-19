@@ -11,7 +11,14 @@ module Deployment
         Deployment::Helpers::RefreshProjectInstanceConfiguration.new(@project_instance).call
         configurations = Deployment::ConfigurationBuilders::ByProjectInstance.new(@project_instance).call
         build_action = BuildAction.create!(project_instance: @project_instance, author: user_reference, action: BuildActionConstants::CREATE_INSTANCE)
-        ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, configurations.map(&:to_h), build_action)
+        features_accessor = Features::Accessor.new
+
+        if features_accessor.docker_deploy_allowed?(user_reference.user, @project_instance.project)
+          features_accessor.perform_docker_deploy!(@project_instance)
+          Robad::Executor.new(build_action).call(configurations)
+        else
+          ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, configurations.map(&:to_h), build_action)
+        end
       end
     end
   end
