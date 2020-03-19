@@ -179,7 +179,6 @@ GEM
     nio4r (2.5.1)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
-    nomad (0.1.0)
     oauth2 (1.4.1)
       faraday (>= 0.8, < 0.16.0)
       jwt (>= 1.0, < 3.0)
@@ -404,7 +403,6 @@ DEPENDENCIES
   lograge (~> 0.11.1)
   logstash-event (~> 1.2, >= 1.2.02)
   logstash-logger (~> 0.26.1)
-  nomad (~> 0.1)
   octokit
   omniauth
   omniauth-github
