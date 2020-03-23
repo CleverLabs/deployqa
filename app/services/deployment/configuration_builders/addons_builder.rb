@@ -9,10 +9,29 @@ module Deployment
             name: SecureRandom.alphanumeric,
             user: SecureRandom.alphanumeric,
             password: SecureRandom.alphanumeric,
-            port: rand(10000..20000)
+            port: Robad::ResourceManagement::Port.allocate
           }
           url = "postgres://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}/#{config[:name]}"
           { config: config.merge(url: url), env: { DATABASE_URL: url } }
+        end,
+        "ClearDB (MySQL)" => lambda do
+          config = {
+            name: SecureRandom.alphanumeric,
+            user: SecureRandom.alphanumeric,
+            password: SecureRandom.alphanumeric,
+            port: Robad::ResourceManagement::Port.allocate
+          }
+          url = "mysql2://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}/#{config[:name]}"
+          { config: config.merge(url: url), env: { DATABASE_URL: url } }
+        end,
+        "Redis" => lambda do
+          config = {
+            user: "redis",
+            password: SecureRandom.alphanumeric,
+            port: Robad::ResourceManagement::Port.allocate
+          }
+          url = "redis://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}"
+          { config: config.merge(url: url), env: { REDIS_URL: url } }
         end
       }.freeze
 
