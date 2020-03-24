@@ -38,7 +38,7 @@ module Deployment
         server = ServerAccess::Heroku.new(name: app_name)
 
         state.add_state(:setup_db) { server.setup_db } if configuration.db_addon_present?
-        state.add_state(:run_seeds) { server.run_command(configuration.seeds_command) } if configuration.fill_seeds?
+        state.add_state(:load_seeds) { server.run_command(configuration.seeds_command) } if configuration.fill_seeds?
 
         state.add_state(:setup_processes) { server.setup_processes(web_processes) }
       end
