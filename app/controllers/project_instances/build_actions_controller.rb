@@ -6,7 +6,7 @@ module ProjectInstances
       @project = find_project
       @project_instance = @project.project_instances.find(params[:project_instance_id])
       @build_action = @project_instance.build_actions.find(params[:id])
-      @build_action_logs = @build_action.build_action_logs.order(:created_at)
+      @build_action_logs = @build_action.build_action_logs.order(created_at: :desc)
     end
 
     private
