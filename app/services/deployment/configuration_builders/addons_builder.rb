@@ -48,7 +48,7 @@ module Deployment
         @repository = repository
         @project = repository.project
         @addon = addon
-        @application_name
+        @application_name = application_name
       end
 
       def call
