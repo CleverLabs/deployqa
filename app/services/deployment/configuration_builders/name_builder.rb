@@ -24,6 +24,14 @@ module Deployment
       def external_resource_name(application_name)
         "deployqa-resource-#{application_name}"
       end
+
+      def heroku_app_url(application_name)
+        "https://#{application_name}.herokuapp.com"
+      end
+
+      def robad_app_url(application_name)
+        "http://#{application_name}.#{ENV['INSTANCE_EXPOSURE_DOMAIN']}"
+      end
     end
   end
 end

@@ -15,6 +15,8 @@ module Plugins
 
         aws_user.add_registry_access
         aws_user.add_s3_access(repo_prefix: s3_repos_prefix)
+
+        ReturnValue.ok
       end
 
       private

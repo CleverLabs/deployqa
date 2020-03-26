@@ -3,8 +3,9 @@
 module Deployment
   module ConfigurationBuilders
     class ByProject
-      def initialize(project)
+      def initialize(project, docker_feature)
         @project = project
+        @docker_feature = docker_feature
       end
 
       def call(instance_name, branches)
@@ -22,7 +23,7 @@ module Deployment
           repository_id: repository.id,
           heroku_buildpacks: repository.heroku_buildpacks,
           seeds_command: repository.seeds_command,
-          application_url: heroku_url(name)
+          application_url: application_url(name)
         }.merge(build_dependencies(repository, branches))
          .merge(build_env_with_addons(repository, name, active_repositories))
       end
@@ -36,7 +37,7 @@ module Deployment
       end
 
       def build_env_with_addons(repository, name, active_repositories)
-        addons = build_addons(repository)
+        addons = build_addons(repository, name)
         env = build_env_variables(repository, name, active_repositories)
         addons.each { |addon| env = env.merge(addon.fetch("credentials")) }
 
@@ -48,12 +49,12 @@ module Deployment
       end
 
       def build_env_variables(repository, name, active_repositories)
-        Deployment::ConfigurationBuilders::EnvVariablesBuilder.new(repository, @project, name, active_repositories).call
+        Deployment::ConfigurationBuilders::EnvVariablesBuilder.new(repository, @project, active_repositories, @docker_feature).call
       end
 
-      def build_addons(repository)
+      def build_addons(repository, name)
         repository.addons.to_a.map do |addon|
-          Deployment::ConfigurationBuilders::AddonsBuilder.new(repository, addon).call
+          Deployment::ConfigurationBuilders::AddonsBuilder.new(repository, addon, name).call
         end
       end
 
@@ -61,8 +62,12 @@ module Deployment
         repository.web_processes.to_a.map { |web_process| web_process.attributes.slice(*Deployment::WebProcess.attributes.map(&:to_s)) }
       end
 
-      def heroku_url(application_name)
-        "https://#{application_name}.herokuapp.com"
+      def application_url(application_name)
+        if @docker_feature.call
+          Deployment::ConfigurationBuilders::NameBuilder.new.robad_app_url(application_name)
+        else
+          Deployment::ConfigurationBuilders::NameBuilder.new.heroku_app_url(application_name)
+        end
       end
 
       def build_repo_configuration_by_project(repository, branches)

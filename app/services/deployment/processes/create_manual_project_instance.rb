@@ -6,10 +6,14 @@ module Deployment
       def initialize(project, user_reference)
         @project = project
         @user_reference = user_reference
+        @features_accessor = Features::Accessor.new
       end
 
       def call(project_instance_name:, branches:)
-        configurations = Deployment::ConfigurationBuilders::ByProject.new(@project).call(project_instance_name, branches)
+        configurations = Deployment::ConfigurationBuilders::ByProject.new(
+          @project,
+          ->() { @features_accessor.docker_deploy_allowed?(@user_reference.user, @project) }
+        ).call(project_instance_name, branches)
         creation_result = create_project_instance(project_instance_name, configurations)
         return creation_result unless creation_result.ok?
 
@@ -29,10 +33,9 @@ module Deployment
 
       def deploy_instance(instance, configurations)
         build_action = BuildAction.create!(project_instance: instance, author: @user_reference, action: BuildActionConstants::CREATE_INSTANCE)
-        features_accessor = Features::Accessor.new
 
-        if features_accessor.docker_deploy_allowed?(@user_reference.user, @project)
-          features_accessor.perform_docker_deploy!(instance)
+        if @features_accessor.docker_deploy_allowed?(@user_reference.user, @project)
+          @features_accessor.perform_docker_deploy!(instance)
           Robad::Executor.new(build_action).call(configurations)
         else
           ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, configurations.map(&:to_h), build_action)

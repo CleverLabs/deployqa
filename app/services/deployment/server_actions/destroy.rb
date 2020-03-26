@@ -23,7 +23,8 @@ module Deployment
       private
 
       def destroy_addons(configuration)
-        Deployment::Helpers::AddonsDestroyer.new(configuration).call
+        info = Plugins::Adapters::InstanceDestruction.by_configuration(configuration)
+        Plugins::Entry::OnInstanceDestuction.new(info).call
       end
     end
   end

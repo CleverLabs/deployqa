@@ -2,17 +2,16 @@
 
 module Plugins
   module Entry
-    class OnInstanceCreation
+    class OnInstanceDestuction
       def initialize(info)
         @info = info
       end
 
       def call
         if @info.addon_names.find { |addon_name| addon_name == "AWS S3" }
-          AwsIntegration::S3Accessor.new.create_bucket(@info.application_name)
+          AwsIntegration::S3Accessor.new.delete_bucket(@info.application_name)
         end
 
-        # TODO: return ENV variables and use them
         ReturnValue.ok
       end
     end
