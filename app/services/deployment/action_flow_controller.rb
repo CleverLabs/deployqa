@@ -17,7 +17,7 @@ module Deployment
     end
 
     def start
-      @instance_events.create_event(:running)
+      @instance_events.create_event(:start)
       @start_time = Time.current
       self
     end

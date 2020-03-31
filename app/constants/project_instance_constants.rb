@@ -16,11 +16,11 @@ module ProjectInstanceConstants
   ].freeze
 
   ACTION_STATUSES = {
-    BuildActionConstants::CREATE_INSTANCE.to_s => { running: DEPLOYING, success: RUNNING, failure: NOT_DEPLOYED },
-    BuildActionConstants::RECREATE_INSTANCE.to_s => { running: DEPLOYING, success: RUNNING, failure: NOT_DEPLOYED },
-    BuildActionConstants::UPDATE_INSTANCE.to_s => { running: UPDATING, success: RUNNING, failure: FAILURE },
-    BuildActionConstants::RELOAD_INSTANCE.to_s => { running: UPDATING, success: RUNNING, failure: RUNNING },
-    BuildActionConstants::DESTROY_INSTANCE.to_s => { running: DESTROYING, success: DESTROYED, failure: FAILURE }
+    BuildActionConstants::CREATE_INSTANCE.to_s => { start: DEPLOYING, success: RUNNING, failure: NOT_DEPLOYED },
+    BuildActionConstants::RECREATE_INSTANCE.to_s => { start: DEPLOYING, success: RUNNING, failure: NOT_DEPLOYED },
+    BuildActionConstants::UPDATE_INSTANCE.to_s => { start: UPDATING, success: RUNNING, failure: FAILURE },
+    BuildActionConstants::RELOAD_INSTANCE.to_s => { start: UPDATING, success: RUNNING, failure: RUNNING },
+    BuildActionConstants::DESTROY_INSTANCE.to_s => { start: DESTROYING, success: DESTROYED, failure: FAILURE }
   }.freeze
 
   ACTIVE_INSTANCES = [RUNNING, FAILURE, DEPLOYING, UPDATING].freeze

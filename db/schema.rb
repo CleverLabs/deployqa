@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_11_123412) do
+ActiveRecord::Schema.define(version: 2020_03_27_113315) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(version: 2020_03_11_123412) do
     t.integer "action", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "git_reference"
     t.index ["author_id"], name: "index_build_actions_on_author_id"
     t.index ["project_instance_id"], name: "index_build_actions_on_project_instance_id"
   end
