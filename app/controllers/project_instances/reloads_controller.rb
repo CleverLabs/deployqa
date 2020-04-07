@@ -13,11 +13,11 @@ module ProjectInstances
     private
 
     def find_project
-      authorize Project.find(params[:project_id]), :show?, policy_class: ProjectPolicy
+      authorize ProjectDomain.by_id(params[:project_id]), :show?, policy_class: ProjectPolicy
     end
 
     def find_project_instance(project)
-      authorize project.project_instances.find(params[:project_instance_id]), :reload?, policy_class: ProjectInstancePolicy
+      authorize project.project_instance(id: params[:project_instance_id]), :reload?, policy_class: ProjectInstancePolicy
     end
   end
 end

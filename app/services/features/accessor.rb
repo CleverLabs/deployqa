@@ -10,12 +10,12 @@ module Features
     end
 
     def perform_docker_deploy!(project_instance)
-      feature = Flipper[:docker_deploy]
+      feature = Flipper[:docker_deployed]
       feature.enable_actor(project_instance)
     end
 
     def docker_deploy_performed?(project_instance)
-      feature = Flipper[:docker_deploy]
+      feature = Flipper[:docker_deployed]
       feature.enabled?(project_instance)
     end
   end

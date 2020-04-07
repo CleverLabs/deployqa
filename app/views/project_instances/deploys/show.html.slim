@@ -9,11 +9,12 @@
       class: "mt-4" }
 
   .mt-4
-    = simple_form_for @project_instance, url: project_project_instance_deploy_path(@project, @project_instance), method: :post do |form|
-      - if @project.errors.any?
-        p = @project.errors.full_messages
+    = simple_form_for :project_instance, url: project_project_instance_deploy_path(@project, @project_instance), method: :post do |form|
+      - if @project_instance.project_instance_record.errors.any?
+        p = @project_instance.project_instance_record.errors.full_messages
 
-      - @project_instance.configurations.each do |configuration|
+      - @repositories.each do |repository|
         = form.simple_fields_for :configurations do |configurations_form|
-          = configurations_form.input configuration.application_name, label: configuration.repo_path, input_html: { value: configuration.git_reference }
+          = configurations_form.input repository.name, label: "'#{repository.name}' branch", input_html: { value: @project_instance.branches.fetch(repository.name, "master") }
+
       = form.button :submit, "Deploy", class: "btn btn-primary"

@@ -20,12 +20,14 @@ module Deployqa
 
     config.autoload_paths += %W[
       #{config.root}/app/constants
+      #{config.root}/app/domains
       #{config.root}/app/errors
       #{config.root}/app/pages
       #{config.root}/lib
     ]
 
     config.eager_load_paths += %W[
+      #{config.root}/app/domains
       #{config.root}/lib/errors
       #{config.root}/lib/provider_api
       #{config.root}/lib/utils

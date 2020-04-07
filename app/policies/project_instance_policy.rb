@@ -2,6 +2,12 @@
 
 class ProjectInstancePolicy < ApplicationPolicy
   def dumps?
+    return false if Features::Accessor.new.docker_deploy_performed?(record)
+
+    record.deployment_status.in?([ProjectInstanceConstants::RUNNING, ProjectInstanceConstants::UPDATING, ProjectInstanceConstants::FAILURE])
+  end
+
+  def addons?
     record.deployment_status.in?([ProjectInstanceConstants::RUNNING, ProjectInstanceConstants::UPDATING, ProjectInstanceConstants::FAILURE])
   end
 

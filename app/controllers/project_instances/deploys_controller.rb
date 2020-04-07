@@ -5,11 +5,13 @@ module ProjectInstances
     def show
       @project = find_project
       @project_instance = find_project_instance(@project)
+      @repositories = @project.project_record.repositories.active
+
       return redirect_to_instance_with_error unless ProjectInstancePolicy.new(current_user, @project_instance).deploy_by_link?
       return if params[:custom_deploy]
 
       deploy(@project_instance)
-      redirect_to GitProviders::URL::PullMergeRequest.new(@project_instance).call
+      redirect_to GitProviders::URL::PullMergeRequest.new(@project_instance, @project.integration_type).call
     end
 
     def create
@@ -18,10 +20,11 @@ module ProjectInstances
 
       return redirect_to_instance_with_error unless ProjectInstancePolicy.new(current_user, @project_instance).deploy_by_link?
 
-      if update_configurations(@project_instance)
+      if @project_instance.update_branches(branches_params)
         deploy(@project_instance)
         redirect_to project_project_instance_path(@project, @project_instance)
       else
+        @repositories = @project.project_record.repositories.active
         render :show
       end
     end
@@ -29,11 +32,11 @@ module ProjectInstances
     private
 
     def find_project
-      authorize Project.find(params[:project_id]), :show?, policy_class: ProjectPolicy
+      authorize ProjectDomain.by_id(params[:project_id]), :show?, policy_class: ProjectPolicy
     end
 
     def find_project_instance(project)
-      project.project_instances.find(params[:project_instance_id])
+      project.project_instance(id: params[:project_instance_id])
     end
 
     def redirect_to_instance_with_error
@@ -41,19 +44,12 @@ module ProjectInstances
       redirect_to project_project_instance_path(@project, @project_instance)
     end
 
-    def project_instance_params
+    def branches_params
       params.require(:project_instance).require(:configurations).permit!
     end
 
-    def update_configurations(project_instance)
-      project_instance.configurations.each do |configuration|
-        configuration.git_reference = project_instance_params[configuration.application_name].presence || configuration.git_reference
-      end
-      project_instance.save
-    end
-
     def deploy(project_instance)
-      Deployment::Processes::DeployNewInstance.new(project_instance).call(current_user.user_reference)
+      Deployment::Processes::DeployNewInstance.new(@project, project_instance).call(current_user.user_reference)
     end
   end
 end

@@ -12,7 +12,7 @@ module Github
           user = find_user
           project = find_project
           perform_plugins_callback(project)
-          ProjectUserRole.find_or_create_by(user: user, project: project).update!(role: ProjectUserRoleConstants::ADMIN)
+          ProjectUserRole.find_or_create_by(user: user, project_id: project.id).update!(role: ProjectUserRoleConstants::ADMIN)
           @wrapped_body.repos.each { |repo_info| create_repo(repo_info, project) }
           ReturnValue.ok
         end
@@ -27,10 +27,9 @@ module Github
         end
 
         def find_project
-          ::Project.find_or_create_by(integration_type: ProjectsConstants::Providers::GITHUB, integration_id: @wrapped_body.installation_id).tap do |project|
-            project.update!(name: @wrapped_body.organization_info.name) if project.name != @wrapped_body.organization_info.name
-            GithubEntity.ensure_info_exists(project, @wrapped_body.raw_organization_info)
-          end
+          project = ProjectDomain.create!(integration_type: ProjectsConstants::Providers::GITHUB, integration_id: @wrapped_body.installation_id, name: @wrapped_body.organization_info.name)
+          GithubEntity.ensure_info_exists(project.project_record, @wrapped_body.raw_organization_info)
+          project
         end
 
         def perform_plugins_callback(project)
@@ -43,7 +42,7 @@ module Github
           Plugins::Entry::OnRepoCreation.new(wrapper_repo).call
 
           configuration = ::Repository.create!(
-            project: project,
+            project_id: project.id,
             path: repo_info.full_name,
             name: repo_info.name,
             integration_type: ProjectsConstants::Providers::GITHUB,

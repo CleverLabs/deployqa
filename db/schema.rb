@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_27_113315) do
+ActiveRecord::Schema.define(version: 2020_03_31_200629) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 2020_03_27_113315) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "git_reference"
+    t.jsonb "configurations", default: {}, null: false
     t.index ["author_id"], name: "index_build_actions_on_author_id"
     t.index ["project_instance_id"], name: "index_build_actions_on_project_instance_id"
   end
@@ -118,6 +119,7 @@ ActiveRecord::Schema.define(version: 2020_03_27_113315) do
     t.jsonb "configurations", default: {}, null: false
     t.integer "attached_pull_request_number"
     t.string "attached_repo_path"
+    t.jsonb "branches", default: {}, null: false
     t.index ["project_id"], name: "index_project_instances_on_project_id"
   end
 

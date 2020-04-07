@@ -3,9 +3,10 @@
 module Deployment
   module ConfigurationBuilders
     class ByProject
-      def initialize(project, docker_feature)
+      def initialize(project, build_id, docker_feature)
         @project = project
         @docker_feature = docker_feature
+        @build_id = build_id
       end
 
       def call(instance_name, branches)
@@ -80,17 +81,22 @@ module Deployment
       end
 
       def build_build_configuration(repository)
+        repo_address, image = docker_addresses(repository)
+
         Deployment::BuildConfiguration.new(
           build_type: repository.build_type,
           env_variables: temporary_env_variables(repository),
           private_gem_detected: @project.repositories.any? { |configuration| configuration.build_type == RepositoryConstants::PRIVATE_GEM },
-          docker_repo_address: docker_repo_address(repository)
+          docker_repo_address: repo_address,
+          docker_image: image
         )
       end
 
-      def docker_repo_address(repository)
-        name = Deployment::ConfigurationBuilders::NameBuilder.new.external_repo_name(@project.name, @project.id, repository.name)
-        "#{ENV['AWS_ACCOUNT_ID']}.dkr.ecr.#{ENV['AWS_REGION']}.amazonaws.com/#{name}"
+      def docker_addresses(repository)
+        repo_address = Deployment::ConfigurationBuilders::NameBuilder.new.docker_repo_address(@project.name, @project.id, repository.name)
+        image = Deployment::ConfigurationBuilders::NameBuilder.new.docker_image(repo_address, @build_id)
+
+        [repo_address, image]
       end
 
       def temporary_env_variables(repository)

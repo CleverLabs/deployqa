@@ -10,8 +10,8 @@ module Plugins
 
       def self.by_configuration(configuration)
         new(
-          application_name: configuration.fetch("application_name"),
-          addon_names: configuration.fetch("addons").map { |addon| addon.fetch("name") }
+          application_name: configuration.application_name,
+          addon_names: configuration.addons.map { |addon| addon.name }
         )
       end
     end

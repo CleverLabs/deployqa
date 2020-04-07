@@ -3,20 +3,20 @@
 class ProjectInstancesController < ApplicationController
   def index
     @project = find_project
-    @project_instances = @project.project_instances.where.not(deployment_status: ProjectInstanceConstants::HIDDEN_INSTANCES).order(created_at: :desc)
+    @project_instances = @project.project_record.project_instances.where.not(deployment_status: ProjectInstanceConstants::HIDDEN_INSTANCES).order(created_at: :desc)
     @new_instance_allowed = ProjectPolicy.new(current_user, @project).create_instance?
   end
 
   def show
     @project = find_project
-    @project_instance = @project.project_instances.find(params[:id])
+    @project_instance = @project.project_instance(id: params[:id])
     @project_instance_policy = ProjectInstancePolicy.new(current_user, @project_instance)
   end
 
   def new
     @project = find_project
-    @repositories = @project.repositories.active
-    @project_instance = @project.project_instances.build
+    @repositories = @project.project_record.repositories.active
+    @project_instance = @project.project_record.project_instances.build
   end
 
   def create
@@ -28,15 +28,15 @@ class ProjectInstancesController < ApplicationController
     if result.ok?
       redirect_to project_project_instance_path(@project, result.object)
     else
-      @repositories = @project.repositories.active
-      @project_instance = result.object
+      @repositories = @project.project_record.repositories.active
+      @project_instance = result.object.project_instance_record
       render :new
     end
   end
 
   def destroy
     @project = find_project
-    @project_instance = @project.project_instances.find(params[:id])
+    @project_instance = @project.project_instance(id: params[:id])
 
     Deployment::Processes::DestroyProjectInstance.new(@project_instance, current_user.user_reference).call
     redirect_to project_project_instances_path(@project)
@@ -53,7 +53,7 @@ class ProjectInstancesController < ApplicationController
   end
 
   def find_project
-    authorize Project.find(params[:project_id]), :show?, policy_class: ProjectPolicy
+    authorize ProjectDomain.by_id(params[:project_id]), :show?, policy_class: ProjectPolicy
   end
 
   def project_instance_name

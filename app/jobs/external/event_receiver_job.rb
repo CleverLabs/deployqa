@@ -12,6 +12,7 @@ module External
       end
 
       configuration = Utils::Encryptor.new.decrypt_json(payload.fetch("encrypted_configuration"))
+      configuration = Deployment::Configuration.new(configuration)
       Robad::Events::Handler.new(event, build_action, configuration, payload["block_result"]).call
     end
   end

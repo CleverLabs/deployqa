@@ -3,7 +3,7 @@
       text_link_hash: {\
         "Projects" => projects_path,
         @project.name => project_project_instances_path(@project),
-        @project_instance.name => project_project_instance_path(@project_instance.project, @project_instance),
+        @project_instance.name => project_project_instance_path(@project, @project_instance),
         "\"#{@build_action.action.to_s.humanize}\" action" => nil\
       },
       class: "mt-4" }

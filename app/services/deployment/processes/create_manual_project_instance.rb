@@ -10,35 +10,32 @@ module Deployment
       end
 
       def call(project_instance_name:, branches:)
-        configurations = Deployment::ConfigurationBuilders::ByProject.new(
-          @project,
-          ->() { @features_accessor.docker_deploy_allowed?(@user_reference.user, @project) }
-        ).call(project_instance_name, branches)
-        creation_result = create_project_instance(project_instance_name, configurations)
+        creation_result = create_project_instance(project_instance_name, branches)
         return creation_result unless creation_result.ok?
 
-        deploy_instance(creation_result.object, configurations)
+        deploy_instance(creation_result.object)
         creation_result
       end
 
       private
 
-      def create_project_instance(project_instance_name, configurations)
-        Deployment::Repositories::ProjectInstanceRepository.new(@project).create(
+      def create_project_instance(project_instance_name, branches)
+        ProjectInstanceDomain.create(
+          project_id: @project.id,
           name: project_instance_name,
-          configurations: configurations.map(&:to_project_instance_configuration),
-          deployment_status: ProjectInstanceConstants::SCHEDULED
+          deployment_status: ProjectInstanceConstants::SCHEDULED,
+          branches: branches
         )
       end
 
-      def deploy_instance(instance, configurations)
-        build_action = BuildAction.create!(project_instance: instance, author: @user_reference, action: BuildActionConstants::CREATE_INSTANCE)
+      def deploy_instance(instance)
+        build_action = instance.create_action!(author: @user_reference, action: BuildActionConstants::CREATE_INSTANCE)
 
         if @features_accessor.docker_deploy_allowed?(@user_reference.user, @project)
           @features_accessor.perform_docker_deploy!(instance)
-          Robad::Executor.new(build_action).call(configurations)
+          Robad::Executor.new(build_action).call(instance.deployment_configurations)
         else
-          ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, configurations.map(&:to_h), build_action)
+          ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, instance.deployment_configurations.map(&:to_h), build_action)
         end
       end
     end

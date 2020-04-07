@@ -6,7 +6,7 @@ module Github
       class AddNewRepo
         def initialize(body)
           @wrapped_body = Github::Events::Installation.new(payload: body)
-          @project = ::Project.find_by(integration_type: ProjectsConstants::Providers::GITHUB, integration_id: @wrapped_body.installation_id)
+          @project = ::ProjectDomain.by_integration(ProjectsConstants::Providers::GITHUB, @wrapped_body.installation_id)
         end
 
         def call
@@ -19,7 +19,7 @@ module Github
         private
 
         def create_repository(repo_info)
-          repository = ::Repository.find_or_create_by(project: @project, integration_type: ProjectsConstants::Providers::GITHUB, integration_id: repo_info.id)
+          repository = ::Repository.find_or_create_by(project_id: @project.id, integration_type: ProjectsConstants::Providers::GITHUB, integration_id: repo_info.id)
           repository.update!(
             path: repo_info.full_name,
             name: repo_info.name,

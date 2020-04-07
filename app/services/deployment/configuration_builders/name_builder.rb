@@ -25,6 +25,15 @@ module Deployment
         "deployqa-resource-#{application_name}"
       end
 
+      def docker_repo_address(project_name, project_id, repo_name)
+        name = external_repo_name(project_name, project_id, repo_name)
+        "#{ENV['AWS_ACCOUNT_ID']}.dkr.ecr.#{ENV['AWS_REGION']}.amazonaws.com/#{name}"
+      end
+
+      def docker_image(repo_address, build_id)
+        "#{repo_address}:build_#{build_id}"
+      end
+
       def heroku_app_url(application_name)
         "https://#{application_name}.herokuapp.com"
       end

@@ -8,13 +8,13 @@ module Deployment
       end
 
       def call(project_instance_name:, branches:, attached_repo_path:, attached_pull_request_number:)
-        configurations = Deployment::ConfigurationBuilders::ByProject.new(@project, ->() { false }).call(project_instance_name, branches)
-        Deployment::Repositories::ProjectInstanceRepository.new(@project).create(
+        ProjectInstanceDomain.create(
+          project_id: @project.id,
           name: project_instance_name,
+          deployment_status: ProjectInstanceConstants::EMPTY_RECORD_FOR_PR,
           attached_repo_path: attached_repo_path,
           attached_pull_request_number: attached_pull_request_number,
-          configurations: configurations.map(&:to_project_instance_configuration),
-          deployment_status: ProjectInstanceConstants::EMPTY_RECORD_FOR_PR
+          branches: branches
         )
       end
     end

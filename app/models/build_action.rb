@@ -10,4 +10,6 @@ class BuildAction < ApplicationRecord
   validates :action, presence: true
 
   enum action: BuildActionConstants::ACTIONS
+
+  attribute :configurations, JSONModels::ProjectInstanceConfiguration.to_array_type
 end

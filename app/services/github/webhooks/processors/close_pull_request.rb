@@ -6,14 +6,14 @@ module Github
       class ClosePullRequest
         def initialize(body)
           @wrapped_body = Github::Events::PullRequest.new(payload: body)
-          @project = Project.find_by(integration_type: ProjectsConstants::Providers::GITHUB, integration_id: @wrapped_body.installation_id)
+          @project = ::ProjectDomain.by_integration(ProjectsConstants::Providers::GITHUB, @wrapped_body.installation_id)
         end
 
         def call
-          return ReturnValue.ok unless RepositoryStatus.new(@project).active?(@wrapped_body.full_repo_name)
+          return ReturnValue.ok unless @project.active_repository?(@wrapped_body.full_repo_name)
 
-          project_instance = @project.project_instances.find_by(attached_pull_request_number: @wrapped_body.number)
-          Deployment::Processes::DestroyProjectInstance.new(project_instance, user_reference(@wrapped_body.sender)).call if project_instance
+          project_instance = @project.project_instance(attached_pull_request_number: @wrapped_body.number)
+          Deployment::Processes::DestroyProjectInstance.new(project_instance, user_reference(@wrapped_body.sender)).call if project_instance.present?
           ReturnValue.ok
         end
 

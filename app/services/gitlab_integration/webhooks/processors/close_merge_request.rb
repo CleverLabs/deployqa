@@ -12,6 +12,7 @@ module GitlabIntegration
           ReturnValue.ok unless repository.active?
 
           project_instance = repository.project.project_instances.find_by(attached_pull_request_number: @merge_request.number)
+          project_instance = ProjectInstanceDomain.new(record: project_instance)
           Deployment::Processes::DestroyProjectInstance.new(project_instance, user_reference(@merge_request.author_id)).call if project_instance
           ReturnValue.ok
         end

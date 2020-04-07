@@ -9,6 +9,8 @@ module BuildActionConstants
     DESTROY_INSTANCE = :destroy_instance
   ].freeze
 
+  NEW_INSTANCE_ACTIONS = [CREATE_INSTANCE, RECREATE_INSTANCE].freeze
+
   module Log
     STATUSES = [
       INFO = "info",
