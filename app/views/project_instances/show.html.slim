@@ -32,7 +32,10 @@
             = link_to configuration.application_name, configuration.application_url, target: "_blank", rel: "noopener noreferrer"
           - if @project_instance_policy.show_heroku_link?
             p.mb-0
-              = link_to "Heroku configuration link", "https://dashboard.heroku.com/apps/#{configuration.application_name}", target: :_blank
+              - if Features::Accessor.new.docker_deploy_performed?(@project_instance)
+                = link_to "Nomad configuration link", ENV["NOMAD_SERVER"], target: :_blank
+              - else
+                = link_to "Heroku configuration link", "https://dashboard.heroku.com/apps/#{configuration.application_name}", target: :_blank
 
     .d-flex.justify-content-between.mt-5
 

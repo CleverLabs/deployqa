@@ -45,7 +45,7 @@ module Deployment
       end
 
       def build_configuration(configuration)
-        return configuration.build_configuration unless @action == BuildActionConstants::UPDATE_INSTANCE
+        return configuration.build_configuration if @action.to_sym != BuildActionConstants::UPDATE_INSTANCE
 
         image = Deployment::ConfigurationBuilders::NameBuilder.new.docker_image(configuration.build_configuration["docker_repo_address"], @build_id)
         configuration.build_configuration.merge("docker_image" => image)
