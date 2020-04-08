@@ -42,7 +42,7 @@ module Robad
 
       def call
         handler = EVENTS.dig(@event, @build_action.action.to_sym)
-        handler.call(@configuration, @build_action, @action_result_value) if handler
+        handler&.call(@configuration, @build_action, @action_result_value)
       end
     end
   end

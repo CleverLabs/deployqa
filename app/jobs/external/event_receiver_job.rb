@@ -7,9 +7,7 @@ module External
     def perform(event, payload)
       build_action = BuildAction.find(payload.fetch("build_action_id"))
 
-      if event.in? %w(deployment/status/start deployment/status/success deployment/status/failure)
-        Deployment::ProjectInstanceEvents.new(build_action).create_event(event.split("/").last)
-      end
+      Deployment::ProjectInstanceEvents.new(build_action).create_event(event.split("/").last) if event.in? %w[deployment/status/start deployment/status/success deployment/status/failure]
 
       configuration = Utils::Encryptor.new.decrypt_json(payload.fetch("encrypted_configuration"))
       configuration = Deployment::Configuration.new(configuration)

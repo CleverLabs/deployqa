@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 module Utils
   class Encryptor
     def initialize
@@ -12,7 +11,7 @@ module Utils
       cipher.key = @key
       result = cipher.update(string) + cipher.final
 
-      result.unpack('H*')[0].upcase
+      result.unpack1("H*").upcase
     end
 
     def decrypt(string)

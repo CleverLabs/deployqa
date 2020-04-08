@@ -11,7 +11,7 @@ module AwsIntegration
 
     def create_for(repo_name:)
       @safe_call.safely_with_result do
-        name = Deployment::ConfigurationBuilders::NameBuilder.new.external_repo_name(@project_name, @project_id, @repo_name)
+        name = Deployment::ConfigurationBuilders::NameBuilder.new.external_repo_name(@project_name, @project_id, repo_name)
         @client.create_repository(repository_name: name, tags: [{ key: "CreatedFrom", value: self.class.name }])
       end
     end

@@ -8,9 +8,7 @@ module Plugins
       end
 
       def call
-        if @info.addon_names.find { |addon_name| addon_name == "AWS S3" }
-          AwsIntegration::S3Accessor.new.create_bucket(@info.application_name)
-        end
+        AwsIntegration::S3Accessor.new.create_bucket(@info.application_name) if @info.addon_names.find { |addon_name| addon_name == "AWS S3" }
 
         # TODO: return ENV variables and use them
         ReturnValue.ok

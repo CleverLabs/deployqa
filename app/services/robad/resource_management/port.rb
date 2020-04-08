@@ -5,7 +5,7 @@ module Robad
     class Port
       class << self
         def allocate
-          rand(10000..20000)
+          rand(10_000..20_000)
         end
       end
     end

@@ -10,7 +10,7 @@ module Deployment
 
       def call
         build_action = @project_instance.create_action!(author: @user_reference, action: BuildActionConstants::RECREATE_INSTANCE)
-        
+
         if Features::Accessor.new.docker_deploy_performed?(@project_instance)
           Robad::Executor.new(build_action).call(@project_instance.deployment_configurations)
         else

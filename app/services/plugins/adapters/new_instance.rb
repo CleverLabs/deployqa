@@ -11,7 +11,7 @@ module Plugins
       def self.by_configuration(configuration)
         new(
           application_name: configuration.application_name,
-          addon_names: configuration.addons.map { |addon| addon.name }
+          addon_names: configuration.addons.map(&:name)
         )
       end
     end

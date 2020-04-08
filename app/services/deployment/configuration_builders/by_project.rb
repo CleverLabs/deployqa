@@ -26,7 +26,7 @@ module Deployment
           seeds_command: repository.seeds_command,
           application_url: application_url(name)
         }.merge(build_dependencies(repository, branches))
-         .merge(build_env_with_addons(repository, name, active_repositories))
+          .merge(build_env_with_addons(repository, name, active_repositories))
       end
 
       def build_dependencies(repository, branches)
@@ -39,7 +39,7 @@ module Deployment
 
       def build_env_with_addons(repository, name, active_repositories)
         addons = build_addons(repository, name)
-        env = build_env_variables(repository, name, active_repositories)
+        env = build_env_variables(repository, active_repositories)
         addons.each { |addon| env = env.merge(addon.fetch("credentials")) }
 
         { env_variables: env, addons: addons }
@@ -49,7 +49,7 @@ module Deployment
         Deployment::ConfigurationBuilders::NameBuilder.new.application_name(@project.name, @project.id, repository.name, instance_name)
       end
 
-      def build_env_variables(repository, name, active_repositories)
+      def build_env_variables(repository, active_repositories)
         Deployment::ConfigurationBuilders::EnvVariablesBuilder.new(repository, @project, active_repositories, @docker_feature).call
       end
 
