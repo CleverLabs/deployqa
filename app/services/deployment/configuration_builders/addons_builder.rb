@@ -12,7 +12,7 @@ module Deployment
             port: Robad::ResourceManagement::Port.allocate
           }
           url = "postgres://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}/#{config[:name]}"
-          { config: config.merge(url: url), env: { DATABASE_URL: url } }
+          { config: config.merge(url: url), env: { "DATABASE_URL" => url } }
         end,
         "ClearDB (MySQL)" => lambda do |_, _|
           config = {
@@ -22,7 +22,7 @@ module Deployment
             port: Robad::ResourceManagement::Port.allocate
           }
           url = "mysql2://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}/#{config[:name]}"
-          { config: config.merge(url: url), env: { DATABASE_URL: url } }
+          { config: config.merge(url: url), env: { "DATABASE_URL" => url } }
         end,
         "Redis" => lambda do |_, _|
           config = {
@@ -31,7 +31,7 @@ module Deployment
             port: Robad::ResourceManagement::Port.allocate
           }
           url = "redis://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}"
-          { config: config.merge(url: url), env: { REDIS_URL: url } }
+          { config: config.merge(url: url), env: { "REDIS_URL" => url } }
         end,
         "AWS S3" => lambda do |application_name, tokens|
           env = {
@@ -44,16 +44,18 @@ module Deployment
         end
       }.freeze
 
-      def initialize(repository, addon, application_name)
+      def initialize(repository, addon, application_name, docker_feature)
         @repository = repository
         @project = repository.project
         @addon = addon
         @application_name = application_name
+        @docker_feature = docker_feature
       end
 
       def call
         data = @addon.attributes.slice(*Deployment::Addon.attributes.map(&:to_s))
         return data unless ADDON_SPECIFIC_DATA[@addon.name]
+        return data if !@docker_feature.call && @addon.name != "AWS S3"
 
         tokens = ProjectAddonInfo.find_by(project: @project, addon: @addon)&.tokens
         specific_data = ADDON_SPECIFIC_DATA.fetch(@addon.name).call(@application_name, tokens)

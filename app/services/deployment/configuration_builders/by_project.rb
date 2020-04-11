@@ -40,7 +40,8 @@ module Deployment
       def build_env_with_addons(repository, name, active_repositories)
         addons = build_addons(repository, name)
         env = build_env_variables(repository, active_repositories)
-        addons.each { |addon| env = env.merge(addon.fetch("credentials")) }
+        addons.each { |addon| env = env.merge(addon.fetch("credentials", {})) }
+        Deployment::Helpers::EnvAliasing.new(env).modify!
 
         { env_variables: env, addons: addons }
       end
@@ -55,7 +56,7 @@ module Deployment
 
       def build_addons(repository, name)
         repository.addons.to_a.map do |addon|
-          Deployment::ConfigurationBuilders::AddonsBuilder.new(repository, addon, name).call
+          Deployment::ConfigurationBuilders::AddonsBuilder.new(repository, addon, name, @docker_feature).call
         end
       end
 
@@ -100,6 +101,8 @@ module Deployment
       end
 
       def temporary_env_variables(repository)
+        return repository.build_env_variables if @project.integration_type != ProjectsConstants::Providers::GITHUB
+
         repository.build_env_variables.merge("BUNDLE_GITHUB__COM" => ::ProviderAPI::Github::AppClient.new(@project.integration_id).token_for_gem_bundle)
       end
     end
