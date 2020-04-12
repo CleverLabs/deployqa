@@ -2,11 +2,11 @@
 
 module Features
   class Accessor
-    def docker_deploy_allowed?(user, project)
+    def docker_deploy_allowed?(project, user: :not_passed)
       feature = Flipper[:docker_deploy]
       return false if feature.nil?
 
-      feature.enabled?(user) && feature.enabled?(project)
+      user == :not_passed ? feature.enabled?(project) : feature.enabled?(user) && feature.enabled?(project)
     end
 
     def perform_docker_deploy!(project_instance)

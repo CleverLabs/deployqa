@@ -12,7 +12,7 @@ module Deployment
       def call(user_reference)
         build_action = @project_instance.create_action!(author: user_reference, action: BuildActionConstants::CREATE_INSTANCE)
 
-        if @features_accessor.docker_deploy_allowed?(user_reference.user, @project)
+        if @features_accessor.docker_deploy_allowed?(@project, user: user_reference.user)
           @features_accessor.perform_docker_deploy!(@project_instance)
           Robad::Executor.new(build_action).call(@project_instance.deployment_configurations)
         else

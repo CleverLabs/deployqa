@@ -17,19 +17,21 @@ class ProjectInstancesController < ApplicationController
     @project = find_project
     @repositories = @project.project_record.repositories.active
     @project_instance = @project.project_record.project_instances.build
+    @features_accessor = Features::Accessor.new
   end
 
   def create
     @project = find_project
     verify_creation_allowed(@project)
 
-    result = create_project_instance(@project).call(project_instance_name: project_instance_name, branches: branches)
+    result = create_project_instance(@project).call(project_instance_name: project_instance_name, branches: branches, deploy_via_robad: deploy_via_robad)
 
     if result.ok?
       redirect_to project_project_instance_path(@project, result.object)
     else
       @repositories = @project.project_record.repositories.active
       @project_instance = result.object.project_instance_record
+      @features_accessor = Features::Accessor.new
       render :new
     end
   end
@@ -58,6 +60,10 @@ class ProjectInstancesController < ApplicationController
 
   def project_instance_name
     params.require(:project_instance).fetch(:name)
+  end
+
+  def deploy_via_robad
+    params.require(:project_instance).fetch(:deploy_via_robad) == "1"
   end
 
   def branches

@@ -9,11 +9,11 @@ module Deployment
         @features_accessor = Features::Accessor.new
       end
 
-      def call(project_instance_name:, branches:)
+      def call(project_instance_name:, branches:, deploy_via_robad:)
         creation_result = create_project_instance(project_instance_name, branches)
         return creation_result unless creation_result.ok?
 
-        deploy_instance(creation_result.object)
+        deploy_instance(creation_result.object, deploy_via_robad)
         creation_result
       end
 
@@ -28,10 +28,10 @@ module Deployment
         )
       end
 
-      def deploy_instance(instance)
+      def deploy_instance(instance, deploy_via_robad)
         build_action = instance.create_action!(author: @user_reference, action: BuildActionConstants::CREATE_INSTANCE)
 
-        if @features_accessor.docker_deploy_allowed?(@user_reference.user, @project)
+        if deploy_via_robad
           @features_accessor.perform_docker_deploy!(instance)
           Robad::Executor.new(build_action).call(instance.deployment_configurations)
         else

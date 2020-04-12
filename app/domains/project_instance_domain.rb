@@ -58,7 +58,7 @@ class ProjectInstanceDomain
     Deployment::ConfigurationBuilders::ByProject.new(
       @project_instance_record.project,
       build_action_id,
-      -> { features_accessor.docker_deploy_allowed?(user_reference.user, @project_instance_record.project) }
+      -> { features_accessor.docker_deploy_allowed?(@project_instance_record.project, user: user_reference.user) }
     ).call(name, branches)
   end
 
