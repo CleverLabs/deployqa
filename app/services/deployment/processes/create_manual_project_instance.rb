@@ -29,7 +29,7 @@ module Deployment
       end
 
       def deploy_instance(instance, deploy_via_robad)
-        build_action = instance.create_action!(author: @user_reference, action: BuildActionConstants::CREATE_INSTANCE)
+        build_action = instance.create_action!(author: @user_reference, action: BuildActionConstants::CREATE_INSTANCE, docker_deploy_lambda: -> { deploy_via_robad })
 
         if deploy_via_robad
           @features_accessor.perform_docker_deploy!(instance)

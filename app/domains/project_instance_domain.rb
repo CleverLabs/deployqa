@@ -27,11 +27,11 @@ class ProjectInstanceDomain
     @last_action_record ||= @project_instance_record.build_actions.order(:created_at).last
   end
 
-  def create_action!(author:, action:, configurations_to_update: nil)
+  def create_action!(author:, action:, configurations_to_update: nil, docker_deploy_lambda: nil)
     previous_action = last_action_record
     @last_action_record = BuildAction.create!(project_instance: @project_instance_record, author: author, action: action, configurations: [])
     @deployment_configurations = if BuildActionConstants::NEW_INSTANCE_ACTIONS.include?(action)
-                                   create_configurations(author, @last_action_record.id)
+                                   create_configurations(author, @last_action_record.id, docker_deploy_lambda)
                                  else
                                    duplicate_configurations(previous_action, configurations_to_update, @last_action_record)
                                  end
@@ -53,12 +53,12 @@ class ProjectInstanceDomain
 
   delegate :branches, to: :project_instance_record
 
-  def create_configurations(user_reference, build_action_id)
+  def create_configurations(user_reference, build_action_id, docker_deploy_lambda)
     features_accessor = Features::Accessor.new
     Deployment::ConfigurationBuilders::ByProject.new(
       @project_instance_record.project,
       build_action_id,
-      -> { features_accessor.docker_deploy_allowed?(@project_instance_record.project, user: user_reference.user) }
+      docker_deploy_lambda || -> { features_accessor.docker_deploy_allowed?(@project_instance_record.project, user: user_reference.user) }
     ).call(name, branches)
   end
 
