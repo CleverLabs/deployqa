@@ -28,7 +28,7 @@ class ProjectInstancePolicy < ApplicationPolicy
   end
 
   def redeploy?
-    record.deployment_status.in?([ProjectInstanceConstants::FAILURE, ProjectInstanceConstants::NOT_DEPLOYED])
+    record.deployment_status.in?([ProjectInstanceConstants::NOT_DEPLOYED])
   end
 
   def deploy_by_link?
