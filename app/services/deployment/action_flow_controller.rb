@@ -6,8 +6,6 @@ module Deployment
   class ActionFlowController
     delegate :states, :context=, :last_state, to: :@state_machine
 
-    attr_reader :logger # temporary
-
     def initialize(build_action)
       @build_action = build_action
       @state_machine = ::ActionStateMachine.new
