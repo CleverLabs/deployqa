@@ -46,22 +46,27 @@ module Deployment
 
       def initialize(repository, addon, application_name, docker_feature)
         @repository = repository
-        @project = repository.project
-        @addon = addon
         @application_name = application_name
         @docker_feature = docker_feature
+        @addon_record = addon
+        @addon_data = @addon_record.attributes.slice(*Deployment::Addon.attributes.map(&:to_s))
+        @addon_specific_data = ADDON_SPECIFIC_DATA[@addon_record.name]
       end
 
       def call
-        data = @addon.attributes.slice(*Deployment::Addon.attributes.map(&:to_s))
-        return data unless ADDON_SPECIFIC_DATA[@addon.name]
-        return data if !@docker_feature.call && @addon.name != "AWS S3"
+        return @addon_data unless @addon_specific_data
+        return @addon_data if !@docker_feature.call && @addon_record.name != "AWS S3"
 
-        tokens = ProjectAddonInfo.find_by(project: @project, addon: @addon)&.tokens
-        specific_data = ADDON_SPECIFIC_DATA.fetch(@addon.name).call(@application_name, tokens)
-        data["specific_configuration"] = specific_data.fetch(:config)
-        data["credentials"] = specific_data.fetch(:env)
-        data
+        specific_data = @addon_specific_data.call(@application_name, find_tokens)
+        @addon_data["specific_configuration"] = specific_data.fetch(:config)
+        @addon_data["credentials"] = specific_data.fetch(:env)
+        @addon_data
+      end
+
+      private
+
+      def find_tokens
+        ProjectAddonInfo.find_by(project: @repository.project, addon: @addon_record)&.tokens
       end
     end
   end

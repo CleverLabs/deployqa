@@ -21,10 +21,9 @@ class ProjectInstancesController < ApplicationController
   end
 
   def create
-    @project = find_project
-    verify_creation_allowed(@project)
+    @project = find_project(:create_instance?)
 
-    result = create_project_instance(@project).call(project_instance_name: project_instance_name, branches: branches, deploy_via_robad: deploy_via_robad)
+    result = create_project_instance(@project)
 
     if result.ok?
       redirect_to project_project_instance_path(@project, result.object)
@@ -46,16 +45,14 @@ class ProjectInstancesController < ApplicationController
 
   private
 
-  def verify_creation_allowed(project)
-    authorize project, :create_instance?, policy_class: ProjectPolicy
-  end
-
   def create_project_instance(project)
-    Deployment::Processes::CreateManualProjectInstance.new(project, current_user.user_reference)
+    Deployment::Processes::CreateManualProjectInstance
+      .new(project, current_user.user_reference)
+      .call(project_instance_name: project_instance_name, branches: branches, deploy_via_robad: deploy_via_robad)
   end
 
-  def find_project
-    authorize ProjectDomain.by_id(params[:project_id]), :show?, policy_class: ProjectPolicy
+  def find_project(action = :show?)
+    authorize ProjectDomain.by_id(params[:project_id]), action, policy_class: ProjectPolicy
   end
 
   def project_instance_name

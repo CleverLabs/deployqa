@@ -5,13 +5,13 @@ class ProjectInstanceDomain
 
   delegate :id, :project_id, :name, :deployment_status, :attached_pull_request_number, :attached_repo_path, :build_actions, :to_param, :flipper_id, :present?, to: :project_instance_record
 
-  def self.create(project_id:, name:, deployment_status:, branches:, attached_repo_path: nil, attached_pull_request_number: nil)
+  def self.create(project_id:, name:, deployment_status:, branches:, attached_pull_request: {})
     record = ProjectInstance.create(
       project_id: project_id,
       deployment_status: deployment_status,
       name: name,
-      attached_repo_path: attached_repo_path,
-      attached_pull_request_number: attached_pull_request_number,
+      attached_repo_path: attached_pull_request[:repo],
+      attached_pull_request_number: attached_pull_request[:number],
       branches: branches
     )
 

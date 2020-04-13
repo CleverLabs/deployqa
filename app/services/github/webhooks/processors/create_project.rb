@@ -38,8 +38,7 @@ module Github
         end
 
         def create_repo(repo_info, project)
-          wrapper_repo = Plugins::Adapters::NewRepo.new(project, repo_info.name)
-          Plugins::Entry::OnRepoCreation.new(wrapper_repo).call
+          perform_creation_callback(repo_info, project)
 
           configuration = ::Repository.create!(
             project_id: project.id,
@@ -51,6 +50,11 @@ module Github
           )
 
           GithubEntity.ensure_info_exists(configuration, repo_info.raw_info)
+        end
+
+        def perform_creation_callback(repo_info, project)
+          wrapper_repo = Plugins::Adapters::NewRepo.new(project, repo_info.name)
+          Plugins::Entry::OnRepoCreation.new(wrapper_repo).call
         end
       end
     end

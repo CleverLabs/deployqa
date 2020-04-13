@@ -5,7 +5,7 @@ module ProjectInstances
     def show
       @project = find_project
       @project_instance = find_project_instance(@project)
-      @repositories = @project.project_record.repositories.active
+      @repositories = find_available_repositories
 
       return redirect_to_instance_with_error unless ProjectInstancePolicy.new(current_user, @project_instance).deploy_by_link?
       return if params[:custom_deploy]
@@ -24,7 +24,7 @@ module ProjectInstances
         deploy(@project_instance)
         redirect_to project_project_instance_path(@project, @project_instance)
       else
-        @repositories = @project.project_record.repositories.active
+        @repositories = find_available_repositories
         render :show
       end
     end
@@ -37,6 +37,10 @@ module ProjectInstances
 
     def find_project_instance(project)
       project.project_instance(id: params[:project_instance_id])
+    end
+
+    def find_available_repositories
+      @project.project_record.repositories.active
     end
 
     def redirect_to_instance_with_error

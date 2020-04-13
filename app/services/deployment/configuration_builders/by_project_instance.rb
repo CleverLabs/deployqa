@@ -48,11 +48,15 @@ module Deployment
         return configuration.build_configuration if @action.to_sym != BuildActionConstants::UPDATE_INSTANCE
 
         image = Deployment::ConfigurationBuilders::NameBuilder.new.docker_image(configuration.build_configuration["docker_repo_address"], @build_id)
-        github_token = ::ProviderAPI::Github::AppClient.new(@project.integration_id).token_for_gem_bundle if @project.integration_type == ProjectsConstants::Providers::GITHUB
 
         build_configuration = configuration.build_configuration.merge("docker_image" => image)
-        build_configuration["env_variables"].merge!("BUNDLE_GITHUB__COM" => github_token) if @project.integration_type == ProjectsConstants::Providers::GITHUB
+        add_github_token(build_configuration) if @project.integration_type == ProjectsConstants::Providers::GITHUB
         build_configuration
+      end
+
+      def add_github_token(build_configuration)
+        github_token = ::ProviderAPI::Github::AppClient.new(@project.integration_id).token_for_gem_bundle
+        build_configuration["env_variables"].merge!("BUNDLE_GITHUB__COM" => github_token)
       end
     end
   end
