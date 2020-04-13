@@ -41,7 +41,7 @@ module ProjectInstances
     end
 
     def database_accessor(project_instance)
-      name = project_instance.configurations.first.application_name
+      name = ProjectInstanceDomain.new(record: project_instance).configurations.first.application_name
       ServerAccess::HerokuDatabase.new(name: name)
     end
   end

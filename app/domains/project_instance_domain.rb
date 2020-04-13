@@ -4,7 +4,6 @@ class ProjectInstanceDomain
   attr_reader :project_instance_record, :deployment_configurations
 
   delegate :id, :project_id, :name, :deployment_status, :attached_pull_request_number, :attached_repo_path, :build_actions, :to_param, :flipper_id, :present?, to: :project_instance_record
-  delegate :configurations, to: :last_action_record
 
   def self.create(project_id:, name:, deployment_status:, branches:, attached_repo_path: nil, attached_pull_request_number: nil)
     record = ProjectInstance.create(
@@ -47,6 +46,10 @@ class ProjectInstanceDomain
 
   def update_branches(branches)
     @project_instance_record.update(branches: branches)
+  end
+
+  def configurations
+    last_action_record&.configurations || []
   end
 
   private

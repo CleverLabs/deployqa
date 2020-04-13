@@ -63,7 +63,7 @@ class ProjectInstancesController < ApplicationController
   end
 
   def deploy_via_robad
-    params.require(:project_instance).fetch(:deploy_via_robad) == "1"
+    params.require(:project_instance)[:deploy_via_robad] == "1"
   end
 
   def branches
