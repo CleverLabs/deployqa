@@ -53,8 +53,8 @@ module Github
         end
 
         def perform_creation_callback(repo_info, project)
-          wrapper_repo = Plugins::Adapters::NewRepo.new(project, repo_info.name)
-          Plugins::Entry::OnRepoCreation.new(wrapper_repo).call
+          wrapped_repo = Plugins::Adapters::NewRepo.build(project, repo_info.name)
+          Plugins::Entry::OnRepoCreation.new(wrapped_repo).call
         end
       end
     end
