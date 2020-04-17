@@ -9,6 +9,7 @@ module AwsIntegration
       @safe_call = ::Utils::SafeCall.new(exceptions: [StandardError])
     end
 
+    # rubocop:disable Metrics/LineLength
     def create_for(repo_name:)
       @safe_call.safely_with_result do
         name = Deployment::ConfigurationBuilders::NameBuilder.new.external_repo_name(@project_name, @project_id, repo_name)
@@ -21,5 +22,6 @@ module AwsIntegration
         )
       end
     end
+    # rubocop:enable Metrics/LineLength
   end
 end
