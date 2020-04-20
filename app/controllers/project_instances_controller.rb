@@ -3,7 +3,8 @@
 class ProjectInstancesController < ApplicationController
   def index
     @project = find_project
-    @project_instances = @project.project_record.project_instances.where.not(deployment_status: ProjectInstanceConstants::HIDDEN_INSTANCES).order(created_at: :desc)
+    hidden_statuses = params[:show_all] ? ProjectInstanceConstants::HIDDEN_INSTANCES : ProjectInstanceConstants::NOT_DEPLOYED_INSTANCES
+    @project_instances = @project.project_record.project_instances.where.not(deployment_status: hidden_statuses).order(created_at: :desc)
     @new_instance_allowed = ProjectPolicy.new(current_user, @project).create_instance?
   end
 

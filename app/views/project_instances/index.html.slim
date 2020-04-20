@@ -8,7 +8,12 @@
 
   h1.mt-4 = @project.name
   .d-flex.justify-content-between
-    h3 Instances
+    h3
+      | Instances 
+      - if params[:show_all]
+        small = link_to "(hide not active)", project_project_instances_path(@project), class: "ml-2"
+      - else
+        small = link_to "(show all)", project_project_instances_path(@project, show_all: true), class: "ml-2"
     .d-flex.align-items-center.mt-2
       = link_to "New instance", new_project_project_instance_path(@project), class: "btn btn-primary #{@new_instance_allowed ? "" : "disabled"}"
 
