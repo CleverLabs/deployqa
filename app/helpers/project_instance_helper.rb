@@ -2,7 +2,7 @@
 
 module ProjectInstanceHelper
   STATUS_BADGE_CLASS_MAPPING = {
-    ProjectInstanceConstants::SCHEDULED => "badge-info",
+    ProjectInstanceConstants::UPDATING => "badge-warning",
     ProjectInstanceConstants::DEPLOYING => "badge-warning",
     ProjectInstanceConstants::RUNNING => "badge-success",
     ProjectInstanceConstants::FAILURE => "badge-danger",

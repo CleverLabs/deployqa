@@ -23,11 +23,14 @@ module Robad
           BuildActionConstants::CREATE_INSTANCE => DELETE_ADDONS_HANDLER,
           BuildActionConstants::RECREATE_INSTANCE => DELETE_ADDONS_HANDLER
         },
-        "deployment/status/running/prepare_instance_for_build" => {
+        "deployment/status/running/build_docker_image" => {
           BuildActionConstants::CREATE_INSTANCE => lambda do |_configuration, build_action, action_result_value|
             build_action.update(git_reference: action_result_value)
           end,
           BuildActionConstants::RECREATE_INSTANCE => lambda do |_configuration, build_action, action_result_value|
+            build_action.update(git_reference: action_result_value)
+          end,
+          BuildActionConstants::UPDATE_INSTANCE => lambda do |_configuration, build_action, action_result_value|
             build_action.update(git_reference: action_result_value)
           end
         }
