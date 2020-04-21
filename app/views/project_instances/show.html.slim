@@ -33,7 +33,7 @@
           - if @project_instance_policy.show_heroku_link?
             p.mb-0
               - if Features::Accessor.new.docker_deploy_performed?(@project_instance)
-                = link_to "Nomad configuration link", ENV["NOMAD_SERVER"], target: :_blank
+                = link_to "Nomad configuration link", "#{ENV["NOMAD_SERVER"]}/ui/jobs?search=#{@project_instance.name}", target: :_blank
               - else
                 = link_to "Heroku configuration link", "https://dashboard.heroku.com/apps/#{configuration.application_name}", target: :_blank
 
@@ -50,12 +50,14 @@
       = link_to "Terminate", project_project_instance_path(@project, @project_instance), method: :delete, class: "btn btn-outline-danger #{'disabled' unless @project_instance_policy.terminate?}"
 
     .build-actions.mt-3
-      table.table.table-hover.table-clickable
+      table.table.table-hover
         thead
           tr
-            th Action
+            th Performed action
             th Author
             th Created at
+            - if Features::Accessor.new.docker_deploy_performed?(@project_instance)
+              th Commit
         tbody
           - @project_instance.build_actions.order(created_at: :desc).each_with_index do |build_action|
             tr
@@ -63,8 +65,9 @@
                 = link_to project_project_instance_build_action_path(@project, @project_instance, build_action) do
                   = build_action.action.to_s.humanize
               td
-                = link_to project_project_instance_build_action_path(@project, @project_instance, build_action) do
-                  = build_action.author.full_name
+                = build_action.author.full_name
               td
-                = link_to project_project_instance_build_action_path(@project, @project_instance, build_action) do
-                  = build_action.created_at
+                = build_action.created_at
+              - if Features::Accessor.new.docker_deploy_performed?(@project_instance)
+                td
+                  code = build_action.git_reference

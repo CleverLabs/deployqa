@@ -86,7 +86,7 @@ module Deployment
 
         Deployment::BuildConfiguration.new(
           build_type: repository.build_type,
-          env_variables: temporary_env_variables(repository),
+          env_variables: env_variables_for_build(repository),
           private_gem_detected: @project.repositories.any? { |configuration| configuration.build_type == RepositoryConstants::PRIVATE_GEM },
           docker_repo_address: repo_address,
           docker_image: image
@@ -100,10 +100,11 @@ module Deployment
         [repo_address, image]
       end
 
-      def temporary_env_variables(repository)
-        return repository.build_env_variables if @project.integration_type != ProjectsConstants::Providers::GITHUB
+      def env_variables_for_build(repository)
+        env = repository.build_env_variables.merge("DEPLOYQA_DEPLOYMENT" => "1")
+        return env if @project.integration_type != ProjectsConstants::Providers::GITHUB
 
-        repository.build_env_variables.merge("BUNDLE_GITHUB__COM" => ::ProviderAPI::Github::AppClient.new(@project.integration_id).token_for_gem_bundle)
+        env.merge("BUNDLE_GITHUB__COM" => ::ProviderAPI::Github::AppClient.new(@project.integration_id).token_for_gem_bundle)
       end
     end
   end

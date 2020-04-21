@@ -11,7 +11,9 @@ module Deployment
       end
 
       def call
-        @repository.runtime_env_variables.merge(application_variables)
+        @repository.runtime_env_variables
+                   .merge(application_variables)
+                   .merge("DEPLOYQA_DEPLOYMENT" => "1")
       end
 
       private
