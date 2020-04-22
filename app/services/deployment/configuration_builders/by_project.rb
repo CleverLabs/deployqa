@@ -83,11 +83,12 @@ module Deployment
 
       def build_build_configuration(repository)
         repo_address, image = docker_addresses(repository)
+        private_gem_detected = @project.repositories.any? { |configuration| configuration.build_type == RepositoryConstants::PRIVATE_GEM }
 
         Deployment::BuildConfiguration.new(
           build_type: repository.build_type,
-          env_variables: env_variables_for_build(repository),
-          private_gem_detected: @project.repositories.any? { |configuration| configuration.build_type == RepositoryConstants::PRIVATE_GEM },
+          env_variables: env_variables_for_build(repository, private_gem_detected),
+          private_gem_detected: private_gem_detected,
           docker_repo_address: repo_address,
           docker_image: image
         )
@@ -100,9 +101,9 @@ module Deployment
         [repo_address, image]
       end
 
-      def env_variables_for_build(repository)
+      def env_variables_for_build(repository, private_gem_detected)
         env = repository.build_env_variables.merge("DEPLOYQA_DEPLOYMENT" => "1")
-        return env if @project.integration_type != ProjectsConstants::Providers::GITHUB
+        return env unless private_gem_detected && @project.integration_type == ProjectsConstants::Providers::GITHUB
 
         env.merge("BUNDLE_GITHUB__COM" => ::ProviderAPI::Github::AppClient.new(@project.integration_id).token_for_gem_bundle)
       end

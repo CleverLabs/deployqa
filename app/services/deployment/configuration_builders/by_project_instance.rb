@@ -50,7 +50,7 @@ module Deployment
         image = Deployment::ConfigurationBuilders::NameBuilder.new.docker_image(configuration.build_configuration["docker_repo_address"], @build_id)
 
         build_configuration = configuration.build_configuration.merge("docker_image" => image)
-        add_github_token(build_configuration) if @project.integration_type == ProjectsConstants::Providers::GITHUB
+        add_github_token(build_configuration) if build_configuration["private_gem_detected"] && @project.integration_type == ProjectsConstants::Providers::GITHUB
         build_configuration
       end
 
