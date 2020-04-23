@@ -5,13 +5,16 @@ module GitlabIntegration
     module Processors
       class UpdateMergeRequest
         def initialize(body)
+          @body = body
           @merge_request = GitlabIntegration::Wrappers::MergeRequest.new(body)
         end
 
         def call
           return ReturnValue.ok unless repository.active?
 
-          project_instance = repository.project.project_instances.find_by(attached_pull_request_number: @merge_request.number)
+          project_instance = find_project_instance
+          return GitlabIntegration::Webhooks::Processors::CreateMergeRequest.new(@body).call unless project_instance
+
           project_instance = ProjectInstanceDomain.new(record: project_instance)
           Deployment::Processes::UpdateProjectInstance.new(project_instance, user_reference(@merge_request.edited_by_id)).call
           ReturnValue.ok
@@ -27,6 +30,10 @@ module GitlabIntegration
 
         def repository
           @_repository ||= Repository.find_by(integration_id: @merge_request.repo_id, integration_type: ProjectsConstants::Providers::GITLAB)
+        end
+
+        def find_project_instance
+          repository.project.project_instances.find_by(attached_pull_request_number: @merge_request.number)
         end
       end
     end

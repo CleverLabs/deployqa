@@ -5,6 +5,7 @@ module Github
     module Processors
       class UpdatePullRequest
         def initialize(body)
+          @body = body
           @wrapped_body = Github::Events::PullRequest.new(payload: body)
           @project = ::ProjectDomain.by_integration(ProjectsConstants::Providers::GITHUB, @wrapped_body.installation_id)
         end
@@ -13,6 +14,8 @@ module Github
           return ReturnValue.ok unless @project.active_repository?(@wrapped_body.full_repo_name)
 
           project_instance = @project.project_instance(attached_pull_request_number: @wrapped_body.number)
+          return Github::Webhooks::Processors::CreatePullRequest.new(@body).call unless project_instance.present?
+
           Deployment::Processes::UpdateProjectInstance.new(project_instance, user_reference(@wrapped_body.sender)).call if project_instance.present?
           ReturnValue.ok
         end

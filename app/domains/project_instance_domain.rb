@@ -19,7 +19,7 @@ class ProjectInstanceDomain
   end
 
   def initialize(id: nil, record: nil)
-    @project_instance_record = record || ProjectInstance.find(id)
+    @project_instance_record = record || (id ? ProjectInstance.find(id) : nil)
   end
 
   def last_action_record
