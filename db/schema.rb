@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_31_200629) do
+ActiveRecord::Schema.define(version: 2020_04_24_105320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,15 @@ ActiveRecord::Schema.define(version: 2020_03_31_200629) do
     t.datetime "updated_at", null: false
     t.string "error_backtrace"
     t.index ["build_action_id"], name: "index_build_action_logs_on_build_action_id"
+  end
+
+  create_table "build_action_queues", force: :cascade do |t|
+    t.bigint "project_instance_id", null: false
+    t.bigint "build_action_id", null: false
+    t.jsonb "job_args", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_instance_id"], name: "index_build_action_queues_on_project_instance_id"
   end
 
   create_table "build_actions", force: :cascade do |t|
@@ -236,6 +245,8 @@ ActiveRecord::Schema.define(version: 2020_03_31_200629) do
 
   add_foreign_key "auth_infos", "user_references"
   add_foreign_key "build_action_logs", "build_actions"
+  add_foreign_key "build_action_queues", "build_actions"
+  add_foreign_key "build_action_queues", "project_instances"
   add_foreign_key "gitlab_repositories_infos", "projects"
   add_foreign_key "project_addon_infos", "addons"
   add_foreign_key "project_addon_infos", "projects"
