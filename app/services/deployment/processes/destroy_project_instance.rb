@@ -10,7 +10,7 @@ module Deployment
 
       def call
         return if instance_destroyed?
-        return update_status if @project_instance.deployment_status.in?(ProjectInstanceConstants::NOT_DEPLOYED_INSTANCES)
+        return update_status if @project_instance.deployment_status.in?(ProjectInstanceConstants::Statuses::ALL_NOT_ACTIVE)
 
         build_action = @project_instance.create_action!(author: @user_reference, action: BuildActionConstants::DESTROY_INSTANCE)
 
@@ -24,7 +24,13 @@ module Deployment
       private
 
       def instance_destroyed?
-        @project_instance.deployment_status.in?([ProjectInstanceConstants::DESTROYED, ProjectInstanceConstants::CLOSED, ProjectInstanceConstants::CLOSED_NEVER_CREATED])
+        @project_instance.deployment_status.in?(
+          [
+            ProjectInstanceConstants::Statuses::TERMINATED,
+            ProjectInstanceConstants::Statuses::PULL_REQUEST_CLOSED,
+            ProjectInstanceConstants::Statuses::FAILED_TO_CREATE
+          ]
+        )
       end
 
       def update_status
@@ -32,9 +38,9 @@ module Deployment
       end
 
       def closed_status
-        return ProjectInstanceConstants::CLOSED_NEVER_CREATED if @project_instance.deployment_status == ProjectInstanceConstants::EMPTY_RECORD_FOR_PR
+        return ProjectInstanceConstants::Statuses::PULL_REQUEST_CLOSED if @project_instance.deployment_status == ProjectInstanceConstants::Statuses::PULL_REQUEST
 
-        ProjectInstanceConstants::CLOSED
+        ProjectInstanceConstants::Statuses::TERMINATED
       end
     end
   end

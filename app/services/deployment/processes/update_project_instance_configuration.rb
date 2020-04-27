@@ -4,15 +4,11 @@ module Deployment
   module Processes
     class UpdateProjectInstanceConfiguration
       DEPLOYMENT_ACTION_MAPPING = {
-        ProjectInstanceConstants::NOT_DEPLOYED => {
+        ProjectInstanceConstants::Statuses::FAILED_TO_CREATE => {
           action: BuildActionConstants::RECREATE_INSTANCE,
           worker_class: Deployment::ServerActions::Recreate
         },
-        ProjectInstanceConstants::RUNNING => {
-          action: BuildActionConstants::RELOAD_INSTANCE,
-          worker_class: Deployment::ServerActions::Restart
-        },
-        ProjectInstanceConstants::FAILURE => {
+        ProjectInstanceConstants::Statuses::RUNNING => {
           action: BuildActionConstants::RELOAD_INSTANCE,
           worker_class: Deployment::ServerActions::Restart
         }

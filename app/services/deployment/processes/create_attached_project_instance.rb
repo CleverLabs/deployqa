@@ -11,7 +11,7 @@ module Deployment
         ProjectInstanceDomain.create(
           project_id: @project.id,
           name: project_instance_name,
-          deployment_status: ProjectInstanceConstants::EMPTY_RECORD_FOR_PR,
+          deployment_status: ProjectInstanceConstants::Statuses::PULL_REQUEST,
           attached_pull_request: { repo: attached_repo_path, number: attached_pull_request_number },
           branches: branches
         )

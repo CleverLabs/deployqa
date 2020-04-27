@@ -10,7 +10,7 @@ module Deployment
 
       def call
         return unless @project_instance.present?
-        return unless @project_instance.deployment_status.in?(ProjectInstanceConstants::ACTIVE_INSTANCES)
+        return unless @project_instance.deployment_status.in?(ProjectInstanceConstants::Statuses::ALL_ACTIVE)
 
         build_action = @project_instance.create_action!(author: @user_reference, action: BuildActionConstants::UPDATE_INSTANCE)
 

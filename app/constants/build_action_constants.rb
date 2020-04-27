@@ -11,6 +11,16 @@ module BuildActionConstants
 
   NEW_INSTANCE_ACTIONS = [CREATE_INSTANCE, RECREATE_INSTANCE].freeze
 
+  module Statuses
+    ALL = [
+      SCHEDULED = "scheduled",
+      RUNNING = "running",
+      SUCCESS = "success",
+      FAILURE = "failure",
+      CANCELED = "canceled"
+    ].freeze
+  end
+
   module Log
     STATUSES = [
       INFO = "info",

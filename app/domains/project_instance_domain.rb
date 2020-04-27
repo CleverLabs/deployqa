@@ -26,9 +26,13 @@ class ProjectInstanceDomain
     @last_action_record ||= @project_instance_record.build_actions.order(:created_at).last
   end
 
+  def action_status
+    last_action_record.status
+  end
+
   def create_action!(author:, action:, configurations_to_update: nil, docker_deploy_lambda: nil)
     previous_action = last_action_record
-    @last_action_record = BuildAction.create!(project_instance: @project_instance_record, author: author, action: action, configurations: [])
+    @last_action_record = BuildAction.create!(project_instance: @project_instance_record, author: author, action: action, configurations: [], status: BuildActionConstants::Statuses::SCHEDULED)
     @deployment_configurations = if BuildActionConstants::NEW_INSTANCE_ACTIONS.include?(action)
                                    create_configurations(author, @last_action_record.id, docker_deploy_lambda)
                                  else
@@ -36,7 +40,6 @@ class ProjectInstanceDomain
                                  end
 
     @last_action_record.update!(configurations: @deployment_configurations.map(&:to_project_instance_configuration))
-    update_status!(ProjectInstanceConstants::SCHEDULED)
     @last_action_record
   end
 

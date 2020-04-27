@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ProjectInstanceMessagePolicy < ApplicationPolicy
-  SLACK_EVENTS = [ProjectInstanceConstants::RUNNING, ProjectInstanceConstants::FAILURE].freeze
   COMMENTABLE_PROVIDERS = [ProjectsConstants::Providers::GITHUB, ProjectsConstants::Providers::GITLAB].freeze
 
   def slack?
@@ -18,7 +17,7 @@ class ProjectInstanceMessagePolicy < ApplicationPolicy
   private
 
   def slack_event_enabled?
-    SLACK_EVENTS.include? record.deployment_status
+    record.deployment_status == ProjectInstanceConstants::Statuses::RUNNING
   end
 
   def project

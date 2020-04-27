@@ -46,7 +46,7 @@ class ProjectsController < ApplicationController
   end
 
   def find_projects
-    statuses = ProjectInstanceConstants::ACTIVE_INSTANCES.map { |status| ProjectInstance.deployment_statuses[status] }.join(", ")
+    statuses = ProjectInstanceConstants::Statuses::ALL_ACTIVE.map { |status| ProjectInstance.deployment_statuses[status] }.join(", ")
 
     Project
       .select("projects.*, COUNT(project_instances) as active_instances")

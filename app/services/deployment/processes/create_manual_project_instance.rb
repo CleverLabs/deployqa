@@ -23,7 +23,7 @@ module Deployment
         ProjectInstanceDomain.create(
           project_id: @project.id,
           name: project_instance_name,
-          deployment_status: ProjectInstanceConstants::SCHEDULED,
+          deployment_status: ProjectInstanceConstants::Statuses::SCHEDULED,
           branches: branches
         )
       end

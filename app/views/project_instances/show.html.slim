@@ -58,6 +58,7 @@
             th Created at
             - if Features::Accessor.new.docker_deploy_performed?(@project_instance)
               th Commit
+            th Status
         tbody
           - @project_instance.build_actions.order(created_at: :desc).each_with_index do |build_action|
             tr
@@ -71,3 +72,6 @@
               - if Features::Accessor.new.docker_deploy_performed?(@project_instance)
                 td
                   code = build_action.git_reference
+              td
+                span class=["ml-1 badge", action_status_badge_class(build_action.status)]
+                  = build_action.status
