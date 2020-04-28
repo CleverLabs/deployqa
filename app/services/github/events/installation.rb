@@ -18,6 +18,10 @@ module Github
         GithubPerson.new(payload.dig("sender", "id"), payload.dig("sender", "login"))
       end
 
+      def requester_user
+        GithubPerson.new(payload.dig("requester", "id"), payload.dig("requester", "login"))
+      end
+
       def organization_info
         GithubPerson.new(payload.dig("installation", "account", "id"), payload.dig("installation", "account", "login"))
       end
@@ -40,6 +44,10 @@ module Github
 
       def raw_initiator_info
         payload.dig("sender")
+      end
+
+      def raw_requester_info
+        payload.dig("requester")
       end
 
       private

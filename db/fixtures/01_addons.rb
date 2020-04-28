@@ -22,3 +22,18 @@ Addon.seed(:name) do |seed|
   seed.name = "AWS S3"
   seed.integration_provider = AddonConstants::IntegrationProviders::AMAZON
 end
+
+Addon.seed(:name) do |seed|
+  seed.name = "MariaDB"
+  seed.integration_provider = AddonConstants::IntegrationProviders::ROBAD
+end
+
+Addon.seed(:name) do |seed|
+  seed.name = "MailHog"
+  seed.integration_provider = AddonConstants::IntegrationProviders::ROBAD
+end
+
+Addon.seed(:name) do |seed|
+  seed.name = "phpMyAdmin"
+  seed.integration_provider = AddonConstants::IntegrationProviders::ROBAD
+end

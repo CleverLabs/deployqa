@@ -33,7 +33,7 @@ module Plugins
 
       def s3_repos_prefix
         name_builder = Deployment::ConfigurationBuilders::NameBuilder.new
-        application_name = name_builder.application_project_prefix(@project_info.project_name, @project_info.project_id) + "*"
+        application_name = name_builder.application_name_prefix(@project_info.project_name, @project_info.project_id) + "-*"
         name_builder.external_resource_name(application_name)
       end
 

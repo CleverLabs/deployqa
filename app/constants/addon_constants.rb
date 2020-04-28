@@ -4,7 +4,8 @@ module AddonConstants
   module IntegrationProviders
     ALL = [
       HEROKU = "heroku",
-      AMAZON = "amazon"
+      AMAZON = "amazon",
+      ROBAD = "robad"
     ].freeze
   end
 
@@ -12,7 +13,8 @@ module AddonConstants
     ALL = [
       RELATIONAL_DB = "relational_db",
       KEY_VALUE_DB = "key_value_db",
-      CLOUD_STORAGE = "cloud_storage"
+      CLOUD_STORAGE = "cloud_storage",
+      SERVICE = "service"
     ].freeze
   end
 end

@@ -22,8 +22,28 @@ module Github
         def find_user
           # User has to create project inside the system, so it has to be authenticated
           user_reference = ::UserReference.find_by(auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: @wrapped_body.initiator_info.id)
+
+          return find_requester(user_reference) if !user_reference || !user_reference.user
+
           GithubEntity.ensure_info_exists(user_reference.user, @wrapped_body.raw_initiator_info) # TODO: github entity might references to user reference instead of user
           user_reference.user
+        end
+
+        def find_requester(admin_user_reference)
+          admin_user_reference ||= create_owner_reference
+          GithubEntity.ensure_info_exists(admin_user_reference, @wrapped_body.raw_initiator_info)
+
+          user_reference = ::UserReference.find_by(auth_provider: ProjectsConstants::Providers::GITHUB, auth_uid: @wrapped_body.requester_user.id)
+          GithubEntity.ensure_info_exists(user_reference.user, @wrapped_body.raw_requester_info)
+          user_reference.user
+        end
+
+        def create_owner_reference
+          UserReference.create!(
+            auth_provider: ProjectsConstants::Providers::GITHUB,
+            auth_uid: @wrapped_body.initiator_info.id,
+            full_name: @wrapped_body.initiator_info.name
+          )
         end
 
         def find_project

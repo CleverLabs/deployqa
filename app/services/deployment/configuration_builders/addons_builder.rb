@@ -24,6 +24,16 @@ module Deployment
           url = "mysql2://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}/#{config[:name]}"
           { config: config.merge(url: url), env: { "DATABASE_URL" => url } }
         end,
+        "MariaDB" => lambda do |_, _|
+          config = {
+            name: SecureRandom.alphanumeric,
+            user: SecureRandom.alphanumeric,
+            password: SecureRandom.alphanumeric,
+            port: Robad::ResourceManagement::Port.allocate
+          }
+          url = "mysql://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}/#{config[:name]}"
+          { config: config.merge(url: url), env: { "DATABASE_URL" => url } }
+        end,
         "Redis" => lambda do |_, _|
           config = {
             user: "redis",
@@ -41,6 +51,22 @@ module Deployment
             "S3_REGION" => ENV["AWS_REGION"]
           }
           { config: {}, env: env }
+        end,
+        "MailHog" => lambda do |_, _|
+          config = {
+            smtp_port: Robad::ResourceManagement::Port.allocate,
+            api_port: Robad::ResourceManagement::Port.allocate
+          }
+          smtp_url = "#{ENV['DB_EXPOSURE_IP']}:#{config[:smtp_port]}"
+          api_url = "#{ENV['DB_EXPOSURE_IP']}:#{config[:api_port]}"
+          { config: config.merge(smtp_url: smtp_url, api_url: api_url), env: { "MAILHOG_SMPT_URL" => smtp_url, "MAILHOG_API_URL" => api_url } }
+        end,
+        "phpMyAdmin" => lambda do |_, _|
+          config = {
+            port: Robad::ResourceManagement::Port.allocate
+          }
+          url = "#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}"
+          { config: config.merge(url: url), env: { "PHPMYADMIN_URL" => url } }
         end
       }.freeze
 
