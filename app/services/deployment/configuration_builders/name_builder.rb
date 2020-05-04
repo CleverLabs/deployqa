@@ -30,16 +30,16 @@ module Deployment
         "#{ENV['AWS_ACCOUNT_ID']}.dkr.ecr.#{ENV['AWS_REGION']}.amazonaws.com/#{name}"
       end
 
-      def docker_image(repo_address, build_id)
-        "#{repo_address}:build_#{build_id}"
+      def docker_image(repo_address, build_id, process_name)
+        "#{repo_address}:#{process_name}_build_#{build_id}"
       end
 
       def heroku_app_url(application_name)
         "https://#{application_name}.herokuapp.com"
       end
 
-      def robad_app_url(application_name)
-        "http://#{application_name}.#{ENV['INSTANCE_EXPOSURE_DOMAIN']}"
+      def robad_app_url(application_name, process_name)
+        "http://#{process_name}.#{application_name}.#{ENV['INSTANCE_EXPOSURE_DOMAIN']}"
       end
     end
   end

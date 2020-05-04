@@ -22,19 +22,44 @@
           = form.input :build_env_variables, input_html: { value: @repository.build_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
       h4.mt-5 Processes
       .row
-        = form.simple_fields_for :web_processes_attributes do |web_processes|
-          - processes = @repository.web_processes.to_a
-          .col-6
-            = web_processes.input :id, as: :hidden, input_html: { name: "repository[web_processes_attributes][0][id]", value: processes.first&.id }
-            = web_processes.input :name, as: :hidden, input_html: { name: "repository[web_processes_attributes][0][name]", value: processes.first&.name || "web" }
-            = web_processes.input :command, label: "Web command", required: false, input_html: { name: "repository[web_processes_attributes][0][command]", value: processes.first&.command }
-          .col-6
-            = web_processes.input :name, as: :hidden, input_html: { name: "repository[web_processes_attributes][1][id]", value: processes.second&.id }
-            = web_processes.input :name, as: :hidden, input_html: { name: "repository[web_processes_attributes][1][name]", value: processes.second&.name || "worker" }
-            = web_processes.input :command, label: "Worker command", required: false, input_html: { name: "repository[web_processes_attributes][1][command]", value: processes.second&.command }
+        = form.simple_fields_for :web_processes_attributes do |web_processes_form|
+          - web_process = @repository.web_processes.to_a.find { |process| process.name == "web" }
+          - worker_process = @repository.web_processes.to_a.find { |process| process.name == "worker" }
+          - rest_processes = @repository.web_processes.to_a.select { |process| process.name != "web" && process.name != "worker" }
+          .col-12
+            .form-row.align-items-center
+              span.col-1 Web
+              = web_processes_form.input :id, as: :hidden, input_html: { name: "repository[web_processes_attributes][0][id]", value: web_process&.id }
+              = web_processes_form.input :name, as: :hidden, input_html: { name: "repository[web_processes_attributes][0][name]", value: web_process&.name || "web" }
+              = web_processes_form.input :command, label: "Command", required: false, input_html: { name: "repository[web_processes_attributes][0][command]", value: web_process&.command }, wrapper_html: { class: "col-5" }
+              = web_processes_form.input :dockerfile, label: "Dockerfile path", required: false, input_html: { name: "repository[web_processes_attributes][0][dockerfile]", value: web_process&.dockerfile }, wrapper_html: { class: "col-4" }
+              = web_processes_form.input :expose_port, label: "Port", required: false, input_html: { name: "repository[web_processes_attributes][0][expose_port]", value: web_process&.expose_port }, wrapper_html: { class: "col-2" }
+          .col-12
+            .form-row.align-items-center
+              span.col-1 Worker
+              = web_processes_form.input :id, as: :hidden, input_html: { name: "repository[web_processes_attributes][1][id]", value: worker_process&.id }
+              = web_processes_form.input :name, as: :hidden, input_html: { name: "repository[web_processes_attributes][1][name]", value: worker_process&.name || "worker" }
+              = web_processes_form.input :command, label: "Command", required: false, input_html: { name: "repository[web_processes_attributes][1][command]", value: worker_process&.command }, wrapper_html: { class: "col-5" }
+              = web_processes_form.input :dockerfile, label: "Dockerfile path", required: false, input_html: { name: "repository[web_processes_attributes][1][dockerfile]", value: worker_process&.dockerfile }, wrapper_html: { class: "col-4" }
+              = web_processes_form.input :expose_port, label: "Port", required: false, input_html: { name: "repository[web_processes_attributes][1][expose_port]", value: worker_process&.expose_port }, wrapper_html: { class: "col-2" }
+          - rest_processes.each_with_index do |other_process, index|
+            .col-12
+              .form-row.align-items-center
+                span.col-1 = other_process.name
+                = web_processes_form.input :id, as: :hidden, input_html: { name: "repository[web_processes_attributes][#{index + 2}][id]", value: other_process.id }
+                = web_processes_form.input :name, as: :hidden, input_html: { name: "repository[web_processes_attributes][#{index + 2}][name]", value: other_process.name || "worker" }
+                = web_processes_form.input :command, label: "Command", required: false, input_html: { name: "repository[web_processes_attributes][#{index + 2}][command]", value: other_process.command }, wrapper_html: { class: "col-5" }
+                = web_processes_form.input :dockerfile, label: "Dockerfile path", required: false, input_html: { name: "repository[web_processes_attributes][#{index + 2}][dockerfile]", value: other_process.dockerfile }, wrapper_html: { class: "col-4" }
+                = web_processes_form.input :expose_port, label: "Port", required: false, input_html: { name: "repository[web_processes_attributes][#{index + 2}][expose_port]", value: other_process.expose_port }, wrapper_html: { class: "col-2" }
+
+      h4.mt-5 Database
       .row
         .col-6
+          = form.input :schema_load_command, input_html: { placeholder: "example: bundle exec rails db:schema:load" }
+        .col-6
           = form.input :seeds_command, input_html: { placeholder: "example: bundle exec rails db:seed" }
+        .col-6
+          = form.input :migration_command, input_html: { placeholder: "example: bundle exec rails db:migrate" }
 
       h4.mt-5 Addons
       = form.input :addon_ids, collection: @addons, label: "Selected addons", include_hidden: false, input_html: { multiple: true }

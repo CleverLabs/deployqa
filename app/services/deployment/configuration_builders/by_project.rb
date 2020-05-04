@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 module Deployment
   module ConfigurationBuilders
     class ByProject
@@ -24,6 +25,8 @@ module Deployment
           repository_id: repository.id,
           heroku_buildpacks: repository.heroku_buildpacks,
           seeds_command: repository.seeds_command,
+          migration_command: repository.migration_command,
+          schema_load_command: repository.schema_load_command,
           application_url: application_url(name)
         }.merge(build_dependencies(repository, branches))
           .merge(build_env_with_addons(repository, name, active_repositories))
@@ -61,12 +64,29 @@ module Deployment
       end
 
       def build_web_processes(repository)
-        repository.web_processes.to_a.map { |web_process| web_process.attributes.slice(*Deployment::WebProcess.attributes.map(&:to_s)) }
+        repository.web_processes.to_a.map do |web_process|
+          attributes = web_process.attributes.slice(*Deployment::WebProcess.attributes.map(&:to_s))
+          image, dockerfile = docker_info(web_process, repository)
+          attributes.merge(docker_image: image, dockerfile_path: dockerfile, expose_port: web_process.expose_port.presence)
+        end
+      end
+
+      def docker_info(web_process, repository)
+        if web_process.expose_port
+          process_name = web_process.name
+          dockerfile = web_process.dockerfile.presence || "Dockerfile"
+        else
+          process_name = "web"
+          dockerfile = "Dockerfile"
+        end
+        _, image = docker_addresses(repository, process_name)
+
+        [image, dockerfile]
       end
 
       def application_url(application_name)
         if @docker_feature.call
-          Deployment::ConfigurationBuilders::NameBuilder.new.robad_app_url(application_name)
+          Deployment::ConfigurationBuilders::NameBuilder.new.robad_app_url(application_name, "web")
         else
           Deployment::ConfigurationBuilders::NameBuilder.new.heroku_app_url(application_name)
         end
@@ -94,9 +114,9 @@ module Deployment
         )
       end
 
-      def docker_addresses(repository)
+      def docker_addresses(repository, process_name = nil)
         repo_address = Deployment::ConfigurationBuilders::NameBuilder.new.docker_repo_address(@project.name, @project.id, repository.name)
-        image = Deployment::ConfigurationBuilders::NameBuilder.new.docker_image(repo_address, @build_id)
+        image = Deployment::ConfigurationBuilders::NameBuilder.new.docker_image(repo_address, @build_id, process_name)
 
         [repo_address, image]
       end
@@ -110,3 +130,4 @@ module Deployment
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

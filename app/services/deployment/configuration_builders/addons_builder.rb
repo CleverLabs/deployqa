@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 module Deployment
   module ConfigurationBuilders
     class AddonsBuilder
@@ -32,7 +33,15 @@ module Deployment
             port: Robad::ResourceManagement::Port.allocate
           }
           url = "mysql://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}/#{config[:name]}"
-          { config: config.merge(url: url), env: { "DATABASE_URL" => url } }
+          env = {
+            "DATABASE_URL" => url,
+            "DB_NAME" => config[:name],
+            "DB_USERNAME" => config[:user],
+            "DB_PASSWORD" => config[:password],
+            "DB_HOST" => ENV["DB_EXPOSURE_IP"],
+            "DB_PORT" => config[:port].to_s
+          }
+          { config: config.merge(url: url), env: env }
         end,
         "Redis" => lambda do |_, _|
           config = {
@@ -59,7 +68,15 @@ module Deployment
           }
           smtp_url = "#{ENV['DB_EXPOSURE_IP']}:#{config[:smtp_port]}"
           api_url = "#{ENV['DB_EXPOSURE_IP']}:#{config[:api_port]}"
-          { config: config.merge(smtp_url: smtp_url, api_url: api_url), env: { "MAILHOG_SMPT_URL" => smtp_url, "MAILHOG_API_URL" => api_url } }
+
+          env = {
+            "MAIL_SMTP_SERVER" => ENV["DB_EXPOSURE_IP"],
+            "MAIL_SMTP_PORT" => config[:smtp_port].to_s,
+            "MAIL_SMTP_SECURITY" => "tcp",
+            "MAILHOG_SMPT_URL" => smtp_url,
+            "MAILHOG_API_URL" => api_url
+          }
+          { config: config.merge(smtp_url: smtp_url, api_url: api_url), env: env }
         end,
         "phpMyAdmin" => lambda do |_, _|
           config = {
@@ -97,3 +114,4 @@ module Deployment
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

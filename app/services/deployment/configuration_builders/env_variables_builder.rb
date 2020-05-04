@@ -20,13 +20,21 @@ module Deployment
 
       def application_variables
         @active_repositories_with_names.each_with_object({}) do |(repository, application_name), result|
-          url = if @docker_feature.call
-                  Deployment::ConfigurationBuilders::NameBuilder.new.robad_app_url(application_name)
-                else
-                  Deployment::ConfigurationBuilders::NameBuilder.new.heroku_app_url(application_name)
-                end
+          if @docker_feature.call
+            url_for_each_process(repository, application_name, result)
+          else
+            url = Deployment::ConfigurationBuilders::NameBuilder.new.heroku_app_url(application_name)
+            result[Utils::NameSanitizer.sanitize_upcase(repository.path + "_WEB") + "_URL"] = url
+          end
+        end
+      end
 
-          result[Utils::NameSanitizer.sanitize_upcase(repository.path) + "_URL"] = url
+      def url_for_each_process(repository, application_name, result)
+        repository.web_processes.each do |web_process|
+          next unless web_process.expose_port
+
+          url = Deployment::ConfigurationBuilders::NameBuilder.new.robad_app_url(application_name, web_process.name)
+          result[Utils::NameSanitizer.sanitize_upcase(repository.path + "_" + web_process.name) + "_URL"] = url
         end
       end
     end

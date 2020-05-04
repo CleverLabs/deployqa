@@ -6,6 +6,9 @@ module Deployment
 
     attribute :name, String
     attribute :command, String
+    attribute :docker_image, String
+    attribute :dockerfile_path, String
+    attribute :expose_port, Integer
     # attribute :number, Integer        # Will be added after ability to change it
 
     def to_procfile_command

@@ -9,6 +9,8 @@ module Deployment
     attribute :repository_id, Integer
     attribute :application_url, String
     attribute :seeds_command, String
+    attribute :migration_command, String
+    attribute :schema_load_command, String
     attribute :addons, Array, of: Deployment::Addon
     attribute :web_processes, Array, of: Deployment::WebProcess
     attribute :repo_configuration, Deployment::RepoConfiguration

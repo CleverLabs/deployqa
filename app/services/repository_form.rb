@@ -16,6 +16,8 @@ class RepositoryForm
   attribute :heroku_buildpacks, Array, of: String
   attribute :build_type, String
   attribute :seeds_command, String
+  attribute :schema_load_command, String
+  attribute :migration_command, String
 
   alias _runtime_env_variables= runtime_env_variables=
   def runtime_env_variables=(value)
@@ -38,6 +40,7 @@ class RepositoryForm
     @web_processes_attributes = mark_empty_processes_to_destroy(params.values)
                                 .select { |attributes| attributes[:command].present? || attributes[:_destroy] }
 
+    @web_processes_attributes.each { |attributes| attributes[:expose_port] = 80 if attributes[:name] == "web" }
     @attributes[:web_processes_attributes] = @web_processes_attributes
   end
 
