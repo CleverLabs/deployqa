@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_04_132803) do
+ActiveRecord::Schema.define(version: 2020_05_05_122900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -237,6 +237,7 @@ ActiveRecord::Schema.define(version: 2020_05_04_132803) do
     t.datetime "updated_at", null: false
     t.string "dockerfile"
     t.integer "expose_port"
+    t.boolean "generate_domain", default: true, null: false
     t.index ["repository_id"], name: "index_web_processes_on_repository_id"
   end
 

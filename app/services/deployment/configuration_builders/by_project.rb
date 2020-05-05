@@ -12,14 +12,15 @@ module Deployment
 
       def call(instance_name, branches)
         active_repositories = @project.repositories.active.map { |repository| [repository, build_name(repository, instance_name)] }
+        exposures = Deployment::ConfigurationBuilders::Helpers::ExposuresBuilder.new(active_repositories, @docker_feature).call
         active_repositories.map do |active_repository, name|
-          Deployment::Configuration.new(configuration_hash(active_repository, name, branches, active_repositories))
+          Deployment::Configuration.new(configuration_hash(active_repository, name, branches, exposures))
         end
       end
 
       private
 
-      def configuration_hash(repository, name, branches, active_repositories)
+      def configuration_hash(repository, name, branches, exposures)
         {
           application_name: name,
           repository_id: repository.id,
@@ -28,21 +29,21 @@ module Deployment
           migration_command: repository.migration_command,
           schema_load_command: repository.schema_load_command,
           application_url: application_url(name)
-        }.merge(build_dependencies(repository, branches))
-          .merge(build_env_with_addons(repository, name, active_repositories))
+        }.merge(build_dependencies(repository, branches, exposures))
+          .merge(build_env_with_addons(repository, name, exposures))
       end
 
-      def build_dependencies(repository, branches)
+      def build_dependencies(repository, branches, exposures)
         {
-          web_processes: build_web_processes(repository),
+          web_processes: build_web_processes(repository, repository.web_processes.to_a, exposures),
           repo_configuration: build_repo_configuration_by_project(repository, branches),
           build_configuration: build_build_configuration(repository)
         }
       end
 
-      def build_env_with_addons(repository, name, active_repositories)
+      def build_env_with_addons(repository, name, exposures)
         addons = build_addons(repository, name)
-        env = build_env_variables(repository, active_repositories)
+        env = build_env_variables(repository, exposures)
         addons.each { |addon| env = env.merge(addon.fetch("credentials", {})) }
         Deployment::Helpers::EnvAliasing.new(env).modify!
 
@@ -53,8 +54,8 @@ module Deployment
         Deployment::ConfigurationBuilders::NameBuilder.new.application_name(@project.name, @project.id, repository.name, instance_name)
       end
 
-      def build_env_variables(repository, active_repositories)
-        Deployment::ConfigurationBuilders::EnvVariablesBuilder.new(repository, @project, active_repositories, @docker_feature).call
+      def build_env_variables(repository, exposures)
+        Deployment::ConfigurationBuilders::EnvVariablesBuilder.new(repository, @project, exposures, @docker_feature).call
       end
 
       def build_addons(repository, name)
@@ -63,11 +64,16 @@ module Deployment
         end
       end
 
-      def build_web_processes(repository)
-        repository.web_processes.to_a.map do |web_process|
+      def build_web_processes(repository, web_processes, exposures)
+        web_processes.map do |web_process|
           attributes = web_process.attributes.slice(*Deployment::WebProcess.attributes.map(&:to_s))
           image, dockerfile = docker_info(web_process, repository)
-          attributes.merge(docker_image: image, dockerfile_path: dockerfile, expose_port: web_process.expose_port.presence)
+          attributes.merge(
+            docker_image: image,
+            dockerfile_path: dockerfile,
+            expose_port: web_process.expose_port.presence,
+            external_exposure: exposures[repository.path + "_" + web_process.name]
+          )
         end
       end
 
