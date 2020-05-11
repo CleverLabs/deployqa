@@ -64,7 +64,8 @@ module Deployment
         return configuration.web_processes if @action.to_sym != BuildActionConstants::UPDATE_INSTANCE
 
         configuration.web_processes.map do |web_process|
-          image = Deployment::ConfigurationBuilders::NameBuilder.new.docker_image(configuration.build_configuration["docker_repo_address"], @build_id, web_process["name"])
+          process_name = web_process["expose_port"].present? ? web_process["name"] : "web"
+          image = Deployment::ConfigurationBuilders::NameBuilder.new.docker_image(configuration.build_configuration["docker_repo_address"], @build_id, process_name)
           web_process.merge("docker_image" => image)
         end
       end

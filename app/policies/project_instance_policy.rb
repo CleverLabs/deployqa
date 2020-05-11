@@ -22,6 +22,10 @@ class ProjectInstancePolicy < ApplicationPolicy
     record.deployment_status == ProjectInstanceConstants::Statuses::RUNNING && no_active_actions
   end
 
+  def logs?
+    record.deployment_status == ProjectInstanceConstants::Statuses::RUNNING
+  end
+
   def terminate?
     record.deployment_status == ProjectInstanceConstants::Statuses::RUNNING
   end

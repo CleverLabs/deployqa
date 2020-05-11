@@ -11,6 +11,18 @@ module Robad
         info = Plugins::Adapters::InstanceDestruction.by_configuration(configuration)
         Plugins::Entry::OnInstanceDestuction.new(info).call
       end
+      UPDATE_REFERENCES_HANDLER = lambda do |configuration, build_action, tasks|
+        old_references = NomadReference.where(project_instance_id: build_action.project_instance_id).to_a
+        (tasks || []).map do |task|
+          NomadReference.create!(
+            project_instance_id: build_action.project_instance_id,
+            process_name: task["task_name"],
+            application_name: configuration.application_name,
+            allocation_id: task["allocation_id"]
+          )
+        end
+        old_references.each(&:destroy!)
+      end
 
       EVENTS = {
         "deployment/status/start" => {
@@ -33,6 +45,14 @@ module Robad
           BuildActionConstants::UPDATE_INSTANCE => lambda do |_configuration, build_action, action_result_value|
             build_action.update(git_reference: action_result_value)
           end
+        },
+        "deployment/status/running/start_instance" => {
+          BuildActionConstants::CREATE_INSTANCE => UPDATE_REFERENCES_HANDLER,
+          BuildActionConstants::RECREATE_INSTANCE => UPDATE_REFERENCES_HANDLER,
+          BuildActionConstants::UPDATE_INSTANCE => UPDATE_REFERENCES_HANDLER
+        },
+        "deployment/status/running/restart_server" => {
+          BuildActionConstants::RELOAD_INSTANCE => UPDATE_REFERENCES_HANDLER
         }
       }.freeze
 

@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/CleverLabs/nomad-ruby.git
+  revision: 9b24c66337bcfb51b1681b91de3d7a75fbb99acb
+  branch: master
+  specs:
+    nomad (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -403,6 +410,7 @@ DEPENDENCIES
   lograge (~> 0.11.1)
   logstash-event (~> 1.2, >= 1.2.02)
   logstash-logger (~> 0.26.1)
+  nomad!
   octokit
   omniauth
   omniauth-github

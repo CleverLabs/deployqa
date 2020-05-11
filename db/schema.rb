@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_05_122900) do
+ActiveRecord::Schema.define(version: 2020_05_08_154940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,6 +107,14 @@ ActiveRecord::Schema.define(version: 2020_05_05_122900) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_gitlab_repositories_infos_on_project_id"
+  end
+
+  create_table "nomad_references", force: :cascade do |t|
+    t.bigint "project_instance_id", null: false
+    t.string "allocation_id", null: false
+    t.string "process_name", null: false
+    t.string "application_name", null: false
+    t.index ["project_instance_id"], name: "index_nomad_references_on_project_instance_id"
   end
 
   create_table "project_addon_infos", force: :cascade do |t|
@@ -254,6 +262,7 @@ ActiveRecord::Schema.define(version: 2020_05_05_122900) do
   add_foreign_key "build_action_queues", "build_actions"
   add_foreign_key "build_action_queues", "project_instances"
   add_foreign_key "gitlab_repositories_infos", "projects"
+  add_foreign_key "nomad_references", "project_instances"
   add_foreign_key "project_addon_infos", "addons"
   add_foreign_key "project_addon_infos", "projects"
   add_foreign_key "project_user_roles", "projects"

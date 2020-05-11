@@ -1,0 +1,25 @@
+.container
+  = render partial: "shared/breadcrumb", locals: {\
+      text_link_hash: {\
+        "Projects" => projects_path,
+        @project.name => project_project_instances_path(@project),
+        @project_instance.name => project_project_instance_path(@project, @project_instance),
+        "Logs" => nil\
+      },
+      class: "mt-4" }
+
+  .mt-4
+    h3 Logs
+    ul.nav.nav-pills.py-3
+      - @references.each do |reference|
+        li.nav-item
+          = link_to "#{reference.application_name}: #{reference.process_name}", project_project_instance_log_path(@project, @project_instance, application_name: reference.application_name, process_name: reference.process_name), class: "nav-link #{@selected_reference.id == reference.id ? 'active' : ''}"
+
+    h4 Stdout
+    .log-section
+      .log-item
+        code.text-secondary.small = @out_logs.to_s.force_encoding("UTF-8")
+    h4.pt-2 Stderr
+    .log-section
+      .log-item
+        code.text-secondary.small = @err_logs.to_s.force_encoding("UTF-8")
