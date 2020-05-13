@@ -35,6 +35,7 @@ gem "platform-api"
 gem "puma", "~> 3.12"
 gem "pundit", "~> 2.0", ">= 2.0.1"
 gem "rails", "~> 5.2.3"
+gem "redis-mutex"
 gem "redis-rails"
 gem "rendezvous"
 gem "rollbar"
@@ -51,6 +52,7 @@ gem "webpacker", "~> 4.0", ">= 4.0.2"
 
 group :development, :test do
   gem "pry"
+  gem "pry-byebug"
   gem "pry-rails"
   gem "standard"
 end

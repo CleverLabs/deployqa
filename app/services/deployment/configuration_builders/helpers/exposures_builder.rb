@@ -25,7 +25,7 @@ module Deployment
           repository.web_processes.each do |web_process|
             next unless web_process.expose_port
 
-            url = web_process.generate_domain ? @name_builder.robad_app_url(application_name, web_process.name) : @name_builder.robad_app_url_ip_port
+            url = web_process.generate_domain ? @name_builder.robad_app_url(application_name, web_process.name) : @name_builder.robad_app_url_ip_port(application_name, web_process.name)
             result[repository.path + "_" + web_process.name] = url
           end
         end

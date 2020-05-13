@@ -42,8 +42,8 @@ module Deployment
         "http://#{process_name}.#{application_name}.#{ENV['INSTANCE_EXPOSURE_DOMAIN']}"
       end
 
-      def robad_app_url_ip_port
-        "#{ENV['DB_EXPOSURE_IP']}:#{Robad::ResourceManagement::Port.allocate}"
+      def robad_app_url_ip_port(application_name, process_name)
+        "#{ENV['DB_EXPOSURE_IP']}:#{Robad::ResourceManagement::Port.allocate(resource_info: { application_name: application_name, process_name: process_name })}"
       end
     end
   end

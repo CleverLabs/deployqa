@@ -9,7 +9,7 @@ module Robad
       end
       DELETE_ADDONS_HANDLER = lambda do |configuration, _build_action, _action_result_value|
         info = Plugins::Adapters::InstanceDestruction.by_configuration(configuration)
-        Plugins::Entry::OnInstanceDestuction.new(info).call
+        Plugins::Entry::OnInstanceDestruction.new(info).call
       end
 
       EVENTS = {

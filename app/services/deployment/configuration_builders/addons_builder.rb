@@ -5,32 +5,32 @@ module Deployment
   module ConfigurationBuilders
     class AddonsBuilder
       ADDON_SPECIFIC_DATA = {
-        "PostgreSQL" => lambda do |_, _|
+        "PostgreSQL" => lambda do |application_name, _|
           config = {
             name: SecureRandom.alphanumeric,
             user: SecureRandom.alphanumeric,
             password: SecureRandom.alphanumeric,
-            port: Robad::ResourceManagement::Port.allocate
+            port: Robad::ResourceManagement::Port.allocate(resource_info: { application_name: application_name, process_name: "PostgreSQL" })
           }
           url = "postgres://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}/#{config[:name]}"
           { config: config.merge(url: url), env: { "DATABASE_URL" => url } }
         end,
-        "ClearDB (MySQL)" => lambda do |_, _|
+        "ClearDB (MySQL)" => lambda do |application_name, _|
           config = {
             name: SecureRandom.alphanumeric,
             user: SecureRandom.alphanumeric,
             password: SecureRandom.alphanumeric,
-            port: Robad::ResourceManagement::Port.allocate
+            port: Robad::ResourceManagement::Port.allocate(resource_info: { application_name: application_name, process_name: "MySQL" })
           }
           url = "mysql2://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}/#{config[:name]}"
           { config: config.merge(url: url), env: { "DATABASE_URL" => url } }
         end,
-        "MariaDB" => lambda do |_, _|
+        "MariaDB" => lambda do |application_name, _|
           config = {
             name: SecureRandom.alphanumeric,
             user: SecureRandom.alphanumeric,
             password: SecureRandom.alphanumeric,
-            port: Robad::ResourceManagement::Port.allocate
+            port: Robad::ResourceManagement::Port.allocate(resource_info: { application_name: application_name, process_name: "MariaDB" })
           }
           url = "mysql://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}/#{config[:name]}"
           env = {
@@ -43,11 +43,11 @@ module Deployment
           }
           { config: config.merge(url: url), env: env }
         end,
-        "Redis" => lambda do |_, _|
+        "Redis" => lambda do |application_name, _|
           config = {
             user: "redis",
             password: SecureRandom.alphanumeric,
-            port: Robad::ResourceManagement::Port.allocate
+            port: Robad::ResourceManagement::Port.allocate(resource_info: { application_name: application_name, process_name: "Redis" })
           }
           url = "redis://#{config[:user]}:#{config[:password]}@#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}"
           { config: config.merge(url: url), env: { "REDIS_URL" => url } }
@@ -61,10 +61,10 @@ module Deployment
           }
           { config: {}, env: env }
         end,
-        "MailHog" => lambda do |_, _|
+        "MailHog" => lambda do |application_name, _|
           config = {
-            smtp_port: Robad::ResourceManagement::Port.allocate,
-            api_port: Robad::ResourceManagement::Port.allocate
+            smtp_port: Robad::ResourceManagement::Port.allocate(resource_info: { application_name: application_name, process_name: "MailHog SMTP" }),
+            api_port: Robad::ResourceManagement::Port.allocate(resource_info: { application_name: application_name, process_name: "MailHog API" })
           }
           smtp_url = "#{ENV['DB_EXPOSURE_IP']}:#{config[:smtp_port]}"
           api_url = "#{ENV['DB_EXPOSURE_IP']}:#{config[:api_port]}"
@@ -78,9 +78,9 @@ module Deployment
           }
           { config: config.merge(smtp_url: smtp_url, api_url: api_url), env: env }
         end,
-        "phpMyAdmin" => lambda do |_, _|
+        "phpMyAdmin" => lambda do |application_name, _|
           config = {
-            port: Robad::ResourceManagement::Port.allocate
+            port: Robad::ResourceManagement::Port.allocate(resource_info: { application_name: application_name, process_name: "phpMyAdmin" })
           }
           url = "#{ENV['DB_EXPOSURE_IP']}:#{config[:port]}"
           { config: config.merge(url: url), env: { "PHPMYADMIN_URL" => url } }
@@ -98,7 +98,7 @@ module Deployment
 
       def call
         return @addon_data unless @addon_specific_data
-        return @addon_data if !@docker_feature.call && @addon_record.name != "AWS S3"
+        return @addon_data if heroku_without_s3?
 
         specific_data = @addon_specific_data.call(@application_name, find_tokens)
         @addon_data["specific_configuration"] = specific_data.fetch(:config)
@@ -107,6 +107,10 @@ module Deployment
       end
 
       private
+
+      def heroku_without_s3?
+        !@docker_feature.call && @addon_record.name != "AWS S3"
+      end
 
       def find_tokens
         ProjectAddonInfo.find_by(project: @repository.project, addon: @addon_record)&.tokens

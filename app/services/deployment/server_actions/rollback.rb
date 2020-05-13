@@ -7,7 +7,7 @@ module Deployment
         create_server: ->(configuration) { ServerAccess::Heroku.new(name: configuration.application_name).destroy },
         build_addons: lambda do |configuration|
           info = Plugins::Adapters::InstanceDestruction.by_configuration(configuration)
-          Plugins::Entry::OnInstanceDestuction.new(info).call
+          Plugins::Entry::OnInstanceDestruction.new(info).call
         end
       }.freeze
 
