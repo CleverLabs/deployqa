@@ -14,7 +14,7 @@ module Deployment
 
         if @features_accessor.docker_deploy_allowed?(@project)
           @features_accessor.perform_docker_deploy!(@project_instance)
-          Robad::Executor.new(build_action).call(@project_instance.deployment_configurations)
+          Robad::Executor.new(build_action).action_call(@project_instance.deployment_configurations)
         else
           ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, @project_instance.deployment_configurations.map(&:to_h), build_action)
         end

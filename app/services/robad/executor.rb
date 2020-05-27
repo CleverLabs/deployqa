@@ -7,7 +7,7 @@ module Robad
       @action = build_action.action.to_sym
     end
 
-    def call(configurations)
+    def action_call(configurations)
       configurations.each do |configuration|
         data = Utils::Encryptor.new.encrypt(configuration.to_json)
 
@@ -17,6 +17,14 @@ module Robad
           "args" => [data, @action, @build_action_id]
         )
       end
+    end
+
+    def update_sleep_instance(addresses, new_address)
+      Sidekiq::Client.push(
+        "class" => "Robad::Workers::SleepyInstanceUpdate",
+        "queue" => "robad",
+        "args" => [addresses, new_address]
+      )
     end
   end
 end

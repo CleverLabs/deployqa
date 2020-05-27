@@ -25,7 +25,7 @@ module Deployment
         build_action = @project_instance.create_action!(author: @user_reference, action: @action, configurations_to_update: configurations_to_update)
 
         if Features::Accessor.new.docker_deploy_performed?(@project_instance)
-          Robad::Executor.new(build_action).call(@project_instance.deployment_configurations)
+          Robad::Executor.new(build_action).action_call(@project_instance.deployment_configurations)
         else
           ServerActionsCallJob.perform_later(@worker_class.to_s, @project_instance.deployment_configurations.map(&:to_h), build_action)
         end

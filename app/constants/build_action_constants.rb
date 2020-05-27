@@ -6,7 +6,8 @@ module BuildActionConstants
     RECREATE_INSTANCE = :recreate_instance,
     UPDATE_INSTANCE = :update_instance,
     RELOAD_INSTANCE = :reload_instance,
-    DESTROY_INSTANCE = :destroy_instance
+    DESTROY_INSTANCE = :destroy_instance,
+    SLEEP_INSTANCE = :sleep_instance
   ].freeze
 
   NEW_INSTANCE_ACTIONS = [CREATE_INSTANCE, RECREATE_INSTANCE].freeze

@@ -23,7 +23,10 @@ class ProjectInstanceDomain
   end
 
   def last_action_record
-    @last_action_record ||= @project_instance_record.build_actions.order(:created_at).last
+    @last_action_record ||= begin
+      scope = @project_instance_record.build_actions
+      scope.loaded? ? scope.sort_by(&:created_at).last : scope.order(:created_at).last
+    end
   end
 
   def action_status

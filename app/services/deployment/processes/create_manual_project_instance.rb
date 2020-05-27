@@ -33,7 +33,7 @@ module Deployment
 
         if deploy_via_robad
           @features_accessor.perform_docker_deploy!(instance)
-          Robad::Executor.new(build_action).call(instance.deployment_configurations)
+          Robad::Executor.new(build_action).action_call(instance.deployment_configurations)
         else
           ServerActionsCallJob.perform_later(Deployment::ServerActions::Create.to_s, instance.deployment_configurations.map(&:to_h), build_action)
         end
