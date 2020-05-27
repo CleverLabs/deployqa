@@ -2,6 +2,14 @@
 
 class ApplicationController < ActionController::Base
   include Pundit
+  
+  rescue_from Exception do |exception|
+    raise unless request.format.json?
+
+    handle_api_exception(exception)
+  end
+
+
   before_action :login_if_not
   before_action :set_paper_trail_whodunnit
 
@@ -32,6 +40,11 @@ class ApplicationController < ActionController::Base
     return unless PaperTrail.request.enabled?
 
     PaperTrail.request.whodunnit = "controller:#{controller_name}##{action_name}; user:#{current_user&.id}"
+  end
+
+  def handle_api_exception(exception)
+    status_code = ActionDispatch::ExceptionWrapper.new(request.env, exception).status_code
+    render json: { error: exception.message }, status: status_code
   end
 
   def github_router

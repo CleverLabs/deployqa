@@ -4,6 +4,7 @@ require "sidekiq/web"
 require "routes/logged_user_constraint"
 
 Rails.application.routes.draw do
+  use_doorkeeper
   default_url_options host: ENV["HOST_NAME"], protocol: ENV["HOST_NAME"].include?("localhost") ? "http" : "https"
 
   root "landings#index"
@@ -61,5 +62,11 @@ Rails.application.routes.draw do
     resources :projects, only: %i[new create]
   end
 
-  resources :project_instances_counts, only: %i[index]
+  namespace :api do
+    namespace :v1 do
+      resources :project_instances, only: %i[] do
+        resource :wake_up, only: :create, module: :project_instances
+      end
+    end
+  end
 end

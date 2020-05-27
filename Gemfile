@@ -11,6 +11,7 @@ gem "aws-sdk-ecr"
 gem "aws-sdk-iam"
 gem "aws-sdk-s3"
 gem "bootsnap", ">= 1.4.4", require: false
+gem "doorkeeper", "~> 5.4.0"
 gem "enumerize"
 gem "flipper"
 gem "flipper-active_record"
