@@ -34,16 +34,16 @@ module Deployment
           schema_load_command: repository.schema_load_command,
           build_configuration: build_configuration(configuration),
           web_processes: web_processes(configuration),
-          repo_configuration: build_repo_configuration_by_project_instance(configuration, @project)
+          repo_configuration: build_repo_configuration_by_project_instance(configuration, repository)
         ).symbolize_keys
       end
 
-      def build_repo_configuration_by_project_instance(configuration, project)
+      def build_repo_configuration_by_project_instance(configuration, repository)
         Deployment::RepoConfiguration.new(
           repo_path: configuration.repo_path,
           git_reference: configuration.git_reference,
-          project_integration_id: project.integration_id,
-          project_integration_type: project.integration_type
+          project_integration_id: Deployment::ConfigurationBuilders::IntegrationIdBuilder.new(repository).call,
+          project_integration_type: @project.integration_type
         )
       end
 

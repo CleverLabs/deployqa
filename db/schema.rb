@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_18_164048) do
+ActiveRecord::Schema.define(version: 2020_05_25_200859) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -194,6 +194,14 @@ ActiveRecord::Schema.define(version: 2020_05_18_164048) do
     t.index ["repository_id"], name: "index_repositories_addons_on_repository_id"
   end
 
+  create_table "repository_settings", force: :cascade do |t|
+    t.bigint "repository_id", null: false
+    t.jsonb "data", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["repository_id"], name: "index_repository_settings_on_repository_id"
+  end
+
   create_table "slack_entities", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.jsonb "data", null: false
@@ -272,6 +280,7 @@ ActiveRecord::Schema.define(version: 2020_05_18_164048) do
   add_foreign_key "repositories", "projects"
   add_foreign_key "repositories_addons", "addons"
   add_foreign_key "repositories_addons", "repositories"
+  add_foreign_key "repository_settings", "repositories"
   add_foreign_key "slack_entities", "projects"
   add_foreign_key "user_references", "users"
   add_foreign_key "web_processes", "repositories"

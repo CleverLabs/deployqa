@@ -10,8 +10,8 @@
   h1.mt-4 New Configuration
   .mt-4
     = simple_form_for @repository, url: project_repositories_path(@project) do |form|
-      - if @repository.errors.any?
-        p.text-danger = @repository.errors.full_messages.join(", ")
+      - if @errors.any?
+        p.text-danger = @errors.full_messages.join(", ")
       = form.input :path, label: "Full git SSH link", input_html: { placeholder: "git@github.com:rails/rails.git" }
       = form.input :build_type, collection: RepositoryConstants::BUILD_TYPES, label: "Build type", include_hidden: false
       .row

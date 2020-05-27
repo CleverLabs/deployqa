@@ -15,6 +15,7 @@ module GitlabIntegration
         redirect_to project_path(@page.project)
       else
         @repository = result.object
+        @errors = result.errors
         render :new
       end
     end

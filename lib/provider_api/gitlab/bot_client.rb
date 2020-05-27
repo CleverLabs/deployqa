@@ -4,8 +4,8 @@ module ProviderAPI
   module Gitlab
     class BotClient
       def initialize
-        @access_token = ENV["GITLAB_DEPLOYQA_BOT_TOKEN"]
-        @gitlab_client = ::Gitlab.client(endpoint: ENV["GITLAB_API_ENDPOINT"], private_token: access_token)
+        @access_token = Configs::Gitlab.deployqa_bot_token
+        @gitlab_client = ::Gitlab.client(private_token: access_token)
       end
 
       def clone_repository_uri(repo_path)
@@ -13,7 +13,7 @@ module ProviderAPI
       end
 
       def repository_webhook_token(repo_id)
-        OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA1.new, ENV["GITLAB_WEBHOOK_SECRET"], repo_id.to_s)
+        OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA1.new, Configs::Gitlab.webhook_secret, repo_id.to_s)
       end
 
       def merge_request(repository_id, merge_request_id)

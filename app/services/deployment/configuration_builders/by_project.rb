@@ -102,7 +102,7 @@ module Deployment
         Deployment::RepoConfiguration.new(
           repo_path: repository.path,
           git_reference: branches.fetch(repository.name, "master"),
-          project_integration_id: @project.integration_id,
+          project_integration_id: Deployment::ConfigurationBuilders::IntegrationIdBuilder.new(repository).call,
           project_integration_type: @project.integration_type
         )
       end

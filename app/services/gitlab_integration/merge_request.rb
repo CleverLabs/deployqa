@@ -29,7 +29,7 @@ module GitlabIntegration
       return unless discussions
 
       user_discussions = discussions.filter { |discussion| discussion.notes.all? { |comment| comment["system"] == false } }
-      user_discussions.find { |discussion| discussion.notes.first.dig("author", "id") == ENV["GITLAB_DEPLOYQA_BOT_ID"].to_i }
+      user_discussions.find { |discussion| discussion.notes.first.dig("author", "id") == Configs::Gitlab.deployqa_bot_id.to_i }
     end
 
     def update_comment(discussion_id, note_id, text)
