@@ -6,7 +6,7 @@ module Api
 
     before_action -> { doorkeeper_authorize!(:internal_api) }
 
-    rescue_from Exception, with: handle_api_exception
+    rescue_from Exception, with: :handle_api_exception
 
     private
 

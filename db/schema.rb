@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_26_132543) do
+ActiveRecord::Schema.define(version: 2020_05_29_122247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -252,6 +252,17 @@ ActiveRecord::Schema.define(version: 2020_05_26_132543) do
     t.index ["project_id"], name: "index_slack_entities_on_project_id", unique: true
   end
 
+  create_table "sleeping_instances", force: :cascade do |t|
+    t.bigint "project_instance_id", null: false
+    t.string "application_name", null: false
+    t.string "urls", null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["application_name"], name: "index_sleeping_instances_on_application_name"
+    t.index ["project_instance_id", "application_name"], name: "index_sleeping_instances_on_uniq_name", unique: true
+    t.index ["project_instance_id"], name: "index_sleeping_instances_on_project_instance_id"
+  end
+
   create_table "user_references", force: :cascade do |t|
     t.bigint "user_id"
     t.string "full_name", null: false
@@ -326,6 +337,7 @@ ActiveRecord::Schema.define(version: 2020_05_26_132543) do
   add_foreign_key "repositories_addons", "repositories"
   add_foreign_key "repository_settings", "repositories"
   add_foreign_key "slack_entities", "projects"
+  add_foreign_key "sleeping_instances", "project_instances"
   add_foreign_key "user_references", "users"
   add_foreign_key "web_processes", "repositories"
 end

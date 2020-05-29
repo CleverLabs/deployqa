@@ -65,7 +65,9 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :project_instances, only: %i[] do
-        resource :wake_up, only: :create, module: :project_instances
+        resource :wake_up, only: :create, module: :project_instances do
+          resource :status, only: :show
+        end
       end
     end
   end

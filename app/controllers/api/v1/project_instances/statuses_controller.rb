@@ -3,9 +3,8 @@
 module Api
   module V1
     module ProjectInstances
-      class WakeUpsController < ::Api::ApplicationController
-        def create
-          find_project_instance
+      class StatusesController < ::Api::ApplicationController
+        def show
           render json: { success: "true" }
         end
 

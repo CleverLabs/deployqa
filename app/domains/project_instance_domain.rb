@@ -5,6 +5,19 @@ class ProjectInstanceDomain
 
   delegate :id, :project_id, :name, :deployment_status, :attached_pull_request_number, :attached_repo_path, :build_actions, :to_param, :flipper_id, :present?, to: :project_instance_record
 
+  def self.by_sleep_url(application_name)
+    # instance = ProjectInstance.where(deployment_status: ProjectInstanceConstants::Statuses::SLEEP).includes(:build_actions).find_each.find do |project_instance|
+    #   self.new(record: project_instance).configurations.any? { |configuration| configuration.application_name == application_name }
+    # end
+
+    # self.new(record: instance)
+
+    instance = SleepingInstance.find_by(application_name: application_name)&.project_instance
+    raise ActiveRecord::RecordNotFound, "Sleeping instance with name #{application_name} not found!" unless instance
+
+    new(record: instance)
+  end
+
   def self.create(project_id:, name:, deployment_status:, branches:, attached_pull_request: {})
     record = ProjectInstance.create(
       project_id: project_id,
@@ -25,7 +38,7 @@ class ProjectInstanceDomain
   def last_action_record
     @last_action_record ||= begin
       scope = @project_instance_record.build_actions
-      scope.loaded? ? scope.sort_by(&:created_at).last : scope.order(:created_at).last
+      scope.loaded? ? scope.max_by(&:created_at) : scope.order(:created_at).last
     end
   end
 

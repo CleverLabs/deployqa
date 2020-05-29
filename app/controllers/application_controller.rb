@@ -2,13 +2,12 @@
 
 class ApplicationController < ActionController::Base
   include Pundit
-  
+
   rescue_from Exception do |exception|
     raise unless request.format.json?
 
     handle_api_exception(exception)
   end
-
 
   before_action :login_if_not
   before_action :set_paper_trail_whodunnit
