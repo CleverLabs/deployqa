@@ -3,7 +3,11 @@
 module GitlabIntegration
   class RepositoriesController < ::ApplicationController
     def new
-      @page = GitlabIntegration::RepositoryPage.new(find_project)
+      project = find_project
+
+      update_gitlab_repositories_info!(project)
+
+      @page = GitlabIntegration::RepositoryPage.new(project)
       @repository = @page.project.repositories.build
     end
 
@@ -33,6 +37,13 @@ module GitlabIntegration
                                                  name: gitlab_repository["name"],
                                                  path: gitlab_repository["path_with_namespace"],
                                                  integration_type: ProjectsConstants::Providers::GITLAB))
+    end
+
+    def update_gitlab_repositories_info!(project)
+      gitlab_repos = ::ProviderAPI::Gitlab::UserClient.new(current_user.token_for(::ProjectsConstants::Providers::GITLAB)).load_repositories
+      # TODO: For now we don't remove repositories with their dependencies so it's ok for removed repos on Gitlab.
+      # TODO: But in future a service usage may be here.
+      project.gitlab_repositories_info.update!(data: gitlab_repos.map(&:to_h))
     end
 
     def repository_params

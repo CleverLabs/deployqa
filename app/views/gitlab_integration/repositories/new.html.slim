@@ -8,39 +8,43 @@
           class: "mt-4" }
 
   h1.mt-4 New repository
-  .mt-4
-    = simple_form_for @repository, url: project_gitlab_repositories_path(@page.project) do |f|
-      = f.input :integration_id, collection: @page.gitlab_repositories_collection, label: "GitLab repository", include_blank: false
+  - if @page.gitlab_repositories_collection.present?
+    .mt-4
+      = simple_form_for @repository, url: project_gitlab_repositories_path(@page.project) do |f|
+        = f.input :integration_id, collection: @page.gitlab_repositories_collection, label: "GitLab repository", include_blank: false
 
-      = f.input :build_type, collection: RepositoryConstants::BUILD_TYPES, label: "Build type", include_hidden: false
-      .row
-        .col-6
-          = f.input :runtime_env_variables, input_html: { value: @repository.runtime_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
-        .col-6
-          = f.input :build_env_variables, input_html: { value: @repository.build_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
-
-      h4.mt-5 Processes
-      .row
-        = f.simple_fields_for :web_processes_attributes do |web_processes|
-          - processes = @repository.web_processes.to_a
+        = f.input :build_type, collection: RepositoryConstants::BUILD_TYPES, label: "Build type", include_hidden: false
+        .row
           .col-6
-            = web_processes.input :id, as: :hidden, input_html: {name: "repository[web_processes_attributes][0][id]", value: processes.first&.id}
-            = web_processes.input :name, as: :hidden, input_html: {name: "repository[web_processes_attributes][0][name]", value: processes.first&.name || "web"}
-            = web_processes.input :command, label: "Web command", required: false, input_html: {name: "repository[web_processes_attributes][0][command]", value: processes.first&.command}
+            = f.input :runtime_env_variables, input_html: { value: @repository.runtime_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
           .col-6
-            = web_processes.input :name, as: :hidden, input_html: {name: "repository[web_processes_attributes][1][id]", value: processes.second&.id}
-            = web_processes.input :name, as: :hidden, input_html: {name: "repository[web_processes_attributes][1][name]", value: processes.second&.name || "worker"}
-            = web_processes.input :command, label: "Worker command", required: false, input_html: {name: "repository[web_processes_attributes][1][command]", value: processes.second&.command}
+            = f.input :build_env_variables, input_html: { value: @repository.build_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
 
-      .row
-        .col-6
-          = f.input :seeds_command, input_html: { placeholder: "example: bundle exec rails db:seed" }
+        h4.mt-5 Processes
+        .row
+          = f.simple_fields_for :web_processes_attributes do |web_processes|
+            - processes = @repository.web_processes.to_a
+            .col-6
+              = web_processes.input :id, as: :hidden, input_html: {name: "repository[web_processes_attributes][0][id]", value: processes.first&.id}
+              = web_processes.input :name, as: :hidden, input_html: {name: "repository[web_processes_attributes][0][name]", value: processes.first&.name || "web"}
+              = web_processes.input :command, label: "Web command", required: false, input_html: {name: "repository[web_processes_attributes][0][command]", value: processes.first&.command}
+            .col-6
+              = web_processes.input :name, as: :hidden, input_html: {name: "repository[web_processes_attributes][1][id]", value: processes.second&.id}
+              = web_processes.input :name, as: :hidden, input_html: {name: "repository[web_processes_attributes][1][name]", value: processes.second&.name || "worker"}
+              = web_processes.input :command, label: "Worker command", required: false, input_html: {name: "repository[web_processes_attributes][1][command]", value: processes.second&.command}
 
-      h4.mt-5 Addons
-      = f.input :addon_ids, collection: @page.addons, label: "Selected addons", include_hidden: false, input_html: { multiple: true }
+        .row
+          .col-6
+            = f.input :seeds_command, input_html: { placeholder: "example: bundle exec rails db:seed" }
 
-      h4.mt-5 Heroku configuration
-      = f.input :heroku_buildpacks, label: "Heroku buildpack (optional)"
+        h4.mt-5 Addons
+        = f.input :addon_ids, collection: @page.addons, label: "Selected addons", include_hidden: false, input_html: { multiple: true }
 
-      .mt-5
-      = f.button :submit, class: "btn btn-primary"
+        h4.mt-5 Heroku configuration
+        = f.input :heroku_buildpacks, label: "Heroku buildpack (optional)"
+
+        .mt-5
+        = f.button :submit, class: "btn btn-primary"
+
+  - else
+    h2.mt-4 No available repositories

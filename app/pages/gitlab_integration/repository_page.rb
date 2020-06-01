@@ -13,7 +13,11 @@ module GitlabIntegration
     end
 
     def gitlab_repositories_collection
-      gitlab_repositories.map { |repo| [repo["path_with_namespace"], repo["id"]] }
+      collection = gitlab_repositories.map do |repo|
+        [repo["path_with_namespace"], repo["id"]] unless configured_repositories.include?(repo["id"].to_s)
+      end.compact
+
+      collection.sort_by { |k| k.first["path_with_namespace"] }
     end
 
     def find_gitlab_repo_by_id(id)
@@ -25,6 +29,10 @@ module GitlabIntegration
     end
 
     private
+
+    def configured_repositories
+      @configured_repo_ids ||= @project.repositories.pluck(:integration_id)
+    end
 
     def gitlab_repositories
       return [] if project.gitlab_repositories_info.blank?
