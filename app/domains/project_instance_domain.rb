@@ -13,10 +13,10 @@ class ProjectInstanceDomain
     # self.new(record: instance)
 
     instance = SleepingInstance.find_by(application_name: application_name)&.project_instance
-    instance = SleepingInstance.last if !instance && application_name == "localhost:8000"
+    instance = SleepingInstance.last&.project_instance if !instance && application_name == "localhost:8000"
     raise ActiveRecord::RecordNotFound, "Sleeping instance with name #{application_name} not found!" unless instance
 
-    new(record: instance.project_instance)
+    new(record: instance)
   end
 
   def self.create(project_id:, name:, deployment_status:, branches:, attached_pull_request: {})
@@ -70,6 +70,10 @@ class ProjectInstanceDomain
 
   def configurations
     last_action_record&.configurations || []
+  end
+
+  def sleeping?
+    deployment_status == ProjectInstanceConstants::Statuses::SLEEP && action_status == BuildActionConstants::Statuses::SUCCESS
   end
 
   private

@@ -6,8 +6,7 @@ module Api
       class StatusesController < ::Api::ApplicationController
         def show
           project_instance = find_project_instance
-          sleeping = project_instance.deployment_status == ProjectInstanceConstants::Statuses::SLEEP && project_instance.action_status == BuildActionConstants::Statuses::SUCCESS
-          render json: { project_instance: { sleeping: sleeping } }
+          render json: { project_instance: { sleeping: project_instance.sleeping? } }
         end
 
         private

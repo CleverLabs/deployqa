@@ -18,7 +18,8 @@ module Deployment
       BuildActionConstants::UPDATE_INSTANCE.to_s => { start: :updating, success: :running, failure: :failure },
       BuildActionConstants::RELOAD_INSTANCE.to_s => { start: :updating, success: :running, failure: :running },
       BuildActionConstants::DESTROY_INSTANCE.to_s => { start: :destroying, success: :destroyed, failure: :failure },
-      BuildActionConstants::SLEEP_INSTANCE.to_s => :no_comments
+      BuildActionConstants::SLEEP_INSTANCE.to_s => :no_comments,
+      BuildActionConstants::WAKE_UP_INSTANCE.to_s => :no_comments
     }.freeze
 
     INSTANCE_STATUSES = {
@@ -39,6 +40,9 @@ module Deployment
       },
       BuildActionConstants::SLEEP_INSTANCE.to_s => {
         start: :no_change, success: ProjectInstanceConstants::Statuses::SLEEP, failure: :no_change
+      },
+      BuildActionConstants::WAKE_UP_INSTANCE.to_s => {
+        start: :no_change, success: ProjectInstanceConstants::Statuses::RUNNING, failure: ProjectInstanceConstants::Statuses::FAILED_TO_CREATE
       }
     }.freeze
 
