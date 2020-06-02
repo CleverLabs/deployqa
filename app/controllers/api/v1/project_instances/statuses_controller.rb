@@ -7,6 +7,8 @@ module Api
         def show
           project_instance = find_project_instance
           render json: { project_instance: { sleeping: project_instance.sleeping? } }
+        rescue ActiveRecord::RecordNotFound
+          render json: { project_instance: { sleeping: false } }
         end
 
         private

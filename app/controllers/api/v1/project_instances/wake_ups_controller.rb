@@ -6,6 +6,7 @@ module Api
       class WakeUpsController < ::Api::ApplicationController
         def create
           find_project_instance
+          Deployment::Processes::WakeProjectInstanceUp.new(find_project_instance).call
           render json: { success: "true" }
         end
 

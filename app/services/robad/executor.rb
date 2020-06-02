@@ -23,7 +23,7 @@ module Robad
       Sidekiq::Client.push(
         "class" => "Robad::Workers::SleepyInstanceUpdate",
         "queue" => "robad",
-        "args" => [addresses, new_addresses]
+        "args" => [addresses, Time.now.to_i]
       )
     end
   end
