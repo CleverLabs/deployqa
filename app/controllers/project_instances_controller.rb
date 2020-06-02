@@ -12,6 +12,7 @@ class ProjectInstancesController < ApplicationController
     @project = find_project
     @project_instance = @project.project_instance(id: params[:id])
     @project_instance_policy = ProjectInstancePolicy.new(current_user, @project_instance)
+    @features_accessor = Features::Accessor.new
   end
 
   def new

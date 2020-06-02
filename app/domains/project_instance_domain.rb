@@ -13,9 +13,10 @@ class ProjectInstanceDomain
     # self.new(record: instance)
 
     instance = SleepingInstance.find_by(application_name: application_name)&.project_instance
+    instance = SleepingInstance.last if !instance && application_name == "localhost:8000"
     raise ActiveRecord::RecordNotFound, "Sleeping instance with name #{application_name} not found!" unless instance
 
-    new(record: instance)
+    new(record: instance.project_instance)
   end
 
   def self.create(project_id:, name:, deployment_status:, branches:, attached_pull_request: {})

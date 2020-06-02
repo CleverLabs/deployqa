@@ -32,7 +32,7 @@
             = link_to configuration.application_name, configuration.application_url, target: "_blank", rel: "noopener noreferrer"
           - if @project_instance_policy.show_heroku_link?
             p.mb-0
-              - if Features::Accessor.new.docker_deploy_performed?(@project_instance)
+              - if @features_accessor.docker_deploy_performed?(@project_instance)
                 = link_to "Nomad configuration link", "#{ENV["NOMAD_SERVER"]}/ui/jobs?search=#{@project_instance.name}", target: :_blank
               - else
                 = link_to "Heroku configuration link", "https://dashboard.heroku.com/apps/#{configuration.application_name}", target: :_blank
@@ -59,7 +59,7 @@
             th Performed action
             th Author
             th Created at
-            - if Features::Accessor.new.docker_deploy_performed?(@project_instance)
+            - if @features_accessor.docker_deploy_performed?(@project_instance)
               th Commit
             th Status
             th
@@ -72,7 +72,7 @@
                 = build_action.author.full_name
               td
                 = build_action.created_at
-              - if Features::Accessor.new.docker_deploy_performed?(@project_instance)
+              - if @features_accessor.docker_deploy_performed?(@project_instance)
                 td
                   code = build_action.git_reference
               td

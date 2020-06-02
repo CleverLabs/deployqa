@@ -11,6 +11,8 @@ module Api
     private
 
     def handle_api_exception(exception)
+      Rails.env.production? ? Rollbar.error(exception) : puts(exception.message)
+
       status_code = ActionDispatch::ExceptionWrapper.new(request.env, exception).status_code
       render json: { error: exception.message }, status: status_code
     end

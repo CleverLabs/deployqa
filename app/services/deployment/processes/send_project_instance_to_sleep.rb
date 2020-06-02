@@ -5,11 +5,11 @@ module Deployment
     class SendProjectInstanceToSleep
       def initialize(project_instance)
         @project_instance = project_instance
-        @user_reference = :TODO_IMPLEMENT
+        @user_reference = UserReference.first # TODO_IMPLEMENT
       end
 
       def call
-        return unless can_go_to_sleep?
+        # return unless can_go_to_sleep?
 
         build_action = @project_instance.create_action!(author: @user_reference, action: BuildActionConstants::SLEEP_INSTANCE)
         executor = Robad::Executor.new(build_action)
@@ -35,7 +35,10 @@ module Deployment
 
       def create_sleeping_instances
         @project_instance.configurations.map do |configuration|
-          urls = configuration.web_processes.map { |web_process| web_process["external_exposure"].presence }.compact
+          urls = configuration.web_processes.map do |web_process|
+            url = web_process["external_exposure"].presence
+            url ? url.gsub("http://", "").gsub("https://", "") : nil
+          end.compact
           SleepingInstance.create!(project_instance_id: @project_instance.id, urls: urls, application_name: configuration.application_name)
           urls
         end.flatten

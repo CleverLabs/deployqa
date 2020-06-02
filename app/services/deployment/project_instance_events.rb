@@ -17,7 +17,8 @@ module Deployment
       BuildActionConstants::RECREATE_INSTANCE.to_s => { start: :deploying, success: :running, failure: :not_deployed },
       BuildActionConstants::UPDATE_INSTANCE.to_s => { start: :updating, success: :running, failure: :failure },
       BuildActionConstants::RELOAD_INSTANCE.to_s => { start: :updating, success: :running, failure: :running },
-      BuildActionConstants::DESTROY_INSTANCE.to_s => { start: :destroying, success: :destroyed, failure: :failure }
+      BuildActionConstants::DESTROY_INSTANCE.to_s => { start: :destroying, success: :destroyed, failure: :failure },
+      BuildActionConstants::SLEEP_INSTANCE.to_s => :no_comments
     }.freeze
 
     INSTANCE_STATUSES = {
@@ -35,6 +36,9 @@ module Deployment
       },
       BuildActionConstants::DESTROY_INSTANCE.to_s => {
         start: :no_change, success: ProjectInstanceConstants::Statuses::TERMINATED, failure: ProjectInstanceConstants::Statuses::RUNNING
+      },
+      BuildActionConstants::SLEEP_INSTANCE.to_s => {
+        start: :no_change, success: ProjectInstanceConstants::Statuses::SLEEP, failure: :no_change
       }
     }.freeze
 
@@ -55,6 +59,7 @@ module Deployment
 
     def create_event(event)
       update_status!(event.to_sym)
+      return if @comment_types == :no_comments
 
       comment_type = @comment_types.fetch(event.to_sym)
       comment = Notifications::Comment.new(@project_instance)

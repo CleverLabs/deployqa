@@ -12,7 +12,7 @@ module Api
         private
 
         def find_project_instance
-          application_name = params[:project_instance_id].split(".")[1]
+          application_name = params[:project_instance_id].split(".").last
           ProjectInstanceDomain.by_sleep_url(application_name)
         end
       end

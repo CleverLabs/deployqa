@@ -15,7 +15,7 @@ class ProjectInstancePolicy < ApplicationPolicy
   end
 
   def reload?
-    record.deployment_status == ProjectInstanceConstants::Statuses::RUNNING && no_active_actions
+    record.deployment_status.in?([ProjectInstanceConstants::Statuses::RUNNING]) && no_active_actions
   end
 
   def update_server?
