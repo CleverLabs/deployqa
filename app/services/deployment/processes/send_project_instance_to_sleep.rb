@@ -9,7 +9,7 @@ module Deployment
       end
 
       def call
-        # return unless can_go_to_sleep?
+        return unless can_go_to_sleep?
 
         build_action = @project_instance.create_action!(author: @user_reference, action: BuildActionConstants::SLEEP_INSTANCE)
         executor = Robad::Executor.new(build_action)
@@ -26,8 +26,10 @@ module Deployment
         return false if @project_instance.action_status == BuildActionConstants::Statuses::RUNNING
 
         recent_requests = @project_instance.configurations.any? do |configuration|
-          timestamp = MetricsRedis.get(RedisKeys.new.instance_last_access_time(configuration.application_name))
+          timestamp = RedisAccessor.new.instance_last_access_time(configuration.application_name)
           Time.at(timestamp) > ProjectInstanceConstants::SLEEP_TIMEOUT_TIME.ago
+
+          puts "#{@project_instance.name}: #{Time.at(timestamp)}"
         end
 
         !recent_requests
