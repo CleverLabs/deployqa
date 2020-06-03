@@ -25,11 +25,12 @@ module Deployment
         return false if @project_instance.last_action_record.updated_at > ProjectInstanceConstants::SLEEP_TIMEOUT_TIME.ago
         return false if @project_instance.action_status == BuildActionConstants::Statuses::RUNNING
 
+        accessor = RedisAccessor.new
         recent_requests = @project_instance.configurations.any? do |configuration|
-          timestamp = RedisAccessor.new.instance_last_access_time(configuration.application_name)
-          Time.at(timestamp) > ProjectInstanceConstants::SLEEP_TIMEOUT_TIME.ago
-
+          timestamp = accessor.instance_last_access_time(configuration.application_name)
           puts "#{@project_instance.name}: #{Time.at(timestamp)}"
+
+          Time.at(timestamp) > ProjectInstanceConstants::SLEEP_TIMEOUT_TIME.ago
         end
 
         !recent_requests
