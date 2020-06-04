@@ -19,7 +19,7 @@ module Robad
       end
     end
 
-    def update_sleep_instance(addresses, new_addresses)
+    def update_sleep_instance(addresses)
       Sidekiq::Client.push(
         "class" => "Robad::Workers::SleepyInstanceUpdate",
         "queue" => "robad",

@@ -53,6 +53,9 @@ module Robad
         },
         "deployment/status/running/restart_server" => {
           BuildActionConstants::RELOAD_INSTANCE => UPDATE_REFERENCES_HANDLER
+        },
+        "deployment/status/running/wake_up_instance" => {
+          BuildActionConstants::WAKE_UP_INSTANCE => UPDATE_REFERENCES_HANDLER
         }
       }.freeze
 

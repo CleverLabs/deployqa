@@ -15,8 +15,8 @@ module Deployment
         executor = Robad::Executor.new(build_action)
         executor.action_call(@project_instance.deployment_configurations)
 
-        new_urls = create_sleeping_instances
-        executor.update_sleep_instance(SleepingInstance.pluck(:urls).flatten, new_urls)
+        create_sleeping_instances
+        executor.update_sleep_instance(SleepingInstance.pluck(:urls).flatten)
       end
 
       private
@@ -28,8 +28,6 @@ module Deployment
         accessor = RedisAccessor.new
         recent_requests = @project_instance.configurations.any? do |configuration|
           timestamp = accessor.instance_last_access_time(configuration.application_name)
-          puts "#{@project_instance.name}: #{Time.at(timestamp)}"
-
           Time.at(timestamp) > ProjectInstanceConstants::SLEEP_TIMEOUT_TIME.ago
         end
 

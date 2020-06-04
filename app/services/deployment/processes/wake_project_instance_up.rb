@@ -17,7 +17,7 @@ module Deployment
 
         update_last_access_time
         destroy_sleeping_instances
-        executor.update_sleep_instance(SleepingInstance.pluck(:urls).flatten, [])
+        executor.update_sleep_instance(SleepingInstance.pluck(:urls).flatten)
       end
 
       private
