@@ -5,7 +5,8 @@ module UserConstants
     ALL = [
       GUEST = "guest",
       USER = "user",
-      ADMIN = "admin"
+      ADMIN = "admin",
+      AUTOMATIC_SYSTEM = "automatic_system"
     ].freeze
   end
 end

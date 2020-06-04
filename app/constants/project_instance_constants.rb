@@ -21,5 +21,6 @@ module ProjectInstanceConstants
     ALL_HIDDEN = [PULL_REQUEST, PULL_REQUEST_CLOSED].freeze
   end
 
-  SLEEP_TIMEOUT_TIME = 3.hours
+  SLEEP_TIMEOUT_TIME = 5.minutes
+  # SLEEP_TIMEOUT_TIME = 3.hours
 end

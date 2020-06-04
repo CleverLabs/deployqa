@@ -6,14 +6,7 @@ class ProjectInstanceDomain
   delegate :id, :project_id, :name, :deployment_status, :attached_pull_request_number, :attached_repo_path, :build_actions, :to_param, :flipper_id, :present?, to: :project_instance_record
 
   def self.by_sleep_url(application_name)
-    # instance = ProjectInstance.where(deployment_status: ProjectInstanceConstants::Statuses::SLEEP).includes(:build_actions).find_each.find do |project_instance|
-    #   self.new(record: project_instance).configurations.any? { |configuration| configuration.application_name == application_name }
-    # end
-
-    # self.new(record: instance)
-
     instance = SleepingInstance.find_by(application_name: application_name)&.project_instance
-    instance = SleepingInstance.last&.project_instance if !instance && application_name == "localhost:8000"
     raise ActiveRecord::RecordNotFound, "Sleeping instance with name #{application_name} not found!" unless instance
 
     new(record: instance)

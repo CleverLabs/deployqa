@@ -24,15 +24,13 @@
       table.table.table-hover.table-clickable
         thead
           tr
-            th.by-content #
+            th.by-content
             th Name
             th Status
         tbody
-          - @project_instances.each_with_index do |project_instance, index|
+          - @project_instances.each do |project_instance|
             tr
               td.text-center
-                = link_to project_project_instance_path(@project, project_instance) do
-                  = index + 1
               td
                 = link_to project_project_instance_path(@project, project_instance) do
                   = project_instance.name

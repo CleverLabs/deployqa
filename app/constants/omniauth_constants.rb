@@ -4,8 +4,9 @@ module OmniauthConstants
   PROVIDERS = [
     GITHUB = "github",
     GITLAB = "gitlab",
-    SLACK = "slack"
+    SLACK = "slack",
+    NO_PROVIDER = "no_provider"
   ].freeze
 
-  LOGIN_PROVIDERS = [GITHUB, GITLAB].freeze
+  LOGIN_PROVIDERS = [GITHUB, GITLAB, NO_PROVIDER].freeze
 end

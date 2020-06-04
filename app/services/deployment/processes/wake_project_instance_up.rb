@@ -5,7 +5,7 @@ module Deployment
     class WakeProjectInstanceUp
       def initialize(project_instance)
         @project_instance = project_instance
-        @user_reference = UserReference.first # TODO_IMPLEMENT
+        @user_reference = UserDomain.system_user.user_reference_record
       end
 
       def call
@@ -30,7 +30,7 @@ module Deployment
       def update_last_access_time
         accessor = RedisAccessor.new
         @project_instance.configurations.each do |configuration|
-          timestamp = accessor.update_last_access_time(configuration.application_name)
+          accessor.update_last_access_time(configuration.application_name)
         end
       end
     end

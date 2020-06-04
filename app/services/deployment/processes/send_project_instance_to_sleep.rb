@@ -5,7 +5,7 @@ module Deployment
     class SendProjectInstanceToSleep
       def initialize(project_instance)
         @project_instance = project_instance
-        @user_reference = UserReference.first # TODO_IMPLEMENT
+        @user_reference = UserDomain.system_user.user_reference_record
       end
 
       def call
