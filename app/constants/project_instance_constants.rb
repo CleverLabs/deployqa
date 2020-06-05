@@ -13,7 +13,7 @@ module ProjectInstanceConstants
       PULL_REQUEST = "pull_request",
       PULL_REQUEST_CLOSED = "pull_request_closed",
 
-      SLEEP = "sleep"
+      SLEEPING = "sleeping"
     ].freeze
 
     ALL_ACTIVE = [RUNNING, CREATING].freeze

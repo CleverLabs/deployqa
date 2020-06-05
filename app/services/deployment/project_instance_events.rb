@@ -39,7 +39,7 @@ module Deployment
         start: :no_change, success: ProjectInstanceConstants::Statuses::TERMINATED, failure: ProjectInstanceConstants::Statuses::RUNNING
       },
       BuildActionConstants::SLEEP_INSTANCE.to_s => {
-        start: :no_change, success: ProjectInstanceConstants::Statuses::SLEEP, failure: :no_change
+        start: :no_change, success: ProjectInstanceConstants::Statuses::SLEEPING, failure: :no_change
       },
       BuildActionConstants::WAKE_UP_INSTANCE.to_s => {
         start: :no_change, success: ProjectInstanceConstants::Statuses::RUNNING, failure: ProjectInstanceConstants::Statuses::FAILED_TO_CREATE

@@ -7,7 +7,7 @@ module Api
         def create
           find_project_instance
           Deployment::Processes::WakeProjectInstanceUp.new(find_project_instance).call
-          render json: { success: "true" }
+          render json: { success: true }
         end
 
         private

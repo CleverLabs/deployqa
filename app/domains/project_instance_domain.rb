@@ -66,7 +66,7 @@ class ProjectInstanceDomain
   end
 
   def sleeping?
-    deployment_status == ProjectInstanceConstants::Statuses::SLEEP && action_status == BuildActionConstants::Statuses::SUCCESS
+    deployment_status == ProjectInstanceConstants::Statuses::SLEEPING && action_status == BuildActionConstants::Statuses::SUCCESS
   end
 
   private

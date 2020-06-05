@@ -1,4 +1,4 @@
 sleepy_watcher:
-  cron: "*/1 * * * *"
+  cron: "*/5 * * * *"
   class: "SleepyWatcherJob"
   queue: default
