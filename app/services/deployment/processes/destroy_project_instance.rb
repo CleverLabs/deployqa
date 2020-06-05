@@ -10,8 +10,9 @@ module Deployment
 
       def call
         return if instance_destroyed?
-        return update_status if @project_instance.deployment_status.in?(ProjectInstanceConstants::Statuses::ALL_NOT_ACTIVE)
+        return update_status if instance_not_active?
 
+        remove_instance_from_sleepy_server
         build_action = @project_instance.create_action!(author: @user_reference, action: BuildActionConstants::DESTROY_INSTANCE)
 
         if Features::Accessor.new.docker_deploy_performed?(@project_instance)
@@ -33,6 +34,10 @@ module Deployment
         )
       end
 
+      def instance_not_active?
+        @project_instance.deployment_status.in?(ProjectInstanceConstants::Statuses::ALL_NOT_ACTIVE)
+      end
+
       def update_status
         @project_instance.update_status!(closed_status)
       end
@@ -41,6 +46,12 @@ module Deployment
         return ProjectInstanceConstants::Statuses::PULL_REQUEST_CLOSED if @project_instance.deployment_status == ProjectInstanceConstants::Statuses::PULL_REQUEST
 
         ProjectInstanceConstants::Statuses::TERMINATED
+      end
+
+      def remove_instance_from_sleepy_server
+        return unless @project_instance.sleeping?
+
+        Deployment::Processes::RemoveInstanceFromSleepyServer.new(@project_instance).call
       end
     end
   end

@@ -12,6 +12,7 @@ module Deployment
         return unless @project_instance.present?
         return unless @project_instance.deployment_status.in?(ProjectInstanceConstants::Statuses::ALL_ACTIVE)
 
+        remove_instance_from_sleepy_server
         build_action = @project_instance.create_action!(author: @user_reference, action: BuildActionConstants::UPDATE_INSTANCE)
 
         if Features::Accessor.new.docker_deploy_performed?(@project_instance)
@@ -19,6 +20,14 @@ module Deployment
         else
           ServerActionsCallJob.perform_later(Deployment::ServerActions::Update.to_s, @project_instance.deployment_configurations.map(&:to_h), build_action)
         end
+      end
+
+      private
+
+      def remove_instance_from_sleepy_server
+        return unless @project_instance.sleeping?
+
+        Deployment::Processes::RemoveInstanceFromSleepyServer.new(@project_instance).call
       end
     end
   end

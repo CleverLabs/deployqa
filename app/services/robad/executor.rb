@@ -3,6 +3,8 @@
 module Robad
   class Executor
     def initialize(build_action)
+      return if build_action == :not_needed
+
       @build_action_id = build_action.id
       @action = build_action.action.to_sym
     end

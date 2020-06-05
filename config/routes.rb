@@ -5,7 +5,7 @@ require "routes/logged_user_constraint"
 
 Rails.application.routes.draw do
   use_doorkeeper
-  default_url_options host: ENV["HOST_NAME"], protocol: ENV["HOST_NAME"].include?("localhost") ? "http" : "https"
+  default_url_options host: ENV["HOST_NAME"], protocol: (ENV["HOST_NAME"] || "").include?("localhost") ? "http" : "https"
 
   root "landings#index"
   get "/landings", to: "landings#create"

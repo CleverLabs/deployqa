@@ -15,23 +15,7 @@ module Deployment
         executor = Robad::Executor.new(build_action)
         executor.action_call(@project_instance.deployment_configurations)
 
-        update_last_access_time
-        destroy_sleeping_instances
-        executor.update_sleep_instance(SleepingInstance.pluck(:urls).flatten)
-      end
-
-      private
-
-      def destroy_sleeping_instances
-        application_names = @project_instance.configurations.map(&:application_name)
-        SleepingInstance.where(project_instance_id: @project_instance.id, application_name: application_names).destroy_all
-      end
-
-      def update_last_access_time
-        accessor = RedisAccessor.new
-        @project_instance.configurations.each do |configuration|
-          accessor.update_last_access_time(configuration.application_name)
-        end
+        Deployment::Processes::RemoveInstanceFromSleepyServer.new(@project_instance).call
       end
     end
   end

@@ -27,7 +27,7 @@ class ProjectInstancePolicy < ApplicationPolicy
   end
 
   def terminate?
-    record.deployment_status == ProjectInstanceConstants::Statuses::RUNNING
+    record.deployment_status.in?([ProjectInstanceConstants::Statuses::RUNNING, ProjectInstanceConstants::Statuses::SLEEPING])
   end
 
   def edit?

@@ -16,7 +16,7 @@ module ProjectInstanceConstants
       SLEEPING = "sleeping"
     ].freeze
 
-    ALL_ACTIVE = [RUNNING, CREATING].freeze
+    ALL_ACTIVE = [RUNNING, CREATING, SLEEPING].freeze
     ALL_NOT_ACTIVE = [TERMINATED, FAILED_TO_CREATE, PULL_REQUEST, PULL_REQUEST_CLOSED].freeze
     ALL_HIDDEN = [PULL_REQUEST, PULL_REQUEST_CLOSED].freeze
   end

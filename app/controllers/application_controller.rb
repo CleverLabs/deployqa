@@ -2,7 +2,6 @@
 
 class ApplicationController < ActionController::Base
   include Pundit
-
   before_action :login_if_not
   before_action :set_paper_trail_whodunnit
 
