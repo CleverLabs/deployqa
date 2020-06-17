@@ -23,6 +23,9 @@ module Robad
         end
         old_references.each(&:destroy!)
       end
+      DESTROY_INSTANCE_HANDLER = lambda do |_configuration, build_action, _tasks|
+        NomadReference.where(project_instance_id: build_action.project_instance_id).destroy_all
+      end
 
       EVENTS = {
         "deployment/status/start" => {
@@ -30,7 +33,9 @@ module Robad
           BuildActionConstants::RECREATE_INSTANCE => CREATE_ADDONS_HANDLER,
           BuildActionConstants::DESTROY_INSTANCE => DELETE_ADDONS_HANDLER
         },
-        "deployment/status/success" => {},
+        "deployment/status/success" => {
+          BuildActionConstants::DESTROY_INSTANCE => DESTROY_INSTANCE_HANDLER
+        },
         "deployment/status/failure" => {
           BuildActionConstants::CREATE_INSTANCE => DELETE_ADDONS_HANDLER,
           BuildActionConstants::RECREATE_INSTANCE => DELETE_ADDONS_HANDLER
