@@ -7,7 +7,7 @@ module Billing
 
       def initialize(project)
         @project = project
-        @last_invoice = nil # @project.invoices.order(:created_at).last
+        @last_invoice = @project.invoices.order(:end_time).last
         @queries = Billing::Lifecycle::Queries.new(project)
         @timeframe = generate_timeframe
         @build_actions_by_project_instance = @queries.build_actions_by_project_instance(@timeframe)

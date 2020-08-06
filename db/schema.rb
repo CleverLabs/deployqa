@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_04_135043) do
+ActiveRecord::Schema.define(version: 2020_08_06_132657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,6 +109,25 @@ ActiveRecord::Schema.define(version: 2020_08_04_135043) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_gitlab_repositories_infos_on_project_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.datetime "start_time", null: false
+    t.datetime "end_time", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_invoices_on_project_id"
+  end
+
+  create_table "invoices_project_instances", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.bigint "project_instance_id", null: false
+    t.bigint "build_action_ids", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_invoices_project_instances_on_invoice_id"
+    t.index ["project_instance_id"], name: "index_invoices_project_instances_on_project_instance_id"
   end
 
   create_table "nomad_references", force: :cascade do |t|
@@ -329,6 +348,9 @@ ActiveRecord::Schema.define(version: 2020_08_04_135043) do
   add_foreign_key "build_action_queues", "build_actions"
   add_foreign_key "build_action_queues", "project_instances"
   add_foreign_key "gitlab_repositories_infos", "projects"
+  add_foreign_key "invoices", "projects"
+  add_foreign_key "invoices_project_instances", "invoices"
+  add_foreign_key "invoices_project_instances", "project_instances"
   add_foreign_key "nomad_references", "project_instances"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"

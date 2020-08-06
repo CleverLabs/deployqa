@@ -7,6 +7,7 @@ class Project < ApplicationRecord
   has_many :project_instances, dependent: :destroy
   has_many :project_user_roles, dependent: :destroy
   has_many :users, through: :project_user_roles
+  has_many :invoices, dependent: :destroy
   has_one :slack_entity, dependent: :destroy
   has_one :gitlab_repositories_info, dependent: :destroy
 
