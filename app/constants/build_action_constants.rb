@@ -2,13 +2,13 @@
 
 module BuildActionConstants
   ACTIONS = [
-    CREATE_INSTANCE = :create_instance,
-    RECREATE_INSTANCE = :recreate_instance,
-    UPDATE_INSTANCE = :update_instance,
-    RELOAD_INSTANCE = :reload_instance,
-    DESTROY_INSTANCE = :destroy_instance,
-    SLEEP_INSTANCE = :sleep_instance,
-    WAKE_UP_INSTANCE = :wake_up_instance
+    CREATE_INSTANCE = "create_instance",
+    RECREATE_INSTANCE = "recreate_instance",
+    UPDATE_INSTANCE = "update_instance",
+    RELOAD_INSTANCE = "reload_instance",
+    DESTROY_INSTANCE = "destroy_instance",
+    SLEEP_INSTANCE = "sleep_instance",
+    WAKE_UP_INSTANCE = "wake_up_instance"
   ].freeze
 
   NEW_INSTANCE_ACTIONS = [CREATE_INSTANCE, RECREATE_INSTANCE].freeze
