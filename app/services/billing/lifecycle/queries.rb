@@ -18,8 +18,8 @@ module Billing
         BuildAction
           .joins(:project_instance)
           .where(project_instances: { project_id: @project.id }, end_time: timeframe.start..timeframe.end)
-          .includes(:project_instance)
           .order(:end_time)
+          .includes(:project_instance)
           .group_by(&:project_instance_id)
       end
 

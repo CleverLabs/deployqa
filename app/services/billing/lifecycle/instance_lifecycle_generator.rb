@@ -16,15 +16,7 @@ module Billing
       def call
         lifecycles = @build_actions_by_project_instance.map do |project_instance_id, build_actions|
           build_actions = build_actions.sort_by(&:end_time)
-          lifecycle = build_new_lifecycle(project_instance_id, build_actions)
-          process_previously_created_instances(build_actions, lifecycle)
-
-          build_actions.each_with_object(Billing::Lifecycle::ActionToInstance.new(lifecycle)) do |build_action, action_to_instance|
-            action_to_instance.call(build_action)
-          end
-
-          lifecycle.end_last_active_state(@timeframe.end)
-          lifecycle
+          lifecycle_for(project_instance_id, build_actions)
         end
 
         lifecycles_from_instances_without_build_actions + lifecycles
@@ -35,6 +27,18 @@ module Billing
       def generate_timeframe
         start = @last_invoice ? @last_invoice.end_time + 0.001 : DateTime.now.beginning_of_month
         Timeframe.new(start, start.end_of_month)
+      end
+
+      def lifecycle_for(project_instance_id, build_actions)
+        lifecycle = build_new_lifecycle(project_instance_id, build_actions)
+        process_previously_created_instances(build_actions, lifecycle)
+
+        build_actions.each_with_object(Billing::Lifecycle::ActionToInstance.new(lifecycle)) do |build_action, action_to_instance|
+          action_to_instance.call(build_action)
+        end
+
+        lifecycle.end_last_active_state(@timeframe.end)
+        lifecycle
       end
 
       def build_new_lifecycle(project_instance_id, build_actions)

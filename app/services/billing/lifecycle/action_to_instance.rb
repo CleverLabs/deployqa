@@ -25,6 +25,7 @@ module Billing
 
       private
 
+      # rubocop:disable Metrics/MethodLength
       def success_only_actions(action, action_end_time)
         case action
         when BuildActionConstants::CREATE_INSTANCE, BuildActionConstants::RECREATE_INSTANCE
@@ -39,6 +40,7 @@ module Billing
           @lifecycle.end_last_state(:sleep, action_end_time)
         end
       end
+      # rubocop:enable Metrics/MethodLength
     end
   end
 end

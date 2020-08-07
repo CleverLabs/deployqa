@@ -15,12 +15,8 @@ module Billing
         return if type == :run && last_state_not_ended?(:run)
         return if type == :sleep && last_state_not_ended?(:sleep)
 
-        duration = (end_time.to_i - start_time.to_i).floor if end_time && start_time
+        duration = caculate_duration(start_time, end_time)
         states[type] << InstanceState.new(type, start_time, end_time, duration)
-      end
-
-      def last_state_not_ended?(type)
-        states[type].last && !states[type].last.end_time
       end
 
       def end_last_active_state(end_time)
@@ -39,6 +35,18 @@ module Billing
         return if previous_build_action == BuildActionConstants::DESTROY_INSTANCE
 
         previous_build_action == BuildActionConstants::SLEEP_INSTANCE ? add_state(:sleep, start_time, end_time) : add_state(:run, start_time, end_time)
+      end
+
+      private
+
+      def last_state_not_ended?(type)
+        states[type].last && !states[type].last.end_time
+      end
+
+      def caculate_duration(start_time, end_time)
+        return nil unless end_time && start_time
+
+        (end_time.to_i - start_time.to_i).floor
       end
     end
   end
