@@ -10,12 +10,14 @@ module Billing
       attribute :project_instance_id, Integer
       attribute :build_actions_ids, Array, of: Integer, default: []
       attribute :states, Hash
+      attribute :durations, Hash, default: ->(_, _) { { sleep: 0, run: 0, build: 0 } }
+      attribute :costs, Hash, default: ->(_, _) { { sleep: :not_set, run: :not_set, build: :not_set } }
 
       def add_state(type, start_time, end_time)
         return if type == :run && last_state_not_ended?(:run)
         return if type == :sleep && last_state_not_ended?(:sleep)
 
-        duration = caculate_duration(start_time, end_time)
+        duration = add_duration(start_time, end_time, type)
         states[type] << InstanceState.new(type, start_time, end_time, duration)
       end
 
@@ -27,7 +29,7 @@ module Billing
       def end_last_state(type, end_time)
         state = states[type].last
         state.end_time = end_time
-        state.duration = state.end_time.to_i - state.start_time.to_i
+        state.duration = add_duration(state.start_time, state.end_time, type)
       end
 
       def add_state_for_previous_actions(previous_build_action, start_time:, end_time:)
@@ -43,10 +45,12 @@ module Billing
         states[type].last && !states[type].last.end_time
       end
 
-      def caculate_duration(start_time, end_time)
+      def add_duration(start_time, end_time, type)
         return nil unless end_time && start_time
 
-        (end_time.to_i - start_time.to_i).floor
+        duration = (end_time.to_i - start_time.to_i).floor
+        durations[type] += duration
+        duration
       end
     end
   end

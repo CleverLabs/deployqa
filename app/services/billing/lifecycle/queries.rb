@@ -35,6 +35,12 @@ module Billing
           .where(end_time: ZERO_TIME..end_time, status: BuildActionConstants::Statuses::SUCCESS)
           .order(:end_time)
       end
+
+      def invoices_for_period(timeframe)
+        ::Invoice
+          .where(project_id: @project.id)
+          .where("(invoices.start_time, invoices.end_time) OVERLAPS (?, ?)", timeframe.start, timeframe.end)
+      end
     end
   end
 end

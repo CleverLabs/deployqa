@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_06_132657) do
+ActiveRecord::Schema.define(version: 2020_08_17_125306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,16 @@ ActiveRecord::Schema.define(version: 2020_08_06_132657) do
     t.string "credentials_names", default: [], null: false, array: true
     t.integer "addon_type", null: false
     t.index ["name"], name: "index_addons_on_name", unique: true
+  end
+
+  create_table "application_costs", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "sleep_cents", null: false
+    t.integer "run_cents", null: false
+    t.integer "build_cents", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_application_costs_on_name"
   end
 
   create_table "auth_infos", force: :cascade do |t|
@@ -117,15 +127,16 @@ ActiveRecord::Schema.define(version: 2020_08_06_132657) do
     t.datetime "end_time", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "total_cost_cents"
     t.index ["project_id"], name: "index_invoices_on_project_id"
   end
 
   create_table "invoices_project_instances", force: :cascade do |t|
     t.bigint "invoice_id", null: false
     t.bigint "project_instance_id", null: false
-    t.bigint "build_action_ids", default: [], null: false, array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "lifecycle", default: {}, null: false
     t.index ["invoice_id"], name: "index_invoices_project_instances_on_invoice_id"
     t.index ["project_instance_id"], name: "index_invoices_project_instances_on_project_instance_id"
   end

@@ -5,11 +5,12 @@ module Billing
     class InstanceLifecycleGenerator
       Timeframe = Struct.new(:start, :end)
 
-      def initialize(project)
+      def initialize(project, last_invoice, timeframe)
         @project = project
-        @last_invoice = @project.invoices.order(:end_time).last
+        # @last_invoice = @project.invoices.order(:end_time).last
+        @last_invoice = last_invoice
         @queries = Billing::Lifecycle::Queries.new(project)
-        @timeframe = generate_timeframe
+        @timeframe = timeframe
         @build_actions_by_project_instance = @queries.build_actions_by_project_instance(@timeframe)
       end
 
@@ -24,10 +25,10 @@ module Billing
 
       private
 
-      def generate_timeframe
-        start = @last_invoice ? @last_invoice.end_time + 0.001 : DateTime.now.beginning_of_month
-        Timeframe.new(start, start.end_of_month)
-      end
+      # def generate_timeframe
+      #   start = @last_invoice ? @last_invoice.end_time + 0.001 : DateTime.now.beginning_of_month
+      #   Timeframe.new(start, start.end_of_month)
+      # end
 
       def lifecycle_for(project_instance_id, build_actions)
         lifecycle = build_new_lifecycle(project_instance_id, build_actions)
