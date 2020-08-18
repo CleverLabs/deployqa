@@ -34,9 +34,7 @@ module Billing
       end
 
       def validate_timeframe!
-        if Billing::Lifecycle::Queries.new(@project).invoices_for_period(@timeframe).to_a.any?
-          raise GeneralError, "Invoice for timeframe '#{@timeframe}' and project##{@project.id} already created!"
-        end
+        raise GeneralError, "Invoice for timeframe '#{@timeframe}' and project##{@project.id} already created!" if Billing::Lifecycle::Queries.new(@project).invoices_for_period(@timeframe).to_a.any?
       end
     end
   end

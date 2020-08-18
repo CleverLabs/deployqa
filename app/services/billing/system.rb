@@ -2,10 +2,10 @@
 
 module Billing
   class System
-    def initialize(project)
+    def initialize(project, timeframe: nil)
       @project = project
       @last_invoice = @project.invoices.order(:end_time).last
-      @timeframe = Billing::Lifecycle::Timeframe.by_invoice(@last_invoice)
+      @timeframe = timeframe || Billing::Lifecycle::Timeframe.by_invoice(@last_invoice)
     end
 
     def call

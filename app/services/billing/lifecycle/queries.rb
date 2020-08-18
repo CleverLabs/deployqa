@@ -39,7 +39,7 @@ module Billing
       def invoices_for_period(timeframe)
         ::Invoice
           .where(project_id: @project.id)
-          .where("(invoices.start_time, invoices.end_time) OVERLAPS (?, ?)", timeframe.start, timeframe.end)
+          .where(end_time: timeframe.start..Float::INFINITY, start_time: ZERO_TIME..timeframe.end)
       end
     end
   end

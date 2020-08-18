@@ -7,7 +7,6 @@ module Billing
 
       def initialize(project, last_invoice, timeframe)
         @project = project
-        # @last_invoice = @project.invoices.order(:end_time).last
         @last_invoice = last_invoice
         @queries = Billing::Lifecycle::Queries.new(project)
         @timeframe = timeframe
@@ -24,11 +23,6 @@ module Billing
       end
 
       private
-
-      # def generate_timeframe
-      #   start = @last_invoice ? @last_invoice.end_time + 0.001 : DateTime.now.beginning_of_month
-      #   Timeframe.new(start, start.end_of_month)
-      # end
 
       def lifecycle_for(project_instance_id, build_actions)
         lifecycle = build_new_lifecycle(project_instance_id, build_actions)
