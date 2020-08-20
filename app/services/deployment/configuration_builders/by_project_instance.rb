@@ -56,7 +56,7 @@ module Deployment
       end
 
       def add_github_token(build_configuration)
-        github_token = ::ProviderAPI::Github::AppClient.new(@project.integration_id).token_for_gem_bundle
+        github_token = ::ProviderApi::Github::AppClient.new(@project.integration_id).token_for_gem_bundle
         build_configuration["env_variables"].merge!("BUNDLE_GITHUB__COM" => github_token)
       end
 

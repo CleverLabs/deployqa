@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module GitProviders
-  module URL
+  module Url
     class NewRepository
       NEW_REPOSITORY_URL_MAPPING = {
         ProjectsConstants::Providers::GITHUB => ->(_url_helpers, _project) { Github::Router.new.additional_installation_url },

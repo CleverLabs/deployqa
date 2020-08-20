@@ -40,7 +40,7 @@ module GitlabIntegration
     end
 
     def update_gitlab_repositories_info!(project)
-      gitlab_repos = ::ProviderAPI::Gitlab::UserClient.new(current_user.token_for(::ProjectsConstants::Providers::GITLAB)).load_repositories
+      gitlab_repos = ::ProviderApi::Gitlab::UserClient.new(current_user.token_for(::ProjectsConstants::Providers::GITLAB)).load_repositories
       # TODO: For now we don't remove repositories with their dependencies so it's ok for removed repos on Gitlab.
       # TODO: But in future a service usage may be here.
       project.gitlab_repositories_info.update!(data: gitlab_repos.map(&:to_h))
@@ -53,7 +53,7 @@ module GitlabIntegration
     end
 
     def gitlab_client_wrapper
-      ::ProviderAPI::Gitlab::UserClient.new(current_user.token_for(::ProjectsConstants::Providers::GITLAB))
+      ::ProviderApi::Gitlab::UserClient.new(current_user.token_for(::ProjectsConstants::Providers::GITLAB))
     end
   end
 end

@@ -11,7 +11,7 @@ module ProjectInstances
       return if params[:custom_deploy]
 
       deploy(@project_instance)
-      redirect_to GitProviders::URL::PullMergeRequest.new(@project_instance, @project.integration_type).call
+      redirect_to GitProviders::Url::PullMergeRequest.new(@project_instance, @project.integration_type).call
     end
 
     def create

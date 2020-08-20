@@ -5,7 +5,7 @@ module GitlabIntegration
     def initialize(project_id, merge_request_id)
       @project_id = project_id
       @merge_request_id = merge_request_id
-      @gitlab_client = ::ProviderAPI::Gitlab::BotClient.new
+      @gitlab_client = ::ProviderApi::Gitlab::BotClient.new
     end
 
     def update_description(text)

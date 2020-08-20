@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ProviderAPI
+module ProviderApi
   module Gitlab
     class ProjectBot
       def initialize(deploy_token)

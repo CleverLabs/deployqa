@@ -5,7 +5,7 @@ module Github
     def initialize(installation_id, repo_path, pull_request_number)
       @repo_path = repo_path
       @pull_request_number = pull_request_number
-      @client = ::ProviderAPI::Github::AppClient.new(installation_id)
+      @client = ::ProviderApi::Github::AppClient.new(installation_id)
     end
 
     def add_to_first_comment(text)

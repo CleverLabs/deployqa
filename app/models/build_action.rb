@@ -12,5 +12,5 @@ class BuildAction < ApplicationRecord
   enum action: BuildActionConstants::ACTIONS
   enum status: BuildActionConstants::Statuses::ALL
 
-  attribute :configurations, JSONModels::ProjectInstanceConfiguration.to_array_type
+  attribute :configurations, JsonModels::ProjectInstanceConfiguration.to_array_type
 end

@@ -4,8 +4,8 @@ module Deployment
   module Helpers
     class RepositoryCloner
       PROVIDER_REPOSITORY_URI = {
-        ProjectsConstants::Providers::GITHUB => ->(configuration) { ::ProviderAPI::Github::AppClient.new(configuration.project_integration_id).repo_uri(configuration.repo_path) },
-        ProjectsConstants::Providers::GITLAB => ->(configuration) { ::ProviderAPI::Gitlab::ProjectBot.new(configuration.project_integration_id).clone_repository_uri(configuration.repo_path) }
+        ProjectsConstants::Providers::GITHUB => ->(configuration) { ::ProviderApi::Github::AppClient.new(configuration.project_integration_id).repo_uri(configuration.repo_path) },
+        ProjectsConstants::Providers::GITLAB => ->(configuration) { ::ProviderApi::Gitlab::ProjectBot.new(configuration.project_integration_id).clone_repository_uri(configuration.repo_path) }
       }.freeze
 
       def initialize(repo_configuration)

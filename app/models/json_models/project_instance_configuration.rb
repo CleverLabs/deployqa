@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module JSONModels
+module JsonModels
   class ProjectInstanceConfiguration
     include StoreModel::Model
 

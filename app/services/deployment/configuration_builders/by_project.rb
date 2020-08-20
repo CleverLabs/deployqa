@@ -131,7 +131,7 @@ module Deployment
         env = repository.build_env_variables.merge("DEPLOYQA_DEPLOYMENT" => "1")
         return env unless private_gem_detected && @project.integration_type == ProjectsConstants::Providers::GITHUB
 
-        env.merge("BUNDLE_GITHUB__COM" => ::ProviderAPI::Github::AppClient.new(@project.integration_id).token_for_gem_bundle)
+        env.merge("BUNDLE_GITHUB__COM" => ::ProviderApi::Github::AppClient.new(@project.integration_id).token_for_gem_bundle)
       end
     end
   end

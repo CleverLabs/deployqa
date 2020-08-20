@@ -2,7 +2,7 @@
 
 require "nomad"
 
-module ProviderAPI
+module ProviderApi
   module Nomad
     class Client
       def initialize

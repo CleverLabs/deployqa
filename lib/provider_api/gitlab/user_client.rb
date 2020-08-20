@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ProviderAPI
+module ProviderApi
   module Gitlab
     class UserClient
       GITLAB_MEMBER_PERMISSIONS = {

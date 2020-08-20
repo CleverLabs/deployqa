@@ -74,7 +74,7 @@ module Deployment
         return configuration.env_variables if !configuration.build_configuration.private_gem_detected || configuration.docker?
 
         configuration.env_variables.merge(
-          "BUNDLE_GITHUB__COM" => ::ProviderAPI::Github::AppClient.new(repo_configuration.project_integration_id).token_for_gem_bundle
+          "BUNDLE_GITHUB__COM" => ::ProviderApi::Github::AppClient.new(repo_configuration.project_integration_id).token_for_gem_bundle
         )
       end
 

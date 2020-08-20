@@ -13,5 +13,5 @@ class ProjectInstance < ApplicationRecord
 
   enum deployment_status: ProjectInstanceConstants::Statuses::ALL
 
-  attribute :configurations, JSONModels::ProjectInstanceConfiguration.to_array_type
+  attribute :configurations, JsonModels::ProjectInstanceConfiguration.to_array_type
 end

@@ -22,7 +22,7 @@ module ProjectInstances
     end
 
     def fetch_logs(nomad_reference, type)
-      ProviderAPI::Nomad::Client.new.tail_logs(nomad_reference.allocation_id, nomad_reference.process_name, type)
+      ProviderApi::Nomad::Client.new.tail_logs(nomad_reference.allocation_id, nomad_reference.process_name, type)
     end
 
     def find_nomad_references

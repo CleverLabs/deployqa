@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ProviderAPI
+module ProviderApi
   module Github
     class UserClient
       delegate :find_user_installations, :emails, to: :@client

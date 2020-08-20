@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ProviderAPI
+module ProviderApi
   module Github
     class AppClient
       delegate :login, :issue, :update_issue, :issue_comments, :update_comment, :add_comment, to: :client

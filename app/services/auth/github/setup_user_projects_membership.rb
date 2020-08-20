@@ -18,7 +18,7 @@ module Auth
       private
 
       def user_installations_ids
-        installations_hash = ::ProviderAPI::Github::UserClient.new(user_auth_token).find_user_installations.to_h
+        installations_hash = ::ProviderApi::Github::UserClient.new(user_auth_token).find_user_installations.to_h
         ::Github::Events::UserInstallations.new(payload: installations_hash).installations.map(&:id)
       end
 

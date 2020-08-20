@@ -19,7 +19,7 @@ module ServerAccess
       private
 
       def default_config
-        config = @private_gem_detected ? { "BUNDLE_GITHUB__COM" => ::ProviderAPI::Github::AppClient.new(@project_integration_id).token_for_gem_bundle } : {}
+        config = @private_gem_detected ? { "BUNDLE_GITHUB__COM" => ::ProviderApi::Github::AppClient.new(@project_integration_id).token_for_gem_bundle } : {}
         {
           build: {
             docker: { web: "Dockerfile" },

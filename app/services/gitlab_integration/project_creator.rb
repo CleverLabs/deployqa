@@ -28,7 +28,7 @@ module GitlabIntegration
     end
 
     def load_gitlab_repositories
-      repositories = ::ProviderAPI::Gitlab::UserClient.new(current_user.token_for(::ProjectsConstants::Providers::GITLAB)).load_repositories
+      repositories = ::ProviderApi::Gitlab::UserClient.new(current_user.token_for(::ProjectsConstants::Providers::GITLAB)).load_repositories
       repositories.filter { |repository| repository.namespace.id == @project_params[:integration_id].to_i }
     end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module GitProviders
-  module URL
+  module Url
     class PullMergeRequest
       PULL_REQUEST_URLS = {
         ProjectsConstants::Providers::GITHUB => ->(repo_path, attached_pr_number) { ::Github::Router.new.pull_request_url(repo_path, attached_pr_number) },
