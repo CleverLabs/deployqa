@@ -19,6 +19,10 @@ class ProjectPolicy < ApplicationPolicy
     record.project_record.repositories.where(status: RepositoryConstants::ACTIVE).limit(1).present? # Limit 1, to make sure at least one active repository exist
   end
 
+  def billing?
+    project_admin?
+  end
+
   private
 
   def project_admin?

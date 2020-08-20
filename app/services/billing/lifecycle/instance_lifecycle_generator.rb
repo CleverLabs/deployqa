@@ -25,7 +25,7 @@ module Billing
       private
 
       def lifecycle_for(project_instance_id, build_actions)
-        lifecycle = build_new_lifecycle(project_instance_id, build_actions)
+        lifecycle = build_new_lifecycle(project_instance_id, build_actions.first.project_instance.name, build_actions)
         process_previously_created_instances(build_actions, lifecycle)
 
         build_actions.each_with_object(Billing::Lifecycle::ActionToInstance.new(lifecycle)) do |build_action, action_to_instance|
@@ -36,9 +36,10 @@ module Billing
         lifecycle
       end
 
-      def build_new_lifecycle(project_instance_id, build_actions)
+      def build_new_lifecycle(project_instance_id, project_instance_name, build_actions)
         Billing::Lifecycle::InstanceLifecycle.new(
           project_instance_id: project_instance_id,
+          project_instance_name: project_instance_name,
           build_actions_ids: build_actions.map(&:id),
           states: { build: [], run: [], sleep: [] }
         )
@@ -55,7 +56,7 @@ module Billing
       def lifecycles_from_instances_without_build_actions
         instances_without_build_actions.map do |project_instance|
           previous_action = @queries.previous_actions_for(project_instance, end_time: @timeframe.start).last
-          lifecycle = build_new_lifecycle(project_instance.id, [])
+          lifecycle = build_new_lifecycle(project_instance.id, project_instance.name, [])
           lifecycle.add_state_for_previous_actions(previous_action&.action, start_time: @timeframe.start, end_time: @timeframe.end)
           lifecycle
         end

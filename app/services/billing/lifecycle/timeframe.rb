@@ -10,9 +10,17 @@ module Billing
         new(start, start.end_of_month)
       end
 
+      def self.current_month(time_now)
+        new(time_now, time_now.end_of_month)
+      end
+
       def initialize(start_time, end_time)
         @start = start_time
         @end = end_time
+      end
+
+      def to_s
+        "start: #{start}, end: #{self.end}"
       end
     end
   end

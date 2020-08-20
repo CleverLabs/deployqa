@@ -5,15 +5,18 @@ module Billing
     class InstanceLifecycle
       include ShallowAttributes
 
+      STATE_TYPES = %i[sleep run build].freeze
       InstanceState = Struct.new(:type, :start_time, :end_time, :duration)
 
       attribute :project_instance_id, Integer
+      attribute :project_instance_name, String
       attribute :build_actions_ids, Array, of: Integer, default: []
       attribute :states, Hash
       attribute :durations, Hash, default: ->(_, _) { { sleep: 0, run: 0, build: 0 } }
       attribute :costs, Hash, default: ->(_, _) { { sleep: :not_set, run: :not_set, build: :not_set } }
 
       def add_state(type, start_time, end_time)
+        raise unless STATE_TYPES.include? type
         return if type == :run && last_state_not_ended?(:run)
         return if type == :sleep && last_state_not_ended?(:sleep)
 
@@ -27,6 +30,8 @@ module Billing
       end
 
       def end_last_state(type, end_time)
+        raise unless STATE_TYPES.include? type
+
         state = states[type].last
         state.end_time = end_time
         state.duration = add_duration(state.start_time, state.end_time, type)
