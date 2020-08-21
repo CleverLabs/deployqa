@@ -3,14 +3,14 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "2.6.3"
+ruby "2.7.1"
 
 gem "dotenv-rails", groups: %i[development test]
 
 gem "aws-sdk-ecr"
 gem "aws-sdk-iam"
 gem "aws-sdk-s3"
-gem "bootsnap", ">= 1.4.4", require: false
+gem "bootsnap", ">= 1.4.8", require: false
 gem "ddtrace"
 gem "doorkeeper", "~> 5.4.0"
 gem "enumerize"
@@ -28,7 +28,7 @@ gem "logstash-event", "~> 1.2", ">= 1.2.02"
 gem "logstash-logger", "~> 0.26.1"
 gem "nomad", require: false, git: "https://github.com/CleverLabs/nomad-ruby.git", branch: "master"
 gem "octokit"
-gem "omniauth"
+gem "omniauth", "~> 1.9.1"
 gem "omniauth-github"
 gem "omniauth-gitlab"
 gem "omniauth-rails_csrf_protection", "~> 0.1.2" # Remove after https://github.com/omniauth/omniauth/pull/809 will be resolved
@@ -63,7 +63,7 @@ group :development, :test do
 end
 
 group :development do
-  gem "listen", ">= 3.0.5", "< 3.2"
+  gem "listen", "~> 3.2.0"
   gem "rubocop", "~> 0.71", require: false
   gem "rubocop-rspec", require: false
   gem "seed-fu"

@@ -1,7 +1,7 @@
-FROM ruby:2.6.3-alpine3.10
+FROM ruby:2.7.1-alpine3.10
 
 RUN apk add --no-cache build-base ca-certificates curl git nginx tzdata sudo postgresql-client postgresql-dev nodejs yarn openssh
-RUN gem install bundler -v 1.17.3
+RUN gem install bundler -v 2.1.4
 RUN bundle config silence_root_warning 1
 
 ENV APP_ROOT /deployqa
