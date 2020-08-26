@@ -1,7 +1,14 @@
 language: ruby
+cache: bundler
 rvm:
   - 2.7.1
+services:
+  - postgresql
 before_install:
   - gem --version
+before_script:
+  - psql -c 'create database deployqa_test;' -U postgres
+  - bundle exec rails db:schema:load
 script:
   - bundle exec rubocop .
+  - bundle exec rspec spec/

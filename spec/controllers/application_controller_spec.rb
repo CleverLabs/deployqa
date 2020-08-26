@@ -12,7 +12,7 @@ describe ApplicationController do
 
     let(:name) { "Name" }
     let(:user_id) { 42 }
-    let(:user) { instance_double(User, full_name: name) }
+    let(:user) { instance_double(User, full_name: name, id: user_id) }
 
     before do
       expect(User).to receive(:find).with(user_id).and_return(user)
@@ -38,7 +38,8 @@ describe ApplicationController do
 
     it "check is user authenticated" do
       get :index
-      expect(response.body).to eql("false")
+      expect(response.status).to be(302)
+      expect(response.body).to eql("<html><body>You are being <a href=\"http://test.host/sessions\">redirected</a>.</body></html>")
     end
   end
 end
