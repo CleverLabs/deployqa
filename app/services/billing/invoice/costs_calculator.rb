@@ -3,10 +3,9 @@
 module Billing
   module Invoice
     class CostsCalculator
-      def initialize(lifecycles, timeframe)
+      def initialize(lifecycles, pricing: nil)
         @lifecycles = lifecycles
-        @timeframe = timeframe
-        @pricing = ApplicationCost.find_by(name: "default")
+        @pricing = pricing || ApplicationCost.find_by(name: "default")
       end
 
       def call

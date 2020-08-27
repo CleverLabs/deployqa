@@ -11,7 +11,7 @@ module Billing
     def call
       lifecycles = Billing::Lifecycle::InstanceLifecycleGenerator.new(@project, @last_invoice, @timeframe).call
       total_cost = Billing::Invoice::CostsCalculator.new(lifecycles, @timeframe).call
-      Billing::Invoice::InvoiceCreator.new(@project, lifecycles, @timeframe).call(total_cost)
+      Billing::Invoice::InvoiceCreator.new(@project, lifecycles).call(total_cost)
     end
   end
 end

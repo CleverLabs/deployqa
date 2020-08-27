@@ -64,7 +64,10 @@ RSpec.configure do |config|
 end
 
 require "simplecov"
-SimpleCov.start "rails"
+SimpleCov.start "rails" do
+  add_group "Services", "app/services"
+  add_group "Billing", "app/services/billing"
+end
 
 require "vcr"
 

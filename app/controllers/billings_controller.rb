@@ -6,7 +6,7 @@ class BillingsController < ApplicationController
 
     timeframe = Billing::Lifecycle::Timeframe.month_until_today(DateTime.now)
     @lifecycles = Billing::Lifecycle::InstanceLifecycleGenerator.new(@project, nil, timeframe).call
-    @total_cost = Billing::Invoice::CostsCalculator.new(@lifecycles, timeframe).call
+    @total_cost = Billing::Invoice::CostsCalculator.new(@lifecycles).call
   end
 
   private
