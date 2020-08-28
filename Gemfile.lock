@@ -107,6 +107,10 @@ GEM
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.6)
+    database_cleaner (1.8.5)
+    database_cleaner-active_record (1.8.0)
+      activerecord
+      database_cleaner (~> 1.8.0)
     ddtrace (0.24.0)
       msgpack
     diff-lcs (1.4.4)
@@ -125,6 +129,11 @@ GEM
       tzinfo
     excon (0.71.1)
     execjs (2.7.0)
+    factory_bot (6.1.0)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.1.0)
+      factory_bot (~> 6.1.0)
+      railties (>= 5.0.0)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
     ffi (1.13.1)
@@ -435,10 +444,13 @@ DEPENDENCIES
   aws-sdk-s3
   bootsnap (>= 1.4.8)
   capybara
+  database_cleaner-active_record
   ddtrace
   doorkeeper (~> 5.4.0)
   dotenv-rails
   enumerize
+  factory_bot
+  factory_bot_rails
   flipper
   flipper-active_record (~> 0.18.0)
   flipper-ui

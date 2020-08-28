@@ -61,6 +61,19 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  config.include FactoryBot::Syntax::Methods
+
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with :truncation
+
+    DatabaseCleaner.cleaning { FactoryBot.lint }
+  end
+
+  config.around(:each, type: :database_access) do |example|
+    DatabaseCleaner.cleaning { example.run }
+  end
 end
 
 require "simplecov"
