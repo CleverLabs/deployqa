@@ -28,7 +28,7 @@ module Billing
         lifecycle = build_new_lifecycle(project_instance_id, build_actions.first.project_instance.name, build_actions)
         process_previously_created_instances(build_actions, lifecycle)
 
-        build_actions.each_with_object(Billing::Lifecycle::ActionToInstance.new(lifecycle)) do |build_action, action_to_instance|
+        build_actions.each_with_object(Billing::Lifecycle::ActionToState.new(lifecycle)) do |build_action, action_to_instance|
           action_to_instance.call(build_action)
         end
 
@@ -40,8 +40,7 @@ module Billing
         Billing::Lifecycle::InstanceLifecycle.new(
           project_instance_id: project_instance_id,
           project_instance_name: project_instance_name,
-          build_actions_ids: build_actions.map(&:id),
-          states: { build: [], run: [], sleep: [] }
+          build_actions_ids: build_actions.map(&:id)
         )
       end
 

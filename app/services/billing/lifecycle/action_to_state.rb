@@ -2,15 +2,7 @@
 
 module Billing
   module Lifecycle
-    class ActionToInstance
-      InstanceState = Struct.new(:type, :start_time, :end_time)
-
-      BUILD_TIME_MAPPING = {
-        BuildActionConstants::CREATE_INSTANCE => ->(build_action) { [:build, build_action.start_time, build_action.end_time] },
-        BuildActionConstants::RECREATE_INSTANCE => ->(build_action) { [:build, build_action.start_time, build_action.end_time] },
-        BuildActionConstants::UPDATE_INSTANCE => ->(build_action) { [:build, build_action.start_time, build_action.end_time] }
-      }.freeze
-
+    class ActionToState
       BUILD_ACTIONS = [BuildActionConstants::CREATE_INSTANCE, BuildActionConstants::RECREATE_INSTANCE, BuildActionConstants::UPDATE_INSTANCE].freeze
 
       def initialize(lifecycle)
@@ -18,7 +10,6 @@ module Billing
       end
 
       def call(build_action)
-        # @lifecycle.add_state(*BUILD_TIME_MAPPING[build_action.action].call(build_action)) if BUILD_TIME_MAPPING[build_action.action]
         @lifecycle.add_state(:build, build_action.start_time, build_action.end_time, build_action.configurations) if BUILD_ACTIONS.include?(build_action.action)
 
         return if build_action.status != BuildActionConstants::Statuses::SUCCESS

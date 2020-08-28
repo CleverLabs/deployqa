@@ -11,7 +11,7 @@ module Billing
       attribute :project_instance_id, Integer
       attribute :project_instance_name, String
       attribute :build_actions_ids, Array, of: Integer, default: []
-      attribute :states, Hash
+      attribute :states, Hash, default: ->(_, _) { { build: [], run: [], sleep: [] } }
       attribute :durations, Hash, default: ->(_, _) { { sleep: 0, run: 0, build: 0 } }
       attribute :costs, Hash, default: ->(_, _) { { sleep: :not_set, run: :not_set, build: :not_set } }
       attribute :multipliers, Hash, default: ->(_, _) { { sleep: 0, run: 0, build: 0 } }

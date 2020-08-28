@@ -17,7 +17,8 @@ describe Billing::Invoice::InvoiceCreator, type: :database_access do
       project_instance_id: project_instance.id
     )
   end
-  let(:timeframe) { instance_double(Billing::Lifecycle::Timeframe, start: Time.now - 1.month, end: Time.now) }
+  let(:time_now) { DateTime.now.midday }
+  let(:timeframe) { instance_double(Billing::Lifecycle::Timeframe, start: time_now - 1.month, end: time_now) }
   let(:total_cost) { 789 }
   let(:result_invoice_data) { { "project_id" => project.id, "start_time" => timeframe.start, "end_time" => timeframe.end, "total_cost_cents" => total_cost } }
 
