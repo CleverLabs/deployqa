@@ -68,6 +68,7 @@ group :development do
   gem "rubocop-rspec", require: false
   gem "seed-fu"
   gem "spring"
+  gem "spring-commands-rspec"
   gem "spring-watcher-listen", "~> 2.0.0"
 end
 

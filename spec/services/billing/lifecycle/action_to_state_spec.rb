@@ -11,7 +11,7 @@ describe Billing::Lifecycle::ActionToState do
   let(:successful_recreate_instance) { build_stubbed(:build_action, action: "recreate_instance", status: "success") }
   let(:failed_recreate_instance) { build_stubbed(:build_action, action: "recreate_instance", status: "failure") }
   let(:successful_update_instance) { build_stubbed(:build_action, action: "update_instance", status: "success") }
-  let(:failed_update_instance) { build_stubbed(:build_action, action: "update_instance", status: "failure") }
+  let(:failed_update_instance) { build_stubbed(:build_action, action: "update_instance", status: "failure", end_time: Time.now, start_time: Time.now) }
   let(:reload_instance) { build_stubbed(:build_action, action: "reload_instance", status: "success") }
   let(:successful_destroy_instance) { build_stubbed(:build_action, action: "destroy_instance", status: "success") }
   let(:failed_destroy_instance) { build_stubbed(:build_action, action: "destroy_instance", status: "failure") }
@@ -60,7 +60,7 @@ describe Billing::Lifecycle::ActionToState do
 
     context "with failed 'update_instance' build action" do
       it "does nothing" do
-        action_to_instance.call(successful_update_instance)
+        action_to_instance.call(failed_update_instance)
       end
     end
 

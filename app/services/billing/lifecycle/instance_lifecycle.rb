@@ -17,7 +17,7 @@ module Billing
       attribute :multipliers, Hash, default: ->(_, _) { { sleep: 0, run: 0, build: 0 } }
 
       def add_state(type, start_time, end_time, configurations)
-        raise unless STATE_TYPES.include? type
+        validate_type!(type, start_time, end_time)
         return if type == :run && last_state_not_ended?(:run)
         return if type == :sleep && last_state_not_ended?(:sleep)
 
@@ -31,7 +31,7 @@ module Billing
       end
 
       def end_last_state(type, end_time)
-        raise unless STATE_TYPES.include? type
+        raise GeneralError, "Wrong type #{type}" unless STATE_TYPES.include? type
 
         state = states[type].last
         state.end_time = end_time
@@ -47,6 +47,11 @@ module Billing
 
       private
 
+      def validate_type!(type, start_time, end_time)
+        raise GeneralError, "Wrong type #{type}" unless STATE_TYPES.include? type
+        raise GeneralError, "Timeframe is not valid for 'build' type" if type == :build && (!start_time || !end_time)
+      end
+
       def last_state_not_ended?(type)
         states[type].last && !states[type].last.end_time
       end
@@ -54,7 +59,9 @@ module Billing
       def add_duration(start_time, end_time, type)
         return nil unless end_time && start_time
 
-        duration = (end_time.to_i - start_time.to_i).floor
+        duration = (end_time.to_i - start_time.to_i)
+        raise GeneralError, "End time is before start time for ##{project_instance_id} lifecycle" if duration.negative?
+
         durations[type] += duration
         duration
       end

@@ -46,4 +46,12 @@ Rails.application.configure do
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
+
+  # https://prathamesh.tech/2020/08/10/creating-unlogged-tables-in-rails/
+  # Do not create DB log for tests - this way it works faster
+  config.to_prepare do
+    ActiveSupport.on_load(:active_record) do
+      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.create_unlogged_tables = true
+    end
+  end
 end
