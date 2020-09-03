@@ -10,7 +10,7 @@ describe Billing::Lifecycle::InstanceLifecycleGenerator do
   let(:prev_month_start) { month_start - 1.month }
   let(:prev_month_end) { month_end - 1.month }
   let(:invoice) { build_stubbed(:invoice) }
-  let(:timeframe) { Billing::Lifecycle::Timeframe.new(month_start, month_end) }
+  let(:timeframe) { Billing::Lifecycle::Timeframe.new(start: month_start, end: month_end) }
   let(:queries) { instance_double(Billing::Lifecycle::Queries) }
 
   let(:state_class) { Billing::Lifecycle::InstanceLifecycle::InstanceState }

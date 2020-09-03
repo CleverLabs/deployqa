@@ -41,3 +41,7 @@ Layout/AlignHash:
 
 Naming/RescuedExceptionsVariableName:
   Enabled: false
+
+Lint/Void:
+  Exclude:
+    - 'spec/**/*.rb'
