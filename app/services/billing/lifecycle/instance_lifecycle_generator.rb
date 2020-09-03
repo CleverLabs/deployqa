@@ -5,10 +5,9 @@ module Billing
     class InstanceLifecycleGenerator
       Timeframe = Struct.new(:start, :end)
 
-      def initialize(project, last_invoice, timeframe)
-        @project = project
+      def initialize(last_invoice, timeframe, queries)
         @last_invoice = last_invoice
-        @queries = Billing::Lifecycle::Queries.new(project)
+        @queries = queries
         @timeframe = timeframe
         @build_actions_by_project_instance = @queries.build_actions_by_project_instance(@timeframe)
       end
