@@ -3,7 +3,7 @@
 class BillingsController < ApplicationController
   def index
     @project = find_project
-    @lifecycles, @total_cost = Billing::Processes::CurrentMonth.new(@project, DateTime.now).call
+    @lifecycles, @total_cost = Billing::Processes::CurrentMonth.new(@project, date: DateTime.now).call
   end
 
   private

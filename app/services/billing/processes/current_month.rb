@@ -3,9 +3,9 @@
 module Billing
   module Processes
     class CurrentMonth
-      def initialize(project, date)
+      def initialize(project, date: nil, timeframe: nil)
         @project = project
-        @timeframe = Billing::Lifecycle::Timeframe.month_until_today(date)
+        @timeframe = timeframe || Billing::Lifecycle::Timeframe.month_until_today(date)
       end
 
       def call
