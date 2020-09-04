@@ -3,6 +3,7 @@
 module Auth
   class UserWrapper
     delegate_missing_to :@user
+    delegate :email, to: :auth_info
 
     def initialize(user, provider)
       @user = user
@@ -15,10 +16,6 @@ module Auth
 
     def auth_info
       @_auth_info ||= user_reference.auth_info
-    end
-
-    def email
-      auth_info.email
     end
 
     def token_for(provider)

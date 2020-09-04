@@ -3,7 +3,7 @@
 class Invoice < ApplicationRecord
   has_paper_trail
 
-  belongs_to :project, required: true
+  belongs_to :project, optional: false
   has_many :invoices_project_instances, dependent: :destroy
   has_many :project_instances, through: :invoices_project_instances
 

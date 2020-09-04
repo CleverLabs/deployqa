@@ -42,7 +42,7 @@ describe Billing::Lifecycle::Queries, type: :database_access do
   describe "build_actions_by_project_instance" do
     let(:timeframe) { Billing::Lifecycle::Timeframe.new(start: today - 1.month, end: today) }
     let(:time_withing_timeframe) { today - 2.weeks }
-    let(:time_not_withing_timeframe) { today - 2.month }
+    let(:time_not_withing_timeframe) { today - 2.months }
     let(:other_project) { create(:project, integration_id: "lalala") }
     let(:project_instance_1) { create(:project_instance, project: project) }
     let(:project_instance_2) { create(:project_instance, project: project) }
@@ -105,8 +105,8 @@ describe Billing::Lifecycle::Queries, type: :database_access do
     let(:eligible_invoice_1) { create(:invoice, project: project, start_time: today - 1.week, end_time: today) }
     let(:eligible_invoice_2) { create(:invoice, project: project, start_time: today - 1.week, end_time: today + 1.week) }
     let(:non_eligible_invoice_1) { create(:invoice, project: other_project, start_time: today - 1.week, end_time: today) }
-    let(:non_eligible_invoice_2) { create(:invoice, project: project, start_time: today - 3.month, end_time: today - 2.month) }
-    let(:non_eligible_invoice_3) { create(:invoice, project: project, start_time: today + 1.month, end_time: today + 2.month) }
+    let(:non_eligible_invoice_2) { create(:invoice, project: project, start_time: today - 3.months, end_time: today - 2.months) }
+    let(:non_eligible_invoice_3) { create(:invoice, project: project, start_time: today + 1.month, end_time: today + 2.months) }
 
     it "returns previous actions for project_instance" do
       [eligible_invoice_1, eligible_invoice_2, non_eligible_invoice_1, non_eligible_invoice_2, non_eligible_invoice_3]

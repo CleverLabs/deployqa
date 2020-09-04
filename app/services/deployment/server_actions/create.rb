@@ -44,7 +44,7 @@ module Deployment
       end
 
       def push_buildpacks(configuration, state)
-        return state unless configuration.heroku_buildpacks.present?
+        return state if configuration.heroku_buildpacks.blank?
 
         server = ServerAccess::Heroku.new(name: configuration.application_name)
         state.add_state(:push_buildpacks) { server.push_buildpacks(configuration.heroku_buildpacks) }

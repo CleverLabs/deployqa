@@ -3,6 +3,6 @@
 class InvoicesProjectInstance < ApplicationRecord
   has_paper_trail
 
-  belongs_to :invoice, required: true
-  belongs_to :project_instance, required: true
+  belongs_to :invoice, optional: false
+  belongs_to :project_instance, optional: false
 end

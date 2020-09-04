@@ -62,7 +62,7 @@ module Billing
 
       def instances_without_build_actions
         processed_ids = @build_actions_by_project_instance.map { |id, _| id }
-        @queries.active_instances(@last_invoice).filter { |instance| !processed_ids.include? instance.id }
+        @queries.active_instances(@last_invoice).filter { |instance| processed_ids.exclude?(instance.id) }
       end
     end
   end

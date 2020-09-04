@@ -3,6 +3,8 @@
 module ProviderApi
   module Gitlab
     class BotClient
+      delegate :merge_request, :merge_request_discussions, to: :gitlab_client
+
       def initialize
         @access_token = Configs::Gitlab.deployqa_bot_token
         @gitlab_client = ::Gitlab.client(private_token: access_token)
@@ -14,14 +16,6 @@ module ProviderApi
 
       def repository_webhook_token(repo_id)
         OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("SHA1"), Configs::Gitlab.webhook_secret, repo_id.to_s)
-      end
-
-      def merge_request(repository_id, merge_request_id)
-        gitlab_client.merge_request(repository_id, merge_request_id)
-      end
-
-      def merge_request_discussions(repository_id, merge_request_id)
-        gitlab_client.merge_request_discussions(repository_id, merge_request_id)
       end
 
       def update_mr_description(repository_id, merge_request_id, text)

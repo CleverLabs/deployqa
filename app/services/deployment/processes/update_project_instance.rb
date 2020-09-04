@@ -9,7 +9,7 @@ module Deployment
       end
 
       def call
-        return unless @project_instance.present?
+        return if @project_instance.blank?
         return unless @project_instance.deployment_status.in?(ProjectInstanceConstants::Statuses::ALL_ACTIVE)
 
         remove_instance_from_sleepy_server

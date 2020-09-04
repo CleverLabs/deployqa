@@ -4,7 +4,7 @@ class ProjectInstance < ApplicationRecord
   has_paper_trail
 
   belongs_to :project
-  has_many :build_actions
+  has_many :build_actions, dependent: :destroy
   has_many :nomad_references, dependent: :destroy
 
   validates :deployment_status, :name, presence: true

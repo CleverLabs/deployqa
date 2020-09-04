@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class BuildActionLog < ApplicationRecord
-  belongs_to :build_action, required: true
+  belongs_to :build_action, optional: false
 
   validates :message, :status, presence: true
 

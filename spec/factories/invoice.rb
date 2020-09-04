@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :invoice do
     project { Project.first || association(:project) }
-    start_time { Time.now - 1.month }
-    end_time { Time.now }
+    start_time { Time.zone.now - 1.month }
+    end_time { Time.zone.now }
   end
 end

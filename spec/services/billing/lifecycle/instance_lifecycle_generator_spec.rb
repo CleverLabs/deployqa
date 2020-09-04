@@ -29,13 +29,13 @@ describe Billing::Lifecycle::InstanceLifecycleGenerator do
   let(:groupped_actions) { { normal_instance.id => [build_action_create, build_action_update], prev_instance_with_actions.id => [build_action_destroy] } }
 
   let(:build_start) { month_start + 1.hour }
-  let(:build_end) { month_start + 3.hour }
+  let(:build_end) { month_start + 3.hours }
   let(:build_duration) { build_end.to_i - build_start.to_i }
-  let(:update_start) { month_start + 4.hour }
-  let(:update_end) { month_start + 5.hour }
+  let(:update_start) { month_start + 4.hours }
+  let(:update_end) { month_start + 5.hours }
   let(:update_duration) { update_end.to_i - update_start.to_i }
-  let(:destroy_start) { month_start + 4.hour }
-  let(:destroy_end) { month_start + 5.hour }
+  let(:destroy_start) { month_start + 4.hours }
+  let(:destroy_end) { month_start + 5.hours }
   let(:lifecycles) do
     [
       Billing::Lifecycle::InstanceLifecycle.new(

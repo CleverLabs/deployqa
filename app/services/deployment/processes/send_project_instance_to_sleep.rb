@@ -28,7 +28,7 @@ module Deployment
         accessor = RedisAccessor.new
         recent_requests = @project_instance.configurations.any? do |configuration|
           timestamp = accessor.instance_last_access_time(configuration.application_name)
-          Time.at(timestamp) > ProjectInstanceConstants::SLEEP_TIMEOUT_TIME.ago
+          Time.zone.at(timestamp) > ProjectInstanceConstants::SLEEP_TIMEOUT_TIME.ago
         end
 
         !recent_requests

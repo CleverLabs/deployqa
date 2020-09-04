@@ -3,7 +3,7 @@
 class WebProcess < ApplicationRecord
   has_paper_trail
 
-  belongs_to :repository, required: true
+  belongs_to :repository, optional: false
 
   validates :name, :command, presence: true
 end

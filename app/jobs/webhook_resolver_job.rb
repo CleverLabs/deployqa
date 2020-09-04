@@ -5,6 +5,6 @@ class WebhookResolverJob < ApplicationJob
     request = wrapper_class.constantize.deserialize(serialized_request)
     result = resolver_class.constantize.new(request).call
 
-    puts(result.object.errors.full_messages) if result.error?
+    Rails.logger.error(result.object.errors.full_messages) if result.error?
   end
 end

@@ -13,7 +13,7 @@ module Github
           return ReturnValue.ok unless @project.active_repository?(@wrapped_body.full_repo_name)
 
           project_instance = @project.project_instance(attached_pull_request_number: @wrapped_body.number)
-          return ReturnValue.ok unless project_instance.present?
+          return ReturnValue.ok if project_instance.blank?
 
           Deployment::Processes::DestroyProjectInstance.new(project_instance, user_reference(@wrapped_body.sender)).call if project_instance.present?
           ReturnValue.ok

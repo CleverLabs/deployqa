@@ -3,7 +3,7 @@
 class Repository < ApplicationRecord
   has_paper_trail
 
-  belongs_to :project, required: true
+  belongs_to :project, optional: false
   has_many :repositories_addons, dependent: :destroy
   has_many :addons, through: :repositories_addons
   has_many :web_processes, inverse_of: :repository, dependent: :destroy

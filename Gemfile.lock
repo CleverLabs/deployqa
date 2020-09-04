@@ -352,6 +352,10 @@ GEM
       unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-ast (0.3.0)
       parser (>= 2.7.1.4)
+    rubocop-rails (2.8.0)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 0.87.0)
     rubocop-rspec (1.43.2)
       rubocop (~> 0.87)
     ruby-progressbar (1.10.1)
@@ -491,6 +495,7 @@ DEPENDENCIES
   rollbar
   rspec-rails
   rubocop
+  rubocop-rails
   rubocop-rspec
   seed-fu
   selenium-webdriver

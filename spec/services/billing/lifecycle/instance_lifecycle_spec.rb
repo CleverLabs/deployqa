@@ -6,8 +6,8 @@ describe Billing::Lifecycle::InstanceLifecycle do
   subject(:lifecycle) { described_class.new }
 
   let(:state_class) { Billing::Lifecycle::InstanceLifecycle::InstanceState }
-  let(:start_time) { Time.now - 1.month }
-  let(:end_time) { Time.now }
+  let(:start_time) { Time.zone.now - 1.month }
+  let(:end_time) { Time.zone.now }
   let(:duration) { end_time.to_i - start_time.to_i }
   let(:configurations) { [instance_double(JsonModels::ProjectInstanceConfiguration)] }
 

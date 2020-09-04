@@ -3,7 +3,7 @@
 class SlackEntity < ApplicationRecord
   has_paper_trail
 
-  belongs_to :project, required: true
+  belongs_to :project, optional: false
 
   validates :project_id, uniqueness: true
 

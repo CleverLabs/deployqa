@@ -26,7 +26,7 @@ module ProviderApi
       def client
         return @client unless expired?
 
-        @token_end_time = (Time.now + TOKEN_TIME_TO_LIVE).to_i
+        @token_end_time = (Time.zone.now + TOKEN_TIME_TO_LIVE).to_i
         @client = Octokit::Client.new(access_token: create_installation_token)
       end
 
@@ -34,7 +34,7 @@ module ProviderApi
         jwt_client = Octokit::Client.new(bearer_token: jwt_auth_token)
         jwt_client.create_app_installation_access_token(@installation_id, accept: "application/vnd.github.machine-man-preview+json").token
       rescue StandardError => error
-        puts error
+        Rails.logger.error error
       end
 
       def jwt_auth_token

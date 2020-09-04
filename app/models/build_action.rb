@@ -3,9 +3,9 @@
 class BuildAction < ApplicationRecord
   has_paper_trail
 
-  belongs_to :author, class_name: "UserReference", foreign_key: :author_id
+  belongs_to :author, class_name: "UserReference"
   belongs_to :project_instance
-  has_many :build_action_logs
+  has_many :build_action_logs, dependent: :destroy
 
   validates :action, presence: true
 

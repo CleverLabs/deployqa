@@ -13,7 +13,7 @@ module Github
           repos_ids = @wrapped_body.removed_repos.map(&:id)
           ::Repository
             .where(project_id: @project.id, integration_type: ProjectsConstants::Providers::GITHUB, integration_id: repos_ids)
-            .update_all(status: RepositoryConstants::REMOVED)
+            .find_each { |repository| repository.update!(status: RepositoryConstants::REMOVED) }
           ReturnValue.ok
         end
       end

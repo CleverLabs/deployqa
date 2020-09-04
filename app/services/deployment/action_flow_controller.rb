@@ -54,7 +54,7 @@ module Deployment
     end
 
     def time_since_start
-      Time.at((Time.now - @start_time).to_i).utc.strftime("%H:%M:%S")
+      Time.at((Time.zone.now - @start_time).to_i).utc.strftime("%H:%M:%S")
     end
   end
 end
