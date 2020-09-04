@@ -35,7 +35,7 @@ class DeployqaLogger
   end
 
   def stdout_logger
-    logger = ActiveSupport::Logger.new(STDOUT)
+    logger = ActiveSupport::Logger.new($stdout)
     logger.formatter = config.log_formatter
     ActiveSupport::TaggedLogging.new(logger)
   end

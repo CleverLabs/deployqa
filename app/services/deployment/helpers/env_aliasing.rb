@@ -9,7 +9,7 @@ module Deployment
 
       def modify!
         @env_variables.each do |key, value|
-          @env_variables[key] = @env_variables[value[1..-1]] if value.start_with?("$") && @env_variables[value[1..-1]].present?
+          @env_variables[key] = @env_variables[value[1..]] if value.start_with?("$") && @env_variables[value[1..]].present?
         end
       end
     end

@@ -16,7 +16,7 @@ module Deployment
               url_for_each_process(repository, application_name, result)
             else
               url = @name_builder.heroku_app_url(application_name)
-              result[repository.path + "_web"] = url
+              result["#{repository.path}_web"] = url
             end
           end
         end
@@ -26,7 +26,7 @@ module Deployment
             next unless web_process.expose_port
 
             url = web_process.generate_domain ? @name_builder.robad_app_url(application_name, web_process.name) : @name_builder.robad_app_url_ip_port(application_name, web_process.name)
-            result[repository.path + "_" + web_process.name] = url
+            result["#{repository.path}_#{web_process.name}"] = url
           end
         end
       end

@@ -32,8 +32,8 @@ module ProjectInstances
     end
 
     def configurations_to_update
-      configurations_params.to_h.each_with_object({}) do |(application_name, env_variables), result|
-        result[application_name] = { env_variables: Hash[env_variables.split("\n").map { |line| line.tr("\r", "").split("=") }] }
+      configurations_params.to_h.transform_values do |env_variables|
+        { env_variables: Hash[env_variables.split("\n").map { |line| line.tr("\r", "").split("=") }] }
       end
     end
   end

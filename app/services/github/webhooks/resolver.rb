@@ -47,7 +47,7 @@ module Github
       private
 
       def valid_signature?
-        signature = "sha1=" + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha1"), ENV["GITHUB_APP_WEBHOOK_SECRET"], @request.raw_body)
+        signature = "sha1=#{OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['GITHUB_APP_WEBHOOK_SECRET'], @request.raw_body)}"
         Rack::Utils.secure_compare(signature, @request.hub_signature)
       end
 

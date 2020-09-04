@@ -43,11 +43,11 @@ module Github
       end
 
       def raw_initiator_info
-        payload.dig("sender")
+        payload["sender"]
       end
 
       def raw_requester_info
-        payload.dig("requester")
+        payload["requester"]
       end
 
       private

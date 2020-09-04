@@ -38,12 +38,10 @@ class RedisStorage
     #   sleep:    0.1 - seconds how long the polling interval should be when :block is given.
     #   expire:   10  - seconds when the lock should be considered stale when something went wrong
     # }
-    def lock!(key, options = { block: 1, sleep: 0.1, expire: 10 })
+    def lock!(key, options = { block: 1, sleep: 0.1, expire: 10 }, &block)
       return unless block_given?
 
-      RedisMutex.with_lock(key, options) do
-        yield
-      end
+      RedisMutex.with_lock(key, options, &block)
     rescue RedisMutex::LockError
       raise RedisMutex::LockError, "Key #{key} is locked by Redis"
     end

@@ -7,7 +7,7 @@ module Utils
     end
 
     def encrypt(string)
-      cipher = OpenSSL::Cipher::AES.new(256, :CBC).encrypt
+      cipher = OpenSSL::Cipher.new("aes-256-cbc").encrypt
       cipher.key = @key
       result = cipher.update(string) + cipher.final
 
@@ -17,7 +17,7 @@ module Utils
     def decrypt(string)
       unpacked_string = [string].pack("H*").unpack("C*").pack("c*")
 
-      cipher = OpenSSL::Cipher::AES.new(256, :CBC).decrypt
+      cipher = OpenSSL::Cipher.new("aes-256-cbc").decrypt
       cipher.key = @key
       cipher.update(unpacked_string) + cipher.final
     end

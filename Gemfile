@@ -64,7 +64,8 @@ end
 
 group :development do
   gem "listen", "~> 3.2.0"
-  gem "rubocop", "~> 0.71", require: false
+  gem "rubocop", require: false
+  # gem "rubocop-rails", require: false
   gem "rubocop-rspec", require: false
   gem "seed-fu"
   gem "spring"

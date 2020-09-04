@@ -6,7 +6,7 @@ module BillingHelper
   end
 
   def cost_explanation(lifecycle, type)
-    return "" if lifecycle.durations[type] == 0.0
+    return "" if lifecycle.durations[type].zero?
 
     " (#{lifecycle_time_humanize(lifecycle.durations[type])} * #{lifecycle.multipliers[type]} processes)"
   end

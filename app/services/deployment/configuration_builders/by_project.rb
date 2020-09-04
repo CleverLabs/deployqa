@@ -72,7 +72,7 @@ module Deployment
             docker_image: image,
             dockerfile_path: dockerfile,
             expose_port: web_process.expose_port.presence,
-            external_exposure: exposures[repository.path + "_" + web_process.name]
+            external_exposure: exposures["#{repository.path}_#{web_process.name}"]
           )
         end
       end

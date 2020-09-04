@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/AbcSize, Metrics/LineLength
+# rubocop:disable Metrics/AbcSize, Layout/LineLength
 module Admin
   class DashboardsController < ApplicationController
     def show
@@ -19,4 +19,4 @@ module Admin
     end
   end
 end
-# rubocop:enable Metrics/AbcSize, Metrics/LineLength
+# rubocop:enable Metrics/AbcSize, Layout/LineLength

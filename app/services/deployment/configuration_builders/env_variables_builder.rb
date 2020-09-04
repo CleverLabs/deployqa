@@ -19,8 +19,8 @@ module Deployment
       private
 
       def application_variables
-        @exposures.each_with_object({}) do |(name, url), result|
-          result[Utils::NameSanitizer.sanitize_upcase(name) + "_URL"] = url
+        @exposures.transform_keys do |name|
+          "#{Utils::NameSanitizer.sanitize_upcase(name)}_URL"
         end
       end
     end
