@@ -11,9 +11,9 @@ module ProjectHelper
     return project_integration_logo(project) if project.integration_type == ProjectsConstants::Providers::VIA_SSH
 
     router = project.integration_type == ::ProjectsConstants::Providers::GITHUB ? github_router : gitlab_router
-    "#{link_to(router.page_url(project.name), target: :_blank, rel: :noopener) do
+    link_to(router.page_url(project.name), target: :_blank, rel: :noopener) do
       project_integration_logo(project)
-    end} "
+    end
   end
 
   def project_integration_logo(project)

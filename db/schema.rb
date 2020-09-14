@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_25_152759) do
+ActiveRecord::Schema.define(version: 2020_09_07_150510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,14 +25,15 @@ ActiveRecord::Schema.define(version: 2020_08_25_152759) do
     t.index ["name"], name: "index_addons_on_name", unique: true
   end
 
-  create_table "application_costs", force: :cascade do |t|
+  create_table "application_plans", force: :cascade do |t|
     t.string "name", null: false
     t.decimal "sleep_cents", null: false
     t.decimal "run_cents", null: false
     t.decimal "build_cents", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_application_costs_on_name"
+    t.integer "max_allowed_instances", default: 3, null: false
+    t.index ["name"], name: "index_application_plans_on_name"
   end
 
   create_table "auth_infos", force: :cascade do |t|
@@ -44,6 +45,18 @@ ActiveRecord::Schema.define(version: 2020_08_25_152759) do
     t.string "email", null: false
     t.bigint "user_reference_id", null: false
     t.index ["user_reference_id"], name: "index_auth_infos_on_user_reference_id", unique: true
+  end
+
+  create_table "billing_infos", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "application_plan_id", null: false
+    t.decimal "sleep_cents", null: false
+    t.decimal "run_cents", null: false
+    t.decimal "build_cents", null: false
+    t.boolean "active", default: true, null: false
+    t.index ["application_plan_id"], name: "index_billing_infos_on_application_plan_id"
+    t.index ["project_id"], name: "index_billing_infos_on_project_id"
+    t.index ["project_id"], name: "unique_index_billing_infos_on_project_id", unique: true
   end
 
   create_table "build_action_logs", force: :cascade do |t|
@@ -355,6 +368,8 @@ ActiveRecord::Schema.define(version: 2020_08_25_152759) do
   end
 
   add_foreign_key "auth_infos", "user_references"
+  add_foreign_key "billing_infos", "application_plans"
+  add_foreign_key "billing_infos", "projects"
   add_foreign_key "build_action_logs", "build_actions"
   add_foreign_key "build_action_queues", "build_actions"
   add_foreign_key "build_action_queues", "project_instances"

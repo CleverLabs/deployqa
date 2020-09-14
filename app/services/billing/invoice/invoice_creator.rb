@@ -3,10 +3,11 @@
 module Billing
   module Invoice
     class InvoiceCreator
-      def initialize(project, lifecycles, timeframe)
+      def initialize(project, lifecycles, timeframe, queries:)
         @project = project
         @lifecycles = lifecycles
         @timeframe = timeframe
+        @queries = queries
       end
 
       def call(total_cost)
@@ -34,7 +35,7 @@ module Billing
       end
 
       def validate_timeframe!
-        raise GeneralError, "Invoice for timeframe '#{@timeframe}' and project##{@project.id} already created!" if Billing::Lifecycle::Queries.new(@project).invoices_for_period(@timeframe).to_a.any?
+        raise GeneralError, "Invoice for timeframe '#{@timeframe}' and project##{@project.id} already created!" if @queries.invoices_for_period(@timeframe).to_a.any?
       end
     end
   end

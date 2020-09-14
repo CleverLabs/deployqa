@@ -3,19 +3,27 @@
       text_link_hash: {\
         "Projects" => projects_path,
         @project.name => project_project_instances_path(@project),
-        "Create" => nil\
+        "New instance" => nil\
       },
       class: "mt-4" }
 
   h1.mt-4 New instance
-  .mt-4
-    = simple_form_for @project_instance, url: project_project_instances_path, class: "row" do |form|
-      - if @project_instance.errors.any?
-        b = @project_instance.errors.full_messages
-      = form.input :name, input_html: { autofocus: true }
-      - @repositories.each do |repository|
-        = form.simple_fields_for :configurations do |configurations_form|
-          = configurations_form.input repository.name, label: "'#{repository.name}' branch", input_html: { value: "master" }, wrapper_html: { class: "w-50" }
-      - if @features_accessor.show_heroku_button?(@project)
-        = form.input :deploy_via_heroku, as: :boolean, label: "Deploy to Heroku (legacy)", input_html: { checked: false }
-      = form.button :submit, class: "btn btn-primary"
+  - if @billing.can_create_instance?
+    .mt-4
+      = simple_form_for @project_instance, url: project_project_instances_path, class: "row" do |form|
+        - if @project_instance.errors.any?
+          b = @project_instance.errors.full_messages
+        = form.input :name, input_html: { autofocus: true }
+        - @repositories.each do |repository|
+          = form.simple_fields_for :configurations do |configurations_form|
+            = configurations_form.input repository.name, label: "'#{repository.name}' branch", input_html: { value: "master" }, wrapper_html: { class: "w-50" }
+        - if @features_accessor.show_heroku_button?(@project)
+          = form.input :deploy_via_heroku, as: :boolean, label: "Deploy to Heroku (legacy)", input_html: { checked: false }
+        = form.button :submit, class: "btn btn-primary"
+  - else
+    - if @billing.active?
+      .alert.alert-info.mt-3
+        | With the current plan, the max number of simultaneous active instances is 
+        = @billing.max_allowed_instances
+    - else
+      .alert.alert-info.mt-3 Project instance creation is not allowed. Please check your project's billing

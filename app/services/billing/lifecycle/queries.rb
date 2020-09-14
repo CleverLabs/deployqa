@@ -6,7 +6,7 @@ module Billing
       ZERO_TIME = DateTime.new(2018)
 
       def initialize(project)
-        @project = project
+        @project = project.project_record
       end
 
       def active_instances(last_invoice)

@@ -10,6 +10,7 @@ class Project < ApplicationRecord
   has_many :invoices, dependent: :destroy
   has_one :slack_entity, dependent: :destroy
   has_one :gitlab_repositories_info, dependent: :destroy
+  has_one :billing_info, dependent: :destroy
 
   validates :name, :integration_id, :integration_type, presence: true
 

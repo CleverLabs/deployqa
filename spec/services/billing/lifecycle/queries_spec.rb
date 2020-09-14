@@ -3,8 +3,9 @@
 require "rails_helper"
 
 describe Billing::Lifecycle::Queries, type: :database_access do
-  subject(:queries) { described_class.new(project) }
+  subject(:queries) { described_class.new(project_domain) }
 
+  let(:project_domain) { ProjectDomain.new(record: project) }
   let(:project) { create(:project) }
   let(:today) { DateTime.now }
 

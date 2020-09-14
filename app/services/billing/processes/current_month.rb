@@ -11,7 +11,7 @@ module Billing
       def call
         queries = Billing::Lifecycle::Queries.new(@project)
         lifecycles = Billing::Lifecycle::InstanceLifecycleGenerator.new(nil, @timeframe, queries).call
-        total_cost = Billing::Invoice::CostsCalculator.new(lifecycles).call
+        total_cost = Billing::Invoice::CostsCalculator.new(@project.billing, lifecycles).call
 
         [lifecycles, total_cost]
       end

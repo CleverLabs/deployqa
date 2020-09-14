@@ -3,9 +3,9 @@
 module Billing
   module Invoice
     class CostsCalculator
-      def initialize(lifecycles, pricing: nil)
+      def initialize(billing, lifecycles)
         @lifecycles = lifecycles
-        @pricing = pricing || ApplicationCost.find_by(name: "default")
+        @pricing = billing.pricing_by_types
       end
 
       def call

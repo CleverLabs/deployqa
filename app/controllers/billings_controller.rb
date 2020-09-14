@@ -9,6 +9,6 @@ class BillingsController < ApplicationController
   private
 
   def find_project
-    authorize Project.find(params[:project_id]), :billing?, policy_class: ProjectPolicy
+    authorize ProjectDomain.by_id(params[:project_id]), :billing?, policy_class: ProjectPolicy
   end
 end

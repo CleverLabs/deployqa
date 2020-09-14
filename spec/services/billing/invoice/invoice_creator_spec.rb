@@ -3,10 +3,11 @@
 require "rails_helper"
 
 describe Billing::Invoice::InvoiceCreator, type: :database_access do
-  subject(:creator) { described_class.new(project, lifecycles, timeframe) }
+  subject(:creator) { described_class.new(project, lifecycles, timeframe, queries: queries) }
 
   let(:project) { create(:project) }
   let(:project_instance) { create(:project_instance, project: project) }
+  let(:queries) { Billing::Lifecycle::Queries.new(ProjectDomain.new(record: project)) }
   let(:lifecycles) { [lifecycle] }
   let(:lifecycle) do
     Billing::Lifecycle::InstanceLifecycle.new(

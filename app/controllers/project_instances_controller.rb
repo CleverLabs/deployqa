@@ -5,7 +5,7 @@ class ProjectInstancesController < ApplicationController
     @project = find_project
     hidden_statuses = params[:show_all] ? ProjectInstanceConstants::Statuses::ALL_HIDDEN : ProjectInstanceConstants::Statuses::ALL_NOT_ACTIVE
     @project_instances = @project.project_record.project_instances.where.not(deployment_status: hidden_statuses).order(updated_at: :desc)
-    @new_instance_allowed = ProjectPolicy.new(current_user, @project).create_instance?
+    @new_instance_allowed = ProjectPolicy.new(current_user, @project).show_create_instance_page?
   end
 
   def show
@@ -20,6 +20,7 @@ class ProjectInstancesController < ApplicationController
     @repositories = @project.project_record.repositories.active
     @project_instance = @project.project_record.project_instances.build
     @features_accessor = Features::Accessor.new
+    @billing = @project.billing
   end
 
   def create

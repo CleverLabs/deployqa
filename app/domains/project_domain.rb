@@ -3,14 +3,14 @@
 class ProjectDomain
   attr_reader :project_record
 
-  delegate :id, :name, :integration_type, :integration_id, :repositories, :to_param, :flipper_id, to: :project_record
+  delegate :id, :name, :integration_type, :integration_id, :repositories, :to_param, :flipper_id, :billing_info, to: :project_record
 
   def self.create!(integration_type:, integration_id:, name:)
     record = Project.find_or_create_by(integration_type: integration_type, integration_id: integration_id).tap do |project|
       project.update!(name: name) if project.name != name
     end
 
-    new(record: record)
+    new(record: record).tap { |project| BillingDomain.create!(project: project) }
   end
 
   def self.by_id(id)
@@ -32,7 +32,15 @@ class ProjectDomain
     ProjectInstanceDomain.new(record: record)
   end
 
+  def billing
+    @_billing ||= BillingDomain.by_project(self)
+  end
+
   def active_repository?(repo_path)
     @project_record.repositories.find_by(path: repo_path).status == RepositoryConstants::ACTIVE
+  end
+
+  def number_of_active_instances
+    @project_record.project_instances.where.not(deployment_status: ProjectInstanceConstants::Statuses::ALL_NOT_ACTIVE).count
   end
 end

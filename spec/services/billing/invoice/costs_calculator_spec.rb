@@ -3,9 +3,10 @@
 require "rails_helper"
 
 describe Billing::Invoice::CostsCalculator do
-  subject(:calculator) { described_class.new(lifecycles, pricing: pricing) }
+  subject(:calculator) { described_class.new(billing, lifecycles) }
 
-  let(:pricing) { ApplicationCost.new(sleep_cents: 0.2, run_cents: 3, build_cents: 4.5) }
+  let(:billing) { instance_double(BillingDomain, pricing_by_types: { sleep_cents: 0.2, run_cents: 3, build_cents: 4.5 }) }
+  # let(:pricing) { ApplicationPlan.new(sleep_cents: 0.2, run_cents: 3, build_cents: 4.5) }
 
   describe "#call" do
     let(:lifecycles) { [lifecycle] }

@@ -3,14 +3,16 @@
 require "rails_helper"
 
 describe Billing::Processes::CurrentMonth, type: :database_access do
-  subject(:current_month) { described_class.new(project, timeframe: timeframe) }
+  subject(:current_month) { described_class.new(project_domain, timeframe: timeframe) }
 
   let(:today) { DateTime.now.midday }
   let(:date_start) { today - 1.month }
   let(:date_end) { today }
   let(:timeframe) { Billing::Lifecycle::Timeframe.new(start: date_start, end: date_end) }
-  let(:project) { create(:project) }
-  let(:application_cost) { create(:application_cost) }
+  let(:project_domain) { ProjectDomain.new(record: project) }
+  let(:project) { create(:project, billing_info: billing_info) }
+  let(:billing_info) { create(:billing_info, application_plan: application_plan) }
+  let(:application_plan) { create(:application_plan) }
   let(:project_instance) { create(:project_instance, project: project) }
   let(:build_action_create) { create(:build_action, project_instance: project_instance, start_time: build_start, end_time: build_end, configurations: configurations, action: "create_instance") }
   let(:build_action_sleep) { create(:build_action, project_instance: project_instance, start_time: sleep_start, end_time: sleep_start, configurations: configurations, action: "sleep_instance") }
@@ -51,7 +53,6 @@ describe Billing::Processes::CurrentMonth, type: :database_access do
 
   describe "#call" do
     it "calculates lifecycles for current month until date" do
-      application_cost
       [build_action_create, build_action_sleep]
 
       expect(current_month.call).to eq(result)
