@@ -10,4 +10,4 @@ Turbolinks.start()
 // }
 
 require.context('../images', true)
-require('../stylesheets/application.scss')
+require('../stylesheets/old/application.scss')

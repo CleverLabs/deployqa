@@ -16,8 +16,8 @@ html
     - if Rails.env.production?
       = render partial: "shared/rollbar"
       = render partial: "layouts/google_analytics"
-    = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
-    = javascript_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload', async: true
+    = stylesheet_pack_tag 'old_application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'old_application', media: 'all', 'data-turbolinks-track': 'reload', async: true
 
   body
     .body-wrapper
