@@ -1,0 +1,53 @@
+// $primary: #435FE4;
+// $link: #FFE068;
+// $info: $cyan
+// $success: $green
+// $warning: $yellow
+// $danger: $red
+// $dark: $grey-darker
+// $text: #666A73;
+
+$body-background-color: #FCFCFC;
+$table-cell-padding: 1em 1.25em;
+@import "~bulma/bulma.sass";
+
+
+
+
+.table-list-primary {
+  background: #FFFFFF;
+  border: 1px solid #EDF2F9;
+  box-shadow: 0px 12px 24px rgba(18, 38, 63, 0.03);
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  border-collapse: separate;
+
+  thead {
+    tr {
+      th {
+        border-bottom: 1px solid #E3EBF6;
+        // border-width: 1px 0;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        border-bottom: 1px solid #E3EBF6;
+        // border-width: 1px 0;
+      }
+    }
+  }
+
+  // tr:last-child td:first-child {
+  //     border-bottom-left-radius: 10px;
+  // }
+
+  // tr:last-child td:last-child {
+  //     border-bottom-right-radius: 10px;
+  // }
+}
+
+

@@ -9,21 +9,78 @@ html
 
     meta charset="utf-8"
     meta http-equiv="Content-Type" content="text/html; charset=utf-8"
-    meta name="viewport" content="width=device-width, initial-scale=1.0"
+    meta name="viewport" content="width=device-width, initial-scale=1"
 
     link href="https://fonts.googleapis.com/css?family=Titillium+Web:300,300i,400,400i,700,700i&display=swap" rel="stylesheet"
 
     - if Rails.env.production?
       = render partial: "shared/rollbar"
       = render partial: "layouts/google_analytics"
-    = stylesheet_pack_tag 'old_application', media: 'all', 'data-turbolinks-track': 'reload'
-    = javascript_pack_tag 'old_application', media: 'all', 'data-turbolinks-track': 'reload', async: true
+    = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload', async: true
 
   body
-    .body-wrapper
-      = render partial: "layouts/header"
-      = yield
+    .columns.is-desktop
+      .column.is-narrow
+        aside.menu.px-4.py-4
+          a.mb-5.is-block href="/" 
+            img height="28" width="112" src="https://bulma.io/images/bulma-logo.png"
 
-    = render partial: "layouts/footer"
+          p.menu-label
+            | Manage
+          ul.menu-list
+            li
+              a.is-active Dashboard
+            li
+              a Builds
+          p.menu-label
+            | Project
+          ul.menu-list
+            - @projects.each do |project|
+              li
+                a = project.name
 
-    script type="text/javascript" id="hs-script-loader" async="" defer="" src="//js.hs-scripts.com/6898069.js"
+
+      .column
+        nav.navbar.has-shadow.is-spaced aria-label=("main navigation") role="navigation" 
+          .navbar-brand
+            a.navbar-burger.burger aria-expanded="false" aria-label="menu" data-target="navbarMenu" role="button" 
+              span aria-hidden="true" 
+              span aria-hidden="true" 
+              span aria-hidden="true" 
+          #navbarMenu.navbar-menu
+            .navbar-start
+              a.navbar-item
+                | Home
+              .navbar-item
+                .buttons
+                  a.button.is-primary
+                    strong Sign up
+                  a.button.is-light
+                    | Log in
+            .navbar-end
+              .navbar-item.has-dropdown.is-hoverable
+                a.navbar-link = current_user.full_name
+                .navbar-dropdown style="left: initial; right: 0px;"
+                  = link_to "User preferences", user_path(current_user.actual_user), class: "navbar-item"
+                  = link_to "Log out", sessions_path, method: :delete, class: "navbar-item"
+                  - if AdminPanelPolicy.new(current_user, :no_record).show?
+                    hr.navbar-divider/
+                    = link_to "Admin dashboard", admin_dashboard_path, class: "navbar-item"
+                    = link_to "Sidekiq", sidekiq_web_path, class: "navbar-item"
+
+        .container.pt-5
+          table.table.is-fullwidth.is-hoverable.table-list-primary
+            thead
+              tr
+                th Name
+                th Status
+            tbody
+              - @project_instances.each do |project_instance|
+                tr
+                  td = link_to project_instance.name, project_project_instance_path(@project, project_instance)
+                  td
+                    span.tag class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
+
+
+    = yield
