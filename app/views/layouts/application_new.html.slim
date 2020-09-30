@@ -11,7 +11,10 @@ html
     meta http-equiv="Content-Type" content="text/html; charset=utf-8"
     meta name="viewport" content="width=device-width, initial-scale=1"
 
-    link href="https://fonts.googleapis.com/css?family=Titillium+Web:300,300i,400,400i,700,700i&display=swap" rel="stylesheet"
+    / link href="https://fonts.googleapis.com/css?family=Titillium+Web:300,300i,400,400i,700,700i&display=swap" rel="stylesheet"
+
+    link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"
+
 
     - if Rails.env.production?
       = render partial: "shared/rollbar"
@@ -23,9 +26,14 @@ html
     .columns.is-desktop
       .column.is-narrow
         aside.menu.px-4.py-4
-          a.mb-5.is-block href="/" 
-            img height="28" width="112" src="https://bulma.io/images/bulma-logo.png"
-
+          p.menu-label
+            | Project
+          ul.menu-list
+            - @projects.each do |project|
+              li
+                a = project.name
+            li
+              a.has-text-centered + Add new
           p.menu-label
             | Manage
           ul.menu-list
@@ -33,16 +41,12 @@ html
               a.is-active Dashboard
             li
               a Builds
-          p.menu-label
-            | Project
-          ul.menu-list
-            - @projects.each do |project|
-              li
-                a = project.name
+            li
+              a Configuration
 
 
       .column
-        nav.navbar.has-shadow.is-spaced aria-label=("main navigation") role="navigation" 
+        nav.navbar.is-spaced aria-label=("main navigation") role="navigation" 
           .navbar-brand
             a.navbar-burger.burger aria-expanded="false" aria-label="menu" data-target="navbarMenu" role="button" 
               span aria-hidden="true" 
@@ -50,14 +54,17 @@ html
               span aria-hidden="true" 
           #navbarMenu.navbar-menu
             .navbar-start
-              a.navbar-item
-                | Home
               .navbar-item
-                .buttons
-                  a.button.is-primary
-                    strong Sign up
-                  a.button.is-light
-                    | Log in
+                nav class="breadcrumb" aria-label="breadcrumbs"
+                  ul
+                    li
+                      a href="#" Bulma
+                    li
+                      a href="#" Documentation
+                    li
+                      a href="#" Components
+                    li.is-active
+                      a href="#" aria-current="page" Breadcrumb
             .navbar-end
               .navbar-item.has-dropdown.is-hoverable
                 a.navbar-link = current_user.full_name
@@ -70,17 +77,40 @@ html
                     = link_to "Sidekiq", sidekiq_web_path, class: "navbar-item"
 
         .container.pt-5
+          .level
+            .level-left
+              h1.title.is-1.level-item Instances
+            .level-right
+              a.level-item Show all
+              a.button.is-primary.level-item New instance
           table.table.is-fullwidth.is-hoverable.table-list-primary
             thead
               tr
                 th Name
                 th Status
+                th Created
+                th
+                th
             tbody
               - @project_instances.each do |project_instance|
                 tr
-                  td = link_to project_instance.name, project_project_instance_path(@project, project_instance)
+                  td
+                    .title.is-5.has-text-weight-bold = link_to project_instance.name, project_project_instance_path(@project, project_instance)
                   td
                     span.tag class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
-
+                  td
+                    p.has-text-weight-bold.mb-2 = project_instance.build_actions.sort_by(&:created_at).first.author.full_name
+                    p.heading
+                      = distance_of_time_in_words(Time.zone.now - project_instance.created_at)
+                      |  ago
+                  td
+                    = link_to "URL", project_instance.build_actions.last.configurations.first.application_url, target: "_blank", rel: "noopener noreferrer"
+                  td
+                    .dropdown.is-hoverable
+                      .dropdown-trigger
+                        span.is-clickable ...
+                      .dropdown-menu role="menu" 
+                        .dropdown-content
+                          a.dropdown-item Destroy
 
     = yield

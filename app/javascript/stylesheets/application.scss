@@ -1,11 +1,41 @@
-// $primary: #435FE4;
-// $link: #FFE068;
+$primary: #435FE4;
+$link: #435FE4;
+$link-hover: #354BB6;
+$link-active: #354BB6;
 // $info: $cyan
 // $success: $green
 // $warning: $yellow
 // $danger: $red
 // $dark: $grey-darker
-// $text: #666A73;
+$text: #666A73;
+$text-strong: #121726;
+
+
+// 435FE4
+// FFE068
+
+// D4D5D9
+// 666A73
+// 121726
+
+
+$black: #121726;
+// $black-bis: ;
+// $black-ter: ;
+// $grey-darker: ;
+// $grey-dark: ;
+$grey: #666A73;
+$grey-light: #D4D5D9;
+// $grey-lighter: ;
+// $grey-lightest: ;
+// $white-ter: ;
+// $white-bis: ;
+// $white: ;
+
+
+$family-primary: Inter,sans-serif;
+$family-secondary: Sora,sans-serif;
+
 
 $body-background-color: #FCFCFC;
 $table-cell-padding: 1em 1.25em;
@@ -14,20 +44,58 @@ $table-cell-padding: 1em 1.25em;
 
 
 
-.table-list-primary {
-  background: #FFFFFF;
-  border: 1px solid #EDF2F9;
-  box-shadow: 0px 12px 24px rgba(18, 38, 63, 0.03);
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  border-radius: 8px;
-  border-collapse: separate;
+// .table-list-primary {
+//   // background: #FFFFFF;
+//   // border: 1px solid #EDF2F9;
+//   // box-shadow: 0px 12px 24px rgba(18, 38, 63, 0.03);
+//   // -moz-border-radius: 8px;
+//   // -webkit-border-radius: 8px;
+//   // border-radius: 8px;
+//   border-collapse: separate;
+
+//   border: 1px solid #D4D5D9;
+//   box-sizing: border-box;
+//   border-radius: 24px;
+
+//   thead {
+//     tr {
+//       th {
+//         // border-bottom: 1px solid #E3EBF6;
+//         // border-width: 1px 0;
+//         border-bottom: 1px solid #D4D5D9;
+//       }
+//     }
+//   }
+
+//   tbody {
+//     tr {
+//       td {
+//         // border-bottom: 1px solid #E3EBF6;
+//         // border-width: 1px 0;
+//         border-bottom: 1px solid #D4D5D9;
+//       }
+//     }
+//   }
+
+//   // tr:last-child td:first-child {
+//   //     border-bottom-left-radius: 10px;
+//   // }
+
+//   // tr:last-child td:last-child {
+//   //     border-bottom-right-radius: 10px;
+//   // }
+// }
+
+
+
+.table-list-primary { 
+  border: none;
 
   thead {
     tr {
       th {
-        border-bottom: 1px solid #E3EBF6;
-        // border-width: 1px 0;
+        background-color: #FFE068;
+        border: none;
       }
     }
   }
@@ -35,19 +103,8 @@ $table-cell-padding: 1em 1.25em;
   tbody {
     tr {
       td {
-        border-bottom: 1px solid #E3EBF6;
-        // border-width: 1px 0;
+        border: none;
       }
     }
   }
-
-  // tr:last-child td:first-child {
-  //     border-bottom-left-radius: 10px;
-  // }
-
-  // tr:last-child td:last-child {
-  //     border-bottom-right-radius: 10px;
-  // }
 }
-
-
