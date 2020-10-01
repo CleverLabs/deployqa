@@ -23,17 +23,24 @@ html
     = javascript_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload', async: true
 
   body
-    .columns.is-desktop
-      .column.is-narrow
-        aside.menu.px-4.py-4
-          p.menu-label
-            | Project
-          ul.menu-list
-            - @projects.each do |project|
-              li
-                a = project.name
-            li
-              a.has-text-centered + Add new
+    .a
+      .project-navigation
+        .project-selector
+          img height="40" width="40" src="#{GithubEntity.find_by(owner: @project.project_record).data.fetch("avatar_url")}&s=40"
+          .px-2
+            .heading.mb-0 Project
+            .title.is-5 = @project.name
+          .arrow
+        hr.project-selector-separator
+        aside.menu.px-4.py-5
+          / p.menu-label
+          /   | Project
+          / ul.menu-list
+          /   - @projects.each do |project|
+          /     li
+          /       a = project.name
+          /   li
+          /     a.has-text-centered + Add new
           p.menu-label
             | Manage
           ul.menu-list
@@ -43,9 +50,16 @@ html
               a Builds
             li
               a Configuration
+          p.menu-label
+            | Admin
+          ul.menu-list
+            li
+              a Dashboard
+            li
+              a Sidekiq
 
 
-      .column
+      .column.main-content
         nav.navbar.is-spaced aria-label=("main navigation") role="navigation" 
           .navbar-brand
             a.navbar-burger.burger aria-expanded="false" aria-label="menu" data-target="navbarMenu" role="button" 
