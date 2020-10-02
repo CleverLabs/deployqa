@@ -16,8 +16,8 @@ module ProjectHelper
     end
   end
 
-  def project_integration_logo(project)
+  def project_integration_logo(project, size: "32x32")
     image_path = PROVIDER_IMAGE_PATH.fetch(project.integration_type)
-    image_pack_tag(image_path, size: "32x32")
+    image_pack_tag(image_path, size: size)
   end
 end

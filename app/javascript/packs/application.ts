@@ -40,4 +40,54 @@ require('../stylesheets/application.scss')
     });
   }
 
+
+
+  const projectSelector = document.getElementById("projectSelector");
+  const projectsList = document.getElementById("projectsList");
+
+  if (projectSelector && projectsList) {
+    projectSelector.addEventListener('click', () => {
+      projectsList.classList.toggle('is-active');
+    });
+  }
+
+
+
+  const $modalLinks = Array.prototype.slice.call(document.querySelectorAll('.open-modal-link'), 0);
+  const $html = document.querySelector('html');
+
+  if ($html) {
+    $modalLinks.forEach(modalLink => {
+      const $target = document.getElementById(modalLink.dataset.target);
+      const $targetBackground = $target?.querySelector('.modal-background');
+      const $closeIcons = Array.prototype.slice.call(document.querySelectorAll('.modal-close-icon'), 0);
+
+
+      if ($target && $targetBackground) {
+        modalLink.addEventListener('click', (event: any) => {
+          event.preventDefault();
+
+          $target.classList.add('is-active');
+          $html.classList.add('is-clipped');
+        });
+
+        $targetBackground.addEventListener('click', (event: any) => {
+          event.preventDefault();
+
+          $target.classList.remove('is-active');
+          $html.classList.remove('is-clipped');
+        });
+
+        $closeIcons.forEach(closeIcon => {
+          closeIcon.addEventListener('click', (event: any) => {
+            event.preventDefault();
+
+            $target.classList.remove('is-active');
+            $html.classList.remove('is-clipped');
+          });
+        });
+      }
+    });
+  }
+
 // });

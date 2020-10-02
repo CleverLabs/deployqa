@@ -23,24 +23,38 @@ html
     = javascript_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload', async: true
 
   body
+    #addNewProjectMenu.modal
+      .modal-background
+      .modal-card
+        header.modal-card-head
+          p.modal-card-title New project
+          button.delete.modal-close-icon aria-label="close"
+        section.modal-card-body
+          = link_to "Github", github_router.install_url, class: "button is-primary"
+          = link_to "Gitlab", new_gitlab_project_path, class: "button is-primary ml-2"
+          = link_to "Via SSH", new_project_path(provider: "via_ssh"), class: "button is-primary ml-2"
+      / button.modal-close.is-large aria-label="close" 
+
+
     .a
       .project-navigation
-        .project-selector
+        #projectSelector.project-selector
           img height="40" width="40" src="#{GithubEntity.find_by(owner: @project.project_record).data.fetch("avatar_url")}&s=40"
           .px-2
             .heading.mb-0 Project
             .title.is-5 = @project.name
           .arrow
+        #projectsList.projects-list
+          ul.menu-list
+            - @projects.each do |project|
+              li
+                = link_to project_project_instances_path(project), class: "projects-list-link" do
+                  = project_integration_logo(project, size: "25x25")
+                  = project.name
+            li
+              a.has-text-centered.open-modal-link aria-expanded="false" data-target="addNewProjectMenu" role="button" + Add new
         hr.project-selector-separator
         aside.menu.px-4.py-5
-          / p.menu-label
-          /   | Project
-          / ul.menu-list
-          /   - @projects.each do |project|
-          /     li
-          /       a = project.name
-          /   li
-          /     a.has-text-centered + Add new
           p.menu-label
             | Manage
           ul.menu-list
@@ -59,10 +73,10 @@ html
               a Sidekiq
 
 
-      .column.main-content
+      .main-content
         nav.navbar.is-spaced aria-label=("main navigation") role="navigation" 
           .navbar-brand
-            a.navbar-burger.burger aria-expanded="false" aria-label="menu" data-target="navbarMenu" role="button" 
+            a.navbar-burger.burger aria-expanded="false" aria-label="menu" data-target="navbarMenu" role="button"
               span aria-hidden="true" 
               span aria-hidden="true" 
               span aria-hidden="true" 
@@ -90,7 +104,7 @@ html
                     = link_to "Admin dashboard", admin_dashboard_path, class: "navbar-item"
                     = link_to "Sidekiq", sidekiq_web_path, class: "navbar-item"
 
-        .container.pt-5
+        .container.column.pt-5
           .level
             .level-left
               h1.title.is-1.level-item Instances
