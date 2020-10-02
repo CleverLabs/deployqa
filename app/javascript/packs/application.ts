@@ -5,16 +5,8 @@ const Turbolinks = require('turbolinks')
 Rails.start()
 Turbolinks.start()
 
-// window.onload = () => {
-//
-// }
 
-require.context('../images', true)
-require('../stylesheets/application.scss')
-
-
-
-// document.addEventListener('turbolinks:load', () => {
+const handler = () => {
 
   // Get all "navbar-burger" elements
   const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
@@ -89,5 +81,15 @@ require('../stylesheets/application.scss')
       }
     });
   }
+};
 
-// });
+
+window.onload = handler;
+document.addEventListener('turbolinks:load', handler);
+
+
+
+
+
+require.context('../images', true)
+require('../stylesheets/application.scss')

@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :login_if_not
   before_action :set_paper_trail_whodunnit
 
-  helper_method :github_router, :gitlab_router
+  helper_method :github_router, :gitlab_router, :controller_action_name
 
   private
 
@@ -40,5 +40,9 @@ class ApplicationController < ActionController::Base
 
   def gitlab_router
     @_gitlab_router ||= GitlabIntegration::Router.new
+  end
+
+  def controller_action_name
+    "#{controller_name}##{action_name}"
   end
 end

@@ -4,7 +4,6 @@ class DashboardsController < ApplicationController
   layout "application_new"
 
   def show
-    @projects = find_projects
     @project = ProjectDomain.by_id(6)
     @project_instances = @project.project_record.project_instances.where.not(deployment_status: ProjectInstanceConstants::Statuses::ALL_NOT_ACTIVE).order(updated_at: :desc)
   end

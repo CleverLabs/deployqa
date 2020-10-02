@@ -1,40 +1,40 @@
-.container
-  = render partial: "shared/breadcrumb", locals: {\
-      text_link_hash: {\
-        "Projects" => projects_path,
-        @project.name => project_project_instances_path(@project)\
-      },
-      class: "mt-4" }
-
-  h1.mt-4 = @project.name
-  .d-flex.justify-content-between
-    h3
-      | Instances 
+.container.column.pt-5
+  .level
+    .level-left
+      h1.title.is-1.level-item Instances
+    .level-right
       - if params[:show_all]
-        small = link_to "(hide not active)", project_project_instances_path(@project), class: "ml-2"
+        = link_to "Hide not active", project_project_instances_path(@project), class: "level-item"
       - else
-        small = link_to "(show all)", project_project_instances_path(@project, show_all: true), class: "ml-2"
-    .d-flex.align-items-center.mt-2
-      = link_to "Manual deploy", new_project_project_instance_path(@project), class: "btn btn-primary #{@new_instance_allowed ? "" : "disabled"}"
-
-  - if @project_instances.empty?
-    h4.mt-5.text-center No active instances
-  - else
-    .mt-4
-      table.table.table-hover.table-clickable
-        thead
-          tr
-            th.by-content
-            th Name
-            th Status
-        tbody
-          - @project_instances.each do |project_instance|
-            tr
-              td.text-center
-              td
-                = link_to project_project_instance_path(@project, project_instance) do
-                  = project_instance.name
-              td
-                = link_to project_project_instance_path(@project, project_instance) do
-                  span class=["ml-1 badge", status_badge_class(project_instance.deployment_status)]
-                    = project_instance.deployment_status
+        = link_to "Show all", project_project_instances_path(@project, show_all: true), class: "level-item"
+      = link_to "New instance", new_project_project_instance_path(@project), class: "button is-primary level-item", disabled: @new_instance_allowed
+  table.table.is-fullwidth.is-hoverable.table-list-primary
+    thead
+      tr
+        th Name
+        th Status
+        th Created
+        th
+        th
+    tbody
+      - @project_instances.each do |project_instance|
+        tr
+          td
+            .title.is-5.has-text-weight-bold = link_to project_instance.name, project_project_instance_path(@project, project_instance)
+          td
+            span.tag class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
+          td
+            p.has-text-weight-bold.mb-2 = project_instance.build_actions.sort_by(&:created_at).first.author.full_name
+            p.heading
+              = distance_of_time_in_words(Time.zone.now - project_instance.created_at)
+              |  ago
+          td
+            = link_to "URL", project_instance.build_actions.last.configurations.first&.application_url, target: "_blank", rel: "noopener noreferrer"
+          td
+            .dropdown.is-hoverable
+              .dropdown-trigger
+                span.is-clickable ...
+              .dropdown-menu role="menu"
+                .dropdown-content
+                  - if ProjectInstancePolicy.new(current_user, project_instance).terminate?
+                    = link_to "Terminate", project_project_instance_path(@project, project_instance), method: :delete, class: "dropdown-item"
