@@ -6,7 +6,7 @@ describe Billing::Processes::CurrentMonth, type: :database_access do
   subject(:current_month) { described_class.new(project_domain, timeframe: timeframe) }
 
   let(:today) { DateTime.now.midday }
-  let(:date_start) { today - 1.month }
+  let(:date_start) { today - 30.days }
   let(:date_end) { today }
   let(:timeframe) { Billing::Lifecycle::Timeframe.new(start: date_start, end: date_end) }
   let(:project_domain) { ProjectDomain.new(record: project) }
@@ -31,6 +31,8 @@ describe Billing::Processes::CurrentMonth, type: :database_access do
   let(:build_end) { date_start + 4.hours }
   let(:sleep_start) { date_start + 2.days }
   let(:build_duration) { build_end.to_i - build_start.to_i }
+  let(:run_duration) { sleep_start.to_i - build_end.to_i }
+  let(:sleep_duration) { date_end.to_i - sleep_start.to_i }
 
   let(:lifecycles) do
     [
@@ -40,16 +42,16 @@ describe Billing::Processes::CurrentMonth, type: :database_access do
         build_actions_ids: [build_action_create.id, build_action_sleep.id],
         states: {
           build: [Billing::Lifecycle::InstanceLifecycle::InstanceState.new(:build, build_start, build_end, build_duration, build_action_create.configurations)],
-          run: [Billing::Lifecycle::InstanceLifecycle::InstanceState.new(:run, build_end, sleep_start, sleep_start.to_i - build_end.to_i, build_action_create.configurations)],
-          sleep: [Billing::Lifecycle::InstanceLifecycle::InstanceState.new(:sleep, sleep_start, date_end, date_end.to_i - sleep_start.to_i, build_action_sleep.configurations)]
+          run: [Billing::Lifecycle::InstanceLifecycle::InstanceState.new(:run, build_end, sleep_start, run_duration, build_action_create.configurations)],
+          sleep: [Billing::Lifecycle::InstanceLifecycle::InstanceState.new(:sleep, sleep_start, date_end, sleep_duration, build_action_sleep.configurations)]
         },
-        durations: { sleep: date_end.to_i - sleep_start.to_i, run: sleep_start.to_i - build_end.to_i, build: build_duration },
-        costs: { sleep: 556, run: 528, build: 18 },
+        durations: { sleep: sleep_duration, run: run_duration, build: build_duration },
+        costs: { sleep: 537, run: 528, build: 18 },
         multipliers: { sleep: 4, run: 4, build: 2 }
       )
     ]
   end
-  let(:result) { [lifecycles, 1102] }
+  let(:result) { [lifecycles, 1083] }
 
   describe "#call" do
     it "calculates lifecycles for current month until date" do
