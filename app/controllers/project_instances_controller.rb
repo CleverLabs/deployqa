@@ -15,6 +15,8 @@ class ProjectInstancesController < ApplicationController
     @project_instance = @project.project_instance(id: params[:id])
     @project_instance_policy = ProjectInstancePolicy.new(current_user, @project_instance)
     @features_accessor = Features::Accessor.new
+
+    render :show, layout: "application_new"
   end
 
   def new

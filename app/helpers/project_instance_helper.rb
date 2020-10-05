@@ -24,6 +24,13 @@ module ProjectInstanceHelper
     BuildActionConstants::Statuses::CANCELED => "badge-dark"
   }.freeze
 
+  ACTION_STATUS_BADGE_CLASS_MAPPING_2 = {
+    BuildActionConstants::Statuses::RUNNING => "is-warning",
+    BuildActionConstants::Statuses::SUCCESS => "is-success",
+    BuildActionConstants::Statuses::FAILURE => "is-danger",
+    BuildActionConstants::Statuses::CANCELED => "is-dark"
+  }.freeze
+
   def status_badge_class(status)
     STATUS_BADGE_CLASS_MAPPING.fetch(status, "badge-info")
   end
@@ -34,5 +41,9 @@ module ProjectInstanceHelper
 
   def action_status_badge_class(status)
     ACTION_STATUS_BADGE_CLASS_MAPPING.fetch(status, "badge-info")
+  end
+
+  def action_status_badge_class_2(status)
+    ACTION_STATUS_BADGE_CLASS_MAPPING_2.fetch(status, "is-info")
   end
 end

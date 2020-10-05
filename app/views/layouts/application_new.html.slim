@@ -59,7 +59,7 @@ html
             | Manage
           ul.menu-list
             li
-              = link_to "Builds", project_project_instances_path(@project), class: "is-active"
+              = link_to "Instances", project_project_instances_path(@project), class: ("is-active" if controller_action_name == "project_instances#index")
             - if ProjectPolicy.new(current_user, @project).edit?
               li
                 = link_to "Configuration", project_path(@project)

@@ -4,7 +4,7 @@ class DashboardsController < ApplicationController
   layout "application_new"
 
   def show
-    @project = ProjectDomain.by_id(6)
+    @project = find_project
     @project_instances = @project.project_record.project_instances.where.not(deployment_status: ProjectInstanceConstants::Statuses::ALL_NOT_ACTIVE).order(updated_at: :desc)
   end
 
@@ -21,5 +21,9 @@ class DashboardsController < ApplicationController
       .group("projects.id")
       .order("projects.created_at DESC")
       .includes(:repositories)
+  end
+
+  def find_project
+    authorize ProjectDomain.by_id(6), :edit?, policy_class: ProjectPolicy
   end
 end

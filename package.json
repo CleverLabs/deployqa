@@ -2,6 +2,7 @@
   "name": "stagy",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.0",
     "@rails/webpacker": "4.0.7",
     "@types/chart.js": "^2.7.52",
     "@types/node": "^10.12.10",
