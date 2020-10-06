@@ -38,3 +38,5 @@
                 .dropdown-content
                   - if ProjectInstancePolicy.new(current_user, project_instance).terminate?
                     = link_to "Terminate", project_project_instance_path(@project, project_instance), method: :delete, class: "dropdown-item"
+                  - if ProjectInstancePolicy.new(current_user, project_instance).redeploy?
+                    = link_to "Redeploy", project_project_instance_redeploy_path(@project, project_instance), method: :post, class: "dropdown-item"

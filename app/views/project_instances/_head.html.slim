@@ -6,10 +6,19 @@
       - pull_request_url = GitProviders::Url::PullMergeRequest.new(@project_instance, @project.integration_type).call
     .level-right
       - if pull_request_url
-        small.has-text-weight-bold
+        small.has-text-weight-bold.mr-4
           = link_to pull_request_url, target: :_blank do
             = project_integration_logo(@project, size: "20x20")
             |  Pull request
+      .buttons.is-grouped
+        - if @project_instance_policy.redeploy?
+          = link_to "Redeploy", project_project_instance_redeploy_path(@project, @project_instance), method: :post, class: "button is-outlined"
+        - else
+          = link_to "Reload", project_project_instance_reload_path(@project, @project_instance), method: :post, class: "button is-outlined", disabled: !@project_instance_policy.reload?
+          = link_to "Update", project_project_instance_update_path(@project, @project_instance), method: :post, class: "button is-outlined", disabled: !@project_instance_policy.update_server?
+          = link_to "Terminate", project_project_instance_path(@project, @project_instance), method: :delete, class: "button is-outlined is-danger", disabled: !@project_instance_policy.terminate?
+
+
 
   .pb-3
     - @project_instance.configurations.each do |configuration|
