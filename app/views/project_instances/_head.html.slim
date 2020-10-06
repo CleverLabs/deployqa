@@ -33,7 +33,7 @@
           i.fa-fw.fas.fa-link.mr-1
           = link_to "Web URL", configuration.application_url, target: "_blank", rel: "noopener noreferrer"
         |  
-        - if false && @project_instance_policy.show_heroku_link?
+        - if @project_instance_policy.show_heroku_link?
           span.ml-2
             i.fa-fw.fas.fa-cog.mr-1
             - if @features_accessor.docker_deploy_performed?(@project_instance)
