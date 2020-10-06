@@ -38,7 +38,7 @@
         = link_to "Builds", project_project_instance_path(@project, @project_instance)
       li class=("is-active" if controller_action_name == "configurations#edit")
         = link_to "Configuration", edit_project_project_instance_configuration_path(@project, @project_instance), disabled: !@project_instance_policy.edit?
-      li
+      li class=("is-active" if controller_action_name == "addons#index")
         = link_to "Addons", project_project_instance_addons_path(@project, @project_instance), disabled: !@project_instance_policy.addons?
       li
         - configuration = @project_instance.configurations.first

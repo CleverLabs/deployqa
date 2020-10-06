@@ -1,29 +1,20 @@
-.container
-  = render partial: "shared/breadcrumb", locals: {\
-      text_link_hash: {\
-        "Projects" => projects_path,
-        @project.name => project_project_instances_path(@project),
-        @project_instance.name => project_project_instance_path(@project, @project_instance),
-        "Addons" => nil\
-      },
-          class: "mt-4" }
-
-  - if flash.notice
-    .alert.alert-info = flash.notice
-  h1.mt-4 Addons
-  .row
-    .col-12
-      - if @addons_per_app.blank?
-        = "No addons created"
-      - else
-        - @addons_per_app.each do |app_name, addons|
-          .row.border-bottom
-            code.col-12.col-md-3 = app_name
-            .col-12.col-md-9
-              - addons.each do |addon|
-                .row
-                  .col-12.col-md-3
-                    = addon["name"]
-                  .col-12.col-md-9.text-break
-                    - addon["credentials"].each do |key, value|
-                      code.d-block.text-info = "#{key}: #{value}"
+= render "project_instances/head" do
+  - @addons_per_app.each do |app_name, addons|
+    article.notification
+      h4.title.is-4.has-text-weight-normal = "Addons for '#{app_name}':"
+      - addons.each do |addon|
+        p.has-text-weight-bold.mb-1
+          - if addon["addon_type"] == "relational_db"
+            i.fa-fw.fas.fa-database
+          - if addon["addon_type"] == "key_value_db"
+            i.fa-fw.fas.fa-layer-group
+          = addon["name"]
+        .content.mb-3
+          table.table.is-fullwidth.is-hoverable.table-list-primary
+            tbody
+              - addon["credentials"].each do |key, value|
+                tr
+                  td
+                    .is-family-monospace = "#{key}"
+                  td
+                    .is-family-monospace = value
