@@ -1,0 +1,49 @@
+.container.column.pt-5
+  .level
+    .level-left
+      h3.title.is-3.mb-0.mr-5.level-item = @project_instance.name
+      span.level-item.tag.mr-5 class=status_badge_class_2(@project_instance.deployment_status) = @project_instance.deployment_status
+      - pull_request_url = GitProviders::Url::PullMergeRequest.new(@project_instance, @project.integration_type).call
+    .level-right
+      - if pull_request_url
+        small.has-text-weight-bold
+          = link_to pull_request_url, target: :_blank do
+            = project_integration_logo(@project, size: "20x20")
+            |  Pull request
+
+  .pb-3
+    - @project_instance.configurations.each do |configuration|
+      p
+        span.has-text-weight-bold.mb-0 = configuration.repo_path
+        |  
+        span.is-family-monospace.ml-2
+          i.fa-fw.fas.fa-code-branch
+          = configuration.git_reference
+        |  
+        span.ml-2
+          i.fa-fw.fas.fa-link.mr-1
+          = link_to "Web URL", configuration.application_url, target: "_blank", rel: "noopener noreferrer"
+        |  
+        - if false && @project_instance_policy.show_heroku_link?
+          span.ml-2
+            i.fa-fw.fas.fa-cog.mr-1
+            - if @features_accessor.docker_deploy_performed?(@project_instance)
+              = link_to "Nomad configuration link", "#{ENV["NOMAD_SERVER"]}/ui/jobs?search=#{@project_instance.name}", target: :_blank, rel: "noopener noreferrer"
+            - else
+              = link_to "Heroku configuration link", "https://dashboard.heroku.com/apps/#{configuration.application_name}", target: :_blank, rel: "noopener noreferrer"
+
+  .tabs.mt-5
+    ul
+      li class=("is-active" if controller_action_name == "project_instances#show")
+        = link_to "Builds", project_project_instance_path(@project, @project_instance)
+      li class=("is-active" if controller_action_name == "configurations#edit")
+        = link_to "Configuration", edit_project_project_instance_configuration_path(@project, @project_instance), disabled: !@project_instance_policy.edit?
+      li
+        = link_to "Addons", project_project_instance_addons_path(@project, @project_instance), disabled: !@project_instance_policy.addons?
+      li
+        - configuration = @project_instance.configurations.first
+        - if configuration
+          = link_to "Runtime logs", project_project_instance_log_path(@project, @project_instance, application_name: configuration.application_name, process_name: configuration.web_processes.first["name"]), disabled: !@project_instance_policy.logs?
+
+
+  = yield

@@ -41,7 +41,10 @@ $body-background-color: #FCFCFC;
 $table-cell-padding: 1em 1.25em;
 @import "~bulma/bulma.sass";
 
-
+a[disabled] {
+  opacity: .5;
+  pointer-events: none;
+}
 
 
 
