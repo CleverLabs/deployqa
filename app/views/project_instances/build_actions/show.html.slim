@@ -1,18 +1,16 @@
-.container
-  = render partial: "shared/breadcrumb", locals: {\
-      text_link_hash: {\
-        "Projects" => projects_path,
-        @project.name => project_project_instances_path(@project),
-        @project_instance.name => project_project_instance_path(@project, @project_instance),
-        "\"#{@build_action.action.to_s.humanize}\" action" => nil\
-      },
-      class: "mt-4" }
-
-  .mt-4
-    h3 Logs
-    .log-section
-      - @build_action_logs.each do |log|
-        .log-item
-          code.small.text-info = "[#{log.context}] "
-          pre.small.d-inline class="#{(log.status == BuildActionConstants::Log::ERROR) ? 'text-danger' : 'text-secondary'}" = log.message
-
+= render "project_instances/head" do
+  .mb-3.has-text-right
+    p
+      span.tag class=action_status_badge_class_2(@build_action.status) = @build_action.status
+      |  
+      span.has-text-weight-bold = @build_action.action.to_s.humanize
+      |  by 
+      span = @build_action.author.full_name
+    p
+      | @
+      = @build_action.created_at
+  .notification.is-black.code-panel
+    - @build_action_logs.each do |log|
+      .code-line class=("has-text-danger" if log.status == BuildActionConstants::Log::ERROR)
+        .is-family-monospace.has-text-weight-bold.code-line__title = "[#{log.context}] "
+        .is-family-monospace.has-text-weight-bold.is-inline.p-0 = log.message

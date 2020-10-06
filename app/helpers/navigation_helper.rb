@@ -18,6 +18,10 @@ module NavigationHelper
     "addons#index" => {
       text_and_link: [proc { ["Instances", project_project_instances_path(@project)] }],
       last_text_and_link: proc { [@project_instance.name, project_project_instance_path(@project, @project_instance)] }
+    },
+    "build_actions#show" => {
+      text_and_link: [proc { ["Instances", project_project_instances_path(@project)] }],
+      last_text_and_link: proc { [@project_instance.name, project_project_instance_path(@project, @project_instance)] }
     }
   }.freeze
   # rubocop:enable Rails/HelperInstanceVariable

@@ -190,3 +190,19 @@ a[disabled] {
     width: 100%;
   }
 }
+
+
+.code-panel {
+  overflow-y: scroll;
+
+  .code-line {
+    width: max-content;
+
+    .code-line__title {
+      padding: 0;
+      display: inline;
+      // color: aquamarine;
+      color: #FFE068;
+    }
+  }
+}

@@ -44,6 +44,8 @@
         - configuration = @project_instance.configurations.first
         - if configuration
           = link_to "Runtime logs", project_project_instance_log_path(@project, @project_instance, application_name: configuration.application_name, process_name: configuration.web_processes.first["name"]), disabled: !@project_instance_policy.logs?
-
+      - if controller_action_name == "build_actions#show"
+        li.is-active
+          a Build log
 
   = yield
