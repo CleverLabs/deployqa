@@ -86,6 +86,16 @@ const handler = () => {
       }
     });
   }
+
+
+
+  const processSelector = document.getElementById('process_for_logs_selector');
+
+  if (processSelector) {
+    processSelector.addEventListener('change', (event: any) => {
+      window.location = event.target.value;
+    });
+  }
 };
 
 

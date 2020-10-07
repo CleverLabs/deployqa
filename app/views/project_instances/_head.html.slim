@@ -12,7 +12,7 @@
             |  Pull request
       .buttons.is-grouped
         - if @project_instance_policy.redeploy?
-          = link_to "Redeploy", project_project_instance_redeploy_path(@project, @project_instance), method: :post, class: "button is-outlined"
+          = link_to "Redeploy", project_project_instance_redeploy_path(@project, @project_instance), method: :post, class: "button is-primary is-outlined"
         - else
           = link_to "Reload", project_project_instance_reload_path(@project, @project_instance), method: :post, class: "button is-outlined", disabled: !@project_instance_policy.reload?
           = link_to "Update", project_project_instance_update_path(@project, @project_instance), method: :post, class: "button is-outlined", disabled: !@project_instance_policy.update_server?
@@ -36,10 +36,7 @@
         - if @project_instance_policy.show_heroku_link?
           span.ml-2
             i.fa-fw.fas.fa-cog.mr-1
-            - if @features_accessor.docker_deploy_performed?(@project_instance)
-              = link_to "Nomad configuration link", "#{ENV["NOMAD_SERVER"]}/ui/jobs?search=#{@project_instance.name}", target: :_blank, rel: "noopener noreferrer"
-            - else
-              = link_to "Heroku configuration link", "https://dashboard.heroku.com/apps/#{configuration.application_name}", target: :_blank, rel: "noopener noreferrer"
+            = link_to "Nomad configuration link", "#{ENV["NOMAD_SERVER"]}/ui/jobs?search=#{@project_instance.name}", target: :_blank, rel: "noopener noreferrer"
 
   .tabs.mt-5
     ul
@@ -49,7 +46,7 @@
         = link_to "Configuration", edit_project_project_instance_configuration_path(@project, @project_instance), disabled: !@project_instance_policy.edit?
       li class=("is-active" if controller_action_name == "addons#index")
         = link_to "Addons", project_project_instance_addons_path(@project, @project_instance), disabled: !@project_instance_policy.addons?
-      li
+      li class=("is-active" if controller_action_name == "logs#show")
         - configuration = @project_instance.configurations.first
         - if configuration
           = link_to "Runtime logs", project_project_instance_log_path(@project, @project_instance, application_name: configuration.application_name, process_name: configuration.web_processes.first["name"]), disabled: !@project_instance_policy.logs?

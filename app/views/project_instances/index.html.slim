@@ -7,7 +7,7 @@
         = link_to "Hide not active", project_project_instances_path(@project), class: "level-item"
       - else
         = link_to "Show all", project_project_instances_path(@project, show_all: true), class: "level-item"
-      = link_to "New instance", new_project_project_instance_path(@project), class: "button is-primary level-item", disabled: @new_instance_allowed
+      = link_to "New instance", new_project_project_instance_path(@project), class: "button is-primary level-item", disabled: !@new_instance_allowed
   table.table.is-fullwidth.is-hoverable.table-list-primary
     thead
       tr
@@ -22,7 +22,7 @@
           td
             .title.is-5.has-text-weight-bold = link_to project_instance.name, project_project_instance_path(@project, project_instance)
           td
-            span.tag class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
+            span.tag.has-text-weight-bold class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
           td
             p.has-text-weight-bold.mb-2 = project_instance.build_actions.sort_by(&:created_at).first.author.full_name
             p.heading

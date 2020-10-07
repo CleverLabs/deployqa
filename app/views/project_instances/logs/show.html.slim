@@ -1,25 +1,15 @@
-.container
-  = render partial: "shared/breadcrumb", locals: {\
-      text_link_hash: {\
-        "Projects" => projects_path,
-        @project.name => project_project_instances_path(@project),
-        @project_instance.name => project_project_instance_path(@project, @project_instance),
-        "Logs" => nil\
-      },
-      class: "mt-4" }
+= render "project_instances/head" do
+  - options = @references.map { |reference| ["#{reference.application_name}: #{reference.process_name}", project_project_instance_log_path(@project, @project_instance, application_name: reference.application_name, process_name: reference.process_name)] }
+  .has-text-right
+    .select
+      = select_tag "process_for_logs_selector", options_for_select(options, project_project_instance_log_path(@project, @project_instance, application_name: @selected_reference.application_name, process_name: @selected_reference.process_name))
 
-  .mt-4
-    h3 Logs
-    ul.nav.nav-pills.py-3
-      - @references.each do |reference|
-        li.nav-item
-          = link_to "#{reference.application_name}: #{reference.process_name}", project_project_instance_log_path(@project, @project_instance, application_name: reference.application_name, process_name: reference.process_name), class: "nav-link #{@selected_reference.id == reference.id ? 'active' : ''}"
+  .has-text-weight-bold stdout output
+  .notification.is-black.code-panel
+    .code-line
+      .is-family-monospace.has-text-weight-bold.is-inline.p-0 = @out_logs.to_s.force_encoding("UTF-8")
 
-    h4 Stdout
-    .log-section
-      .log-item
-        code.text-secondary.small = @out_logs.to_s.force_encoding("UTF-8")
-    h4.pt-2 Stderr
-    .log-section
-      .log-item
-        code.text-secondary.small = @err_logs.to_s.force_encoding("UTF-8")
+  .has-text-weight-bold stderr output
+  .notification.is-black.code-panel
+    .code-line
+      .is-family-monospace.has-text-weight-bold.is-inline.p-0 = @err_logs.to_s.force_encoding("UTF-8")

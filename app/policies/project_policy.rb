@@ -18,7 +18,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def show_create_instance_page?
-    return unless show?
+    return false unless show?
 
     record.project_record.repositories.where(status: RepositoryConstants::ACTIVE).limit(1).present? # Limit 1, to make sure at least one active repository exist
   end

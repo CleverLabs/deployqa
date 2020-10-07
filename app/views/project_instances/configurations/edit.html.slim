@@ -1,5 +1,5 @@
 = render "project_instances/head" do
-  h5.title.is-5 ENV variables
+  .has-text-weight-bold.mb-4 Environment Variables
   = simple_form_for :project_instance, url: project_project_instance_configuration_path(@project, @project_instance), method: :patch do |form|
     - @project_instance.configurations.each do |configuration|
       = form.simple_fields_for :configurations do |configurations_form|

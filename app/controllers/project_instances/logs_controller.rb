@@ -2,6 +2,8 @@
 
 module ProjectInstances
   class LogsController < ApplicationController
+    layout "application_new"
+
     def show
       @project = find_project
       @project_instance = find_project_instance(@project)
@@ -9,6 +11,7 @@ module ProjectInstances
       @selected_reference = find_nomad_reference(@references)
       @out_logs = fetch_logs(@selected_reference, "stdout")
       @err_logs = fetch_logs(@selected_reference, "stderr")
+      @project_instance_policy = ProjectInstancePolicy.new(current_user, @project_instance)
     end
 
     private

@@ -97,6 +97,7 @@ a[disabled] {
 
   img {
     border-radius: 50%;
+    background-color: white;
   }
 
   .arrow {
@@ -197,6 +198,7 @@ a[disabled] {
 
   .code-line {
     width: max-content;
+    white-space: pre-wrap;
 
     .code-line__title {
       padding: 0;
