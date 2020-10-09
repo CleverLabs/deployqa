@@ -1,64 +1,47 @@
-.container
-  = render partial: "shared/breadcrumb", locals: {\
-      text_link_hash: {\
-        "Projects" => nil\
-      },
-      class: "mt-4" }
+.container.pt-5
+  - if @projects.empty? && @installing_project.blank?
+    - if ProjectPolicy.new(current_user, :project).create?
+      .most-center
+        h1.title.is-1.has-text-centered
+          i.fas.fa-plus
+          |  Add new project
+        .buttons.is-centered
+          = link_to github_router.install_url, class: "button is-large is-rounded" do
+            = image_pack_tag "media/images/logos/github-logo.svg", size: "25", class: "mr-1"
+            | Github
+          = link_to new_gitlab_project_path, class: "button is-large is-rounded" do
+            = image_pack_tag "media/images/logos/gitlab-logo.svg", size: "25", class: "mr-1"
+            | Gitlab
+          = link_to new_project_path(provider: "via_ssh"), class: "button is-large is-rounded" do
+            = image_pack_tag "media/images/logos/git-logo-black.svg", size: "25", class: "mr-1"
+            | Via SSH
+    - else
+      .notification
+        | Stagy is now in Beta. If you want to create a new project please contact us at &nbsp;
+        a [href="mailto:deployqa@cleverlabs.io"] deployqa@cleverlabs.io
 
-  - unless ProjectPolicy.new(current_user, :project).create?
-    .alert.alert-warning
-      | Stagy is now in Beta. If you want to create a new project please contact us at &nbsp;
-      a [href="mailto:deployqa@cleverlabs.io"] deployqa@cleverlabs.io
-
-  .d-flex.justify-content-between.mt-4
-    h1 Projects
-    .d-flex.flex-column.align-items-center
-      button.btn.btn-primary type="button" data-toggle="modal" data-target="#createNewProjectModal" disabled=(ProjectPolicy.new(current_user, :project).create? ? nil : true)
-        | Create new Project
-  .mt-4
-    table.table.table-hover.table-clickable
+  - else
+    h1.title.is-1 Projects
+    table.table.is-fullwidth.is-hoverable.table-list-primary
+      col style="width: 30px; text-align: center;"
+      col
       thead
         tr
-          th.by-content
+          th
           th Name
-          th.by-content Active Instances
-          th.by-content Configure
       tbody
         - if @installing_project
-          tr.table-warning
-            td.text-center
-              a = project_integration_logo(@installing_project)
-            td: a The project is being installed...
-            td.text-center: a 0
-            td.text-center
+          tr.has-background-light
+            td
+            td.level
+              .level-left
+                = project_integration_logo(@installing_project)
+                .ml-2 The project is being installed...
         - @projects.each do |project|
           tr
-            td.text-center
-              = link_to project_project_instances_path(project) do
-                = project_integration_logo(project)
             td
-              = link_to project_project_instances_path(project) do
-                = project.name
-            td.text-center
-              = link_to project_project_instances_path(project) do
-                = project.active_instances
-            td.text-center
-              - if ProjectPolicy.new(current_user, project).edit?
-                = link_to project_path(project) do
-                  = image_pack_tag 'media/images/configure.svg', class: "configure-icon"
-                  = " (#{project.repositories.count})"
-
-
-#createNewProjectModal.modal.fade aria-hidden="true" aria-labelledby="createNewProjectModalLabel" role="dialog" tabindex="-1"
-  .modal-dialog role="document"
-    .modal-content
-      .modal-header
-        h5#createNewProjectModalLabel.modal-title Create new Project
-        button.close aria-label="Close" data-dismiss="modal" type="button"
-          span aria-hidden="true" &times;
-      .modal-body
-        = link_to "Github", github_router.install_url, class: "btn btn-primary"
-        = link_to "Gitlab", new_gitlab_project_path, class: "btn btn-primary ml-2"
-        = link_to "Via SSH", new_project_path(provider: "via_ssh"), class: "btn btn-primary ml-2"
-      .modal-footer
-        button.btn.alert-dark data-dismiss="modal" type="button" Cancel
+            td.level
+              .level-left
+                = project_integration_logo(project)
+                = link_to project_project_instances_path(project), class: "ml-2" do
+                  = project.name

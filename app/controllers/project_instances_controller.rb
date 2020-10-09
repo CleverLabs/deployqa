@@ -38,6 +38,7 @@ class ProjectInstancesController < ApplicationController
       @repositories = @project.project_record.repositories.active
       @project_instance = result.object.project_instance_record
       @features_accessor = Features::Accessor.new
+      @billing = @project.billing
       render :new
     end
   end

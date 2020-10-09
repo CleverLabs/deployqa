@@ -1,0 +1,40 @@
+doctype html
+html
+  head
+    title
+      | Stagy
+
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    meta charset="utf-8"
+    meta http-equiv="Content-Type" content="text/html; charset=utf-8"
+    meta name="viewport" content="width=device-width, initial-scale=1"
+
+    link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"
+
+    - if Rails.env.production?
+      = render partial: "shared/rollbar"
+      = render partial: "layouts/google_analytics"
+    = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload', async: true
+
+  body
+    nav.navbar.is-spaced aria-label=("main navigation") role="navigation" 
+      .navbar-brand
+        a.navbar-burger.burger aria-expanded="false" aria-label="menu" data-target="navbarMenu" role="button"
+          span aria-hidden="true" 
+          span aria-hidden="true" 
+          span aria-hidden="true" 
+      #navbarMenu.navbar-menu
+        .navbar-start
+          .navbar-item
+            = image_pack_tag 'media/images/logos/stagydev_logo.svg', size: "135x44"
+        .navbar-end
+          .navbar-item.has-dropdown.is-hoverable
+            a.navbar-link = current_user.full_name
+            .navbar-dropdown style="left: initial; right: 0px;"
+              = link_to "User preferences", user_path(current_user.actual_user), class: "navbar-item"
+              = link_to "Log out", sessions_path, method: :delete, class: "navbar-item"
+
+    = yield

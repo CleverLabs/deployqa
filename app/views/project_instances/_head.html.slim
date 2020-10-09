@@ -2,7 +2,7 @@
   .level
     .level-left
       h3.title.is-3.mb-0.mr-5.level-item = @project_instance.name
-      span.level-item.tag.mr-5 class=status_badge_class_2(@project_instance.deployment_status) = @project_instance.deployment_status
+      span.level-item.tag.mr-5.has-text-weight-bold class=status_badge_class_2(@project_instance.deployment_status) = @project_instance.deployment_status
       - pull_request_url = GitProviders::Url::PullMergeRequest.new(@project_instance, @project.integration_type).call
     .level-right
       - if pull_request_url
@@ -12,11 +12,19 @@
             |  Pull request
       .buttons.is-grouped
         - if @project_instance_policy.redeploy?
-          = link_to "Redeploy", project_project_instance_redeploy_path(@project, @project_instance), method: :post, class: "button is-primary is-outlined"
+          = link_to project_project_instance_redeploy_path(@project, @project_instance), method: :post, class: "button is-primary is-outlined" do
+            i.fas.fa-redo-alt.mr-1
+            | Redeploy
         - else
-          = link_to "Reload", project_project_instance_reload_path(@project, @project_instance), method: :post, class: "button is-outlined", disabled: !@project_instance_policy.reload?
-          = link_to "Update", project_project_instance_update_path(@project, @project_instance), method: :post, class: "button is-outlined", disabled: !@project_instance_policy.update_server?
-          = link_to "Terminate", project_project_instance_path(@project, @project_instance), method: :delete, class: "button is-outlined is-danger", disabled: !@project_instance_policy.terminate?
+          = link_to project_project_instance_reload_path(@project, @project_instance), method: :post, class: "button is-outlined", disabled: !@project_instance_policy.reload? do
+            i.fas.fa-sync-alt.mr-1
+            | Reload
+          = link_to project_project_instance_update_path(@project, @project_instance), method: :post, class: "button is-outlined", disabled: !@project_instance_policy.update_server? do
+            i.fas.fa-angle-double-up.mr-1
+            | Update
+          = link_to project_project_instance_path(@project, @project_instance), method: :delete, class: "button is-outlined is-danger", disabled: !@project_instance_policy.terminate? do
+            i.fas.fa-times.mr-1
+            | Terminate
 
 
 
