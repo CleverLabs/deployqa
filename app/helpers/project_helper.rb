@@ -7,12 +7,12 @@ module ProjectHelper
     ::ProjectsConstants::Providers::GITLAB => "media/images/logos/gitlab-logo.svg"
   }.freeze
 
-  def link_to_project_orgatnization(project)
-    return project_integration_logo(project) if project.integration_type == ProjectsConstants::Providers::VIA_SSH
+  def link_to_project_orgatnization(project, size: "32x32")
+    return project_integration_logo(project, size: size) if project.integration_type == ProjectsConstants::Providers::VIA_SSH
 
     router = project.integration_type == ::ProjectsConstants::Providers::GITHUB ? github_router : gitlab_router
     link_to(router.page_url(project.name), target: :_blank, rel: :noopener) do
-      project_integration_logo(project)
+      project_integration_logo(project, size: size)
     end
   end
 

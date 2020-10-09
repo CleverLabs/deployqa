@@ -1,11 +1,11 @@
 = render "head" do
   table.table.is-fullwidth.is-hoverable.table-list-primary
-    thead
-      tr
-        th Performed action
-        th Author
-        th Status
-        th
+    / thead
+    /   tr
+    /     th Performed action
+    /     th Author
+    /     th Status
+    /     th
     tbody
       - @project_instance.build_actions.order(created_at: :desc).each_with_index do |build_action|
         tr

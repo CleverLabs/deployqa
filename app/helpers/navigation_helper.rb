@@ -26,6 +26,10 @@ module NavigationHelper
     "logs#show" => {
       text_and_link: [proc { ["Instances", project_project_instances_path(@project)] }],
       last_text_and_link: proc { [@project_instance.name, project_project_instance_path(@project, @project_instance)] }
+    },
+    "projects#show" => {
+      text_and_link: [],
+      last_text_and_link: proc { ["Project configuration", project_project_instances_path(@project)] }
     }
   }.freeze
   # rubocop:enable Rails/HelperInstanceVariable

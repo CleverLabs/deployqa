@@ -15,10 +15,11 @@ class ProjectsController < ApplicationController
 
   def show
     @project = find_project
-    @project_domain = ProjectDomain.new(record: @project)
-    @repositories = @project.repositories.order(:name)
-    @roles = @project.project_user_roles.includes(:user)
-    @project_github_entity = GithubEntity.find_by(owner: @project) if @project.integration_type == ProjectsConstants::Providers::GITHUB
+    @repositories = @project.project_record.repositories.order(:name)
+    @roles = @project.project_record.project_user_roles.includes(:user)
+    @project_github_entity = GithubEntity.find_by(owner: @project.project_record) if @project.integration_type == ProjectsConstants::Providers::GITHUB
+
+    render :show, layout: "application_new"
   end
 
   def create
@@ -43,7 +44,7 @@ class ProjectsController < ApplicationController
   end
 
   def find_project
-    authorize Project.find(params[:id]), :edit?, policy_class: ProjectPolicy
+    authorize ProjectDomain.by_id(params[:id]), :edit?, policy_class: ProjectPolicy
   end
 
   def find_projects

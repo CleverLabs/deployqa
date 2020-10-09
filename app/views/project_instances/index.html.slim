@@ -12,9 +12,9 @@
     thead
       tr
         th Name
-        th Status
-        th Created
         th
+        th Created
+        th Status
         th
     tbody
       - @project_instances.each do |project_instance|
@@ -22,20 +22,21 @@
           td
             .title.is-5.has-text-weight-bold = link_to project_instance.name, project_project_instance_path(@project, project_instance)
           td
-            span.tag.has-text-weight-bold class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
+            = link_to "Open Instance ->", project_instance.build_actions.last.configurations.first&.application_url, target: "_blank", rel: "noopener noreferrer"
           td
             p.has-text-weight-bold.mb-2 = project_instance.build_actions.sort_by(&:created_at).first.author.full_name
             p.heading
               = distance_of_time_in_words(Time.zone.now - project_instance.created_at)
               |  ago
           td
-            = link_to "URL", project_instance.build_actions.last.configurations.first&.application_url, target: "_blank", rel: "noopener noreferrer"
+            span.tag.has-text-weight-bold class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
           td
             .dropdown.is-hoverable
               .dropdown-trigger
                 span.is-clickable ...
               .dropdown-menu role="menu"
                 .dropdown-content
+                  = link_to "Configure", project_project_instance_path(@project, project_instance), class: "dropdown-item"
                   - if ProjectInstancePolicy.new(current_user, project_instance).terminate?
                     = link_to "Terminate", project_project_instance_path(@project, project_instance), method: :delete, class: "dropdown-item"
                   - if ProjectInstancePolicy.new(current_user, project_instance).redeploy?

@@ -1,110 +1,176 @@
-.container
-  = render partial: "shared/breadcrumb", locals: {\
-      text_link_hash: {\
-        "Projects" => projects_path,
-        "\"#{@project.name}\" configuration" => project_path(@project)\
-      },
-      class: "mt-4" }
+/ .container
+/   = render partial: "shared/breadcrumb", locals: {\
+/       text_link_hash: {\
+/         "Projects" => projects_path,
+/         "\"#{@project.name}\" configuration" => project_path(@project)\
+/       },
+/       class: "mt-4" }
 
-  - if flash.notice
-    .alert.alert-info = flash.notice
-  h1.mt-4
-    = @project.name
-    = " "
-    = link_to_project_orgatnization(@project)
-  - if @project.slack_entity.blank?
-    .mt-4.mb-4
-      = link_to omniauth_path("slack", project_id: @project.id), method: :post do
-        img alt="Enable Slack notifications" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
-  .d-flex.justify-content-between
-    h3 Configurations
-    .d-flex.align-items-center
-      - if @project.integration_type == ProjectsConstants::Providers::GITHUB
-        = link_to "Manage installation 🔗", github_router.installation_page_url(@project.integration_id, @project_github_entity), target: :_blank, class: "btn btn-primary mr-1"
-      = link_to "Add new configuration", GitProviders::Url::NewRepository.new(@project).call, class: "btn btn-primary"
+/   - if flash.notice
+/     .alert.alert-info = flash.notice
+/   h1.mt-4
+/     = @project.name
+/     = " "
+/     = link_to_project_orgatnization(@project)
+/   - if @project.slack_entity.blank?
+/     .mt-4.mb-4
+/       = link_to omniauth_path("slack", project_id: @project.id), method: :post do
+/         img alt="Enable Slack notifications" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
+/   .d-flex.justify-content-between
+/     h3 Configurations
+/     .d-flex.align-items-center
+/       - if @project.integration_type == ProjectsConstants::Providers::GITHUB
+/         = link_to "Manage installation 🔗", github_router.installation_page_url(@project.integration_id, @project_github_entity), target: :_blank, class: "btn btn-primary mr-1"
+/       = link_to "Add new configuration", GitProviders::Url::NewRepository.new(@project).call, class: "btn btn-primary"
 
-  .mt-4
-    table.table.table-hover
-      thead
+/   .mt-4
+/     table.table.table-hover
+/       thead
+/         tr
+/           th.by-content #
+/           th Name
+/           th style="width: 20%" Status
+/           th style="width: 20%"
+/       tbody
+/         - @repositories.each_with_index do |repository, index|
+/           tr class="#{repository.status == RepositoryConstants::ACTIVE ? '' : 'table-secondary'}"
+/             td.text-center = index + 1
+/             td
+/               - if repository.status == RepositoryConstants::REMOVED
+/                 = repository.name
+/               - else
+/                 = link_to edit_project_repository_path(@project, repository) do
+/                   = repository.name
+/             td
+/               - if repository.build_type == RepositoryConstants::PRIVATE_GEM
+/                 = RepositoryConstants::PRIVATE_GEM.humanize
+/               - else
+/                 = repository.status.humanize
+/             td
+/               - if repository.status.in?([RepositoryConstants::INSTALLED, RepositoryConstants::INACTIVE]) && repository.build_type != RepositoryConstants::PRIVATE_GEM
+/                 = link_to "Activate", project_repository_status_path(@project, repository, status: RepositoryConstants::ACTIVE), method: :patch
+/               - if repository.status == RepositoryConstants::ACTIVE
+/                 = link_to "Deactivate", project_repository_status_path(@project, repository, status: RepositoryConstants::INACTIVE), method: :patch
+
+/   .d-flex.justify-content-between.mt-5
+/     h3 Members
+/     .d-flex.align-items-center
+/     button.btn.btn-primary type="button" data-toggle="modal" data-target="#addNewMemberModal" Add new member
+
+
+/   .mt-4
+/     table.table.table-hover
+/       thead
+/         tr
+/           th.by-content #
+/           th Name
+/           th Role
+/           th
+/       tbody
+/         - @roles.each_with_index do |project_user_role, index|
+/           tr
+/             td.text-center = index + 1
+/             td = project_user_role.user.full_name
+/             td = project_user_role.role.humanize
+/             td = link_to "X", project_project_user_role_path(@project, project_user_role), method: :delete, data: { confirm: "Are you sure want to remove user from project?" }
+
+/   - if ProjectPolicy.new(current_user, @project).billing?
+/     .d-flex.justify-content-between.mt-5
+/       h3
+/         | Billing
+/         small = link_to "show current month estimate", project_billings_path(@project), class: "pl-3"
+/       .d-flex.align-items-center
+/     .mt-4
+/       p
+/         | Currently you are using 
+/         span.font-weight-bold = @project_domain.billing.plan_name
+/         |  plan. Active until 
+/         = @project_domain.billing.active_until.to_date
+/       p
+/         span.font-weight-bold = format_price_per_hours @project_domain.billing.pricing_by_types.fetch(:run_cents)
+/         |  for running process, 
+/         span.font-weight-bold = format_price_per_hours @project_domain.billing.pricing_by_types.fetch(:sleep_cents)
+/         |  for sleeping process, 
+/         span.font-weight-bold = format_price_per_hours @project_domain.billing.pricing_by_types.fetch(:build_cents)
+/         |  for process's build time.
+
+/ #addNewMemberModal.modal.fade aria-hidden="true" aria-labelledby="addNewMemberModalLabel" role="dialog" tabindex="-1"
+/   .modal-dialog role="document"
+/     .modal-content
+/       .modal-header
+/         h5#addNewMemberModalLabel.modal-title Add new member to project
+/         button.close aria-label="Close" data-dismiss="modal" type="button"
+/           span aria-hidden="true" &times;
+/       .modal-body
+/         = simple_form_for :project_user_role, url: project_project_user_roles_path(@project) do |form|
+/           = form.input :email
+/           = form.input :role, collection: humanized_constants(ProjectUserRoleConstants::ROLES), selected: ProjectUserRoleConstants::REGULAR_USER
+/           = form.button :submit, "Add user", class: "btn btn-primary btn-block"
+/       .modal-footer
+/         button.btn.alert-dark data-dismiss="modal" type="button" Cancel
+
+
+.container.column.pt-5
+  .level
+    .level-left
+      h1.title.is-1
+        = @project.name
+        |  configuration 
+        = link_to_project_orgatnization(@project, size: "47")
+    .level-right
+      .buttons.is-grouped.level-item
+        - if @project.integration_type == ProjectsConstants::Providers::GITHUB
+          = link_to "🔗 Manage installation", github_router.installation_page_url(@project.integration_id, @project_github_entity), target: :_blank, class: "button"
+        = link_to "+ Add new repositories", GitProviders::Url::NewRepository.new(@project).call, class: "button"
+
+  table.table.is-fullwidth.is-hoverable.table-list-primary
+    col
+    col style="width: 30%"
+    thead
+      tr
+        th Repositories
+        th
+    tbody
+      - active_repos = @repositories.select { |repository| repository.status == RepositoryConstants::ACTIVE || repository.build_type == RepositoryConstants::PRIVATE_GEM }
+      - not_active_repos = @repositories - active_repos
+      - active_repos.each do |repository|
         tr
-          th.by-content #
-          th Name
-          th style="width: 20%" Status
-          th style="width: 20%"
-      tbody
-        - @repositories.each_with_index do |repository, index|
-          tr class="#{repository.status == RepositoryConstants::ACTIVE ? '' : 'table-secondary'}"
-            td.text-center = index + 1
-            td
-              - if repository.status == RepositoryConstants::REMOVED
+          td
+            - if repository.build_type == RepositoryConstants::PRIVATE_GEM
+              i.fas.fa-gem.mr-1
+            - else
+              i.fab.fa-docker.mr-1
+            - if repository.status == RepositoryConstants::REMOVED
+              = repository.name
+            - else
+              = link_to edit_project_repository_path(@project, repository) do
                 = repository.name
-              - else
-                = link_to edit_project_repository_path(@project, repository) do
-                  = repository.name
-            td
-              - if repository.build_type == RepositoryConstants::PRIVATE_GEM
-                = RepositoryConstants::PRIVATE_GEM.humanize
-              - else
-                = repository.status.humanize
-            td
-              - if repository.status.in?([RepositoryConstants::INSTALLED, RepositoryConstants::INACTIVE]) && repository.build_type != RepositoryConstants::PRIVATE_GEM
-                = link_to "Activate", project_repository_status_path(@project, repository, status: RepositoryConstants::ACTIVE), method: :patch
-              - if repository.status == RepositoryConstants::ACTIVE
-                = link_to "Deactivate", project_repository_status_path(@project, repository, status: RepositoryConstants::INACTIVE), method: :patch
+          td.buttons.is-groupped
+            = link_to edit_project_repository_path(@project, repository), class: "button is-small" do
+              i.fas.fa-cog.mr-1
+              | Configure 
+            - if repository.build_type != RepositoryConstants::PRIVATE_GEM
+              = link_to project_repository_status_path(@project, repository, status: RepositoryConstants::ACTIVE), method: :patch, class: "button is-small" do
+                i.fas.fa-times.mr-1.has-text-danger
+                | Disable
 
-  .d-flex.justify-content-between.mt-5
-    h3 Members
-    .d-flex.align-items-center
-    button.btn.btn-primary type="button" data-toggle="modal" data-target="#addNewMemberModal" Add new member
+      - if not_active_repos.any?
+        tr.inline-header-row
+          td Disabled repositories
+          td
 
-
-  .mt-4
-    table.table.table-hover
-      thead
-        tr
-          th.by-content #
-          th Name
-          th Role
-          th
-      tbody
-        - @roles.each_with_index do |project_user_role, index|
-          tr
-            td.text-center = index + 1
-            td = project_user_role.user.full_name
-            td = project_user_role.role.humanize
-            td = link_to "X", project_project_user_role_path(@project, project_user_role), method: :delete, data: { confirm: "Are you sure want to remove user from project?" }
-
-  - if ProjectPolicy.new(current_user, @project).billing?
-    .d-flex.justify-content-between.mt-5
-      h3
-        | Billing
-        small = link_to "show current month estimate", project_billings_path(@project), class: "pl-3"
-      .d-flex.align-items-center
-    .mt-4
-      p
-        | Currently you are using 
-        span.font-weight-bold = @project_domain.billing.plan_name
-        |  plan. Active until 
-        = @project_domain.billing.active_until.to_date
-      p
-        span.font-weight-bold = format_price_per_hours @project_domain.billing.pricing_by_types.fetch(:run_cents)
-        |  for running process, 
-        span.font-weight-bold = format_price_per_hours @project_domain.billing.pricing_by_types.fetch(:sleep_cents)
-        |  for sleeping process, 
-        span.font-weight-bold = format_price_per_hours @project_domain.billing.pricing_by_types.fetch(:build_cents)
-        |  for process's build time.
-
-#addNewMemberModal.modal.fade aria-hidden="true" aria-labelledby="addNewMemberModalLabel" role="dialog" tabindex="-1"
-  .modal-dialog role="document"
-    .modal-content
-      .modal-header
-        h5#addNewMemberModalLabel.modal-title Add new member to project
-        button.close aria-label="Close" data-dismiss="modal" type="button"
-          span aria-hidden="true" &times;
-      .modal-body
-        = simple_form_for :project_user_role, url: project_project_user_roles_path(@project) do |form|
-          = form.input :email
-          = form.input :role, collection: humanized_constants(ProjectUserRoleConstants::ROLES), selected: ProjectUserRoleConstants::REGULAR_USER
-          = form.button :submit, "Add user", class: "btn btn-primary btn-block"
-      .modal-footer
-        button.btn.alert-dark data-dismiss="modal" type="button" Cancel
+      - not_active_repos.each do |repository|
+        tr.has-background-light
+          td
+            - if repository.status == RepositoryConstants::REMOVED
+              = repository.name
+            - else
+              = link_to edit_project_repository_path(@project, repository) do
+                = repository.name
+          td.buttons.is-groupped
+            = link_to edit_project_repository_path(@project, repository), class: "button is-small" do
+              i.fas.fa-cog.mr-1
+              | Configure 
+            = link_to project_repository_status_path(@project, repository, status: RepositoryConstants::ACTIVE), method: :patch, class: "button is-small" do
+              i.fas.fa-check.mr-1.has-text-success
+              | Activate
