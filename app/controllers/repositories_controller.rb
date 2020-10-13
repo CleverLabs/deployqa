@@ -22,6 +22,8 @@ class RepositoriesController < ApplicationController
     @project = find_project
     @repository = @project.repositories.find(params[:id])
     @addons = Addon.pluck(:name, :id)
+
+    render :edit, layout: "application_new"
   end
 
   def update
@@ -39,7 +41,8 @@ class RepositoriesController < ApplicationController
   private
 
   def find_project
-    authorize Project.find(params[:project_id]), :edit?, policy_class: ProjectPolicy
+    authorize ProjectDomain.by_id(params[:project_id]), :edit?, policy_class: ProjectPolicy
+    # authorize Project.find(params[:project_id]), :edit?, policy_class: ProjectPolicy
   end
 
   def repository_params

@@ -20,7 +20,7 @@
             i.fas.fa-sync-alt.mr-1
             | Reload
           = link_to project_project_instance_update_path(@project, @project_instance), method: :post, class: "button is-outlined", disabled: !@project_instance_policy.update_server? do
-            i.fas.fa-angle-double-up.mr-1
+            i.fas.fa-arrow-up.mr-1
             | Update
           = link_to project_project_instance_path(@project, @project_instance), method: :delete, class: "button is-outlined is-danger", disabled: !@project_instance_policy.terminate? do
             i.fas.fa-times.mr-1

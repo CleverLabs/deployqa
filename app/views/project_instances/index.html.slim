@@ -33,7 +33,8 @@
           td
             .dropdown.is-hoverable
               .dropdown-trigger
-                span.is-clickable ...
+                span.is-clickable
+                  i.fas.fa-ellipsis-h
               .dropdown-menu role="menu" style="left: initial; right: -70px;"
                 .dropdown-content
                   = link_to "Configure", project_project_instance_path(@project, project_instance), class: "dropdown-item"

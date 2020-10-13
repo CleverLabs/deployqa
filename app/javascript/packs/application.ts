@@ -96,6 +96,38 @@ const handler = () => {
       window.location = event.target.value;
     });
   }
+
+
+
+  const buildTypeSelector = <HTMLInputElement>document.getElementById('repository_build_type');
+
+  if (buildTypeSelector) {
+    const dockerForm = document.getElementById('dockerForm');
+    const privateGemForm = document.getElementById('privateGemForm');
+
+    if (dockerForm && privateGemForm) {
+      if (buildTypeSelector.value == 'docker') {
+        privateGemForm.style.display = 'none';
+      } else if (buildTypeSelector.value == 'private_gem') {
+        dockerForm.style.display = 'none';
+      } else {
+        privateGemForm.style.display = 'none';
+        dockerForm.style.display = 'none';
+      }
+
+      buildTypeSelector.addEventListener('change', (event: any) => {
+        if (event.target.value === 'docker') {
+          dockerForm.style.display = 'block';
+          privateGemForm.style.display = 'none';
+        }
+
+        if (event.target.value === 'private_gem') {
+          dockerForm.style.display = 'none';
+          privateGemForm.style.display = 'block';
+        }
+      })
+    }
+  }
 };
 
 

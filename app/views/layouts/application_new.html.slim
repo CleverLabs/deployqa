@@ -62,7 +62,9 @@ html
               = link_to "Instances", project_project_instances_path(@project), class: ("is-active" if controller_action_name == "project_instances#index")
             - if ProjectPolicy.new(current_user, @project).edit?
               li
-                = link_to "🔧 Configuration", project_path(@project), class: ("is-active" if controller_action_name == "projects#show")
+                = link_to project_path(@project), class: ("is-active" if controller_action_name == "projects#show") do
+                  i.fas.fa-cog.mr-1
+                  | Configuration
 
           - if AdminPanelPolicy.new(current_user, :no_record).show?
             p.menu-label

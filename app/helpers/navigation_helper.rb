@@ -29,7 +29,11 @@ module NavigationHelper
     },
     "projects#show" => {
       text_and_link: [],
-      last_text_and_link: proc { ["Project configuration", project_project_instances_path(@project)] }
+      last_text_and_link: proc { ["Project configuration", project_path(@project)] }
+    },
+    "repositories#edit" => {
+      text_and_link: [proc { ["Project configuration", project_path(@project)] }],
+      last_text_and_link: proc { ["#{@repository.name} repository", project_project_instances_path(@project)] }
     }
   }.freeze
   # rubocop:enable Rails/HelperInstanceVariable
