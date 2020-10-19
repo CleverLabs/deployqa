@@ -22,7 +22,9 @@
     "typeRoots": [
       "./node_modules/@types",
       "./app/javascript/types"
-    ]
+    ],
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true
   },
   "exclude": [
     "**/*.spec.ts",

@@ -7,6 +7,17 @@ import '@fortawesome/fontawesome-free/js/brands'
 import * as Rails from 'rails-ujs'
 const Turbolinks = require('turbolinks')
 
+
+import ReactOnRails from 'react-on-rails';
+import EnvVarFields from '../bundles/RepositoryForm/components/EnvVarFields';
+import ProcessesFields from '../bundles/RepositoryForm/components/ProcessesFields';
+
+ReactOnRails.register({
+  EnvVarFields,
+  ProcessesFields,
+});
+
+
 Rails.start()
 Turbolinks.start()
 
@@ -140,3 +151,5 @@ document.addEventListener('turbolinks:load', handler);
 
 require.context('../images', true)
 require('../stylesheets/application.scss')
+
+

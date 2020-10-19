@@ -1,76 +1,4 @@
-/ .container
-/   = render partial: "shared/breadcrumb", locals: {\
-/       text_link_hash: {\
-/         "Projects" => projects_path,
-/         "\"#{@project.name}\" configuration" => project_path(@project),
-/         @repository.name => nil\
-/       },
-/       class: "mt-4" }
-
-/   h1.mt-4 = "Edit #{@repository.name} configuration"
-/   .mt-4
-/     = simple_form_for @repository, url: project_repository_path(@project, @repository) do |form|
-/       - if @repository.errors.any?
-/         p.text-danger = @repository.errors.full_messages.join(", ")
-/       - if @project.integration_type == ProjectsConstants::Providers::VIA_SSH
-/         = form.input :path, label: "Full git SSH link", input_html: { placeholder: "git@github.com:rails/rails.git" }
-/       = form.input :build_type, collection: humanized_constants(RepositoryConstants::BUILD_TYPES), label: "Build type", include_hidden: false
-/       .row
-/         .col-6
-/           = form.input :runtime_env_variables, input_html: { value: @repository.runtime_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
-/         .col-6
-/           = form.input :build_env_variables, input_html: { value: @repository.build_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
-/       h4.mt-5 Processes
-/       .row
-/         = form.simple_fields_for :web_processes_attributes do |web_processes_form|
-/           - web_process = @repository.web_processes.to_a.find { |process| process.name == "web" }
-/           - worker_process = @repository.web_processes.to_a.find { |process| process.name == "worker" }
-/           - rest_processes = @repository.web_processes.to_a.select { |process| process.name != "web" && process.name != "worker" }
-/           .col-12
-/             .form-row.align-items-center
-/               span.col-1 Web
-/               = web_processes_form.input :id, as: :hidden, input_html: { name: "repository[web_processes_attributes][0][id]", value: web_process&.id }
-/               = web_processes_form.input :name, as: :hidden, input_html: { name: "repository[web_processes_attributes][0][name]", value: web_process&.name || "web" }
-/               = web_processes_form.input :command, label: "Command", required: false, input_html: { name: "repository[web_processes_attributes][0][command]", value: web_process&.command }, wrapper_html: { class: "col-5" }
-/               = web_processes_form.input :dockerfile, label: "Dockerfile path", required: false, input_html: { name: "repository[web_processes_attributes][0][dockerfile]", value: web_process&.dockerfile }, wrapper_html: { class: "col-4" }
-/               = web_processes_form.input :expose_port, label: "Port", required: false, input_html: { name: "repository[web_processes_attributes][0][expose_port]", value: web_process&.expose_port }, wrapper_html: { class: "col-2" }
-/           .col-12
-/             .form-row.align-items-center
-/               span.col-1 Worker
-/               = web_processes_form.input :id, as: :hidden, input_html: { name: "repository[web_processes_attributes][1][id]", value: worker_process&.id }
-/               = web_processes_form.input :name, as: :hidden, input_html: { name: "repository[web_processes_attributes][1][name]", value: worker_process&.name || "worker" }
-/               = web_processes_form.input :command, label: "Command", required: false, input_html: { name: "repository[web_processes_attributes][1][command]", value: worker_process&.command }, wrapper_html: { class: "col-5" }
-/               = web_processes_form.input :dockerfile, label: "Dockerfile path", required: false, input_html: { name: "repository[web_processes_attributes][1][dockerfile]", value: worker_process&.dockerfile }, wrapper_html: { class: "col-4" }
-/               = web_processes_form.input :expose_port, label: "Port", required: false, input_html: { name: "repository[web_processes_attributes][1][expose_port]", value: worker_process&.expose_port }, wrapper_html: { class: "col-2" }
-/           - rest_processes.each_with_index do |other_process, index|
-/             .col-12
-/               .form-row.align-items-center
-/                 span.col-1 = other_process.name
-/                 = web_processes_form.input :id, as: :hidden, input_html: { name: "repository[web_processes_attributes][#{index + 2}][id]", value: other_process.id }
-/                 = web_processes_form.input :name, as: :hidden, input_html: { name: "repository[web_processes_attributes][#{index + 2}][name]", value: other_process.name || "worker" }
-/                 = web_processes_form.input :command, label: "Command", required: false, input_html: { name: "repository[web_processes_attributes][#{index + 2}][command]", value: other_process.command }, wrapper_html: { class: "col-5" }
-/                 = web_processes_form.input :dockerfile, label: "Dockerfile path", required: false, input_html: { name: "repository[web_processes_attributes][#{index + 2}][dockerfile]", value: other_process.dockerfile }, wrapper_html: { class: "col-4" }
-/                 = web_processes_form.input :expose_port, label: "Port", required: false, input_html: { name: "repository[web_processes_attributes][#{index + 2}][expose_port]", value: other_process.expose_port }, wrapper_html: { class: "col-2" }
-
-/       h4.mt-5 Database
-/       .row
-/         .col-6
-/           = form.input :schema_load_command, input_html: { placeholder: "example: bundle exec rails db:schema:load" }
-/         .col-6
-/           = form.input :seeds_command, input_html: { placeholder: "example: bundle exec rails db:seed" }
-/         .col-6
-/           = form.input :migration_command, input_html: { placeholder: "example: bundle exec rails db:migrate" }
-
-/       h4.mt-5 Addons
-/       = form.input :addon_ids, collection: @addons, label: "Selected addons", include_hidden: false, input_html: { multiple: true }
-
-/       h4.mt-5 Heroku configuration
-/       = form.input :heroku_buildpacks, label: "Heroku buildpack (optional)"
-
-/       .mt-5
-/       = form.button :submit, class: "btn btn-primary"
-
-.container.pt-5
+.container.column.pt-5.big-bottom-margin
   h1.title.is-1 = @repository.name
   h3.subtitle Repository runtime configuration
   = simple_form_for @repository, url: project_repository_path(@project, @repository), defaults: { label: false } do |form|
@@ -88,98 +16,19 @@
         small Stagy is now able to use this private gem during build
 
     #dockerForm 
-      .notification.mt-5
-        .mb-5
-          label.label Environment variables
-          small Variables for sensitive and environment-dependent values
-        .columns.is-mobile.mb-0
-          .column.is-3
-            small Key
-          .column.is-9
-            small Value
-        .columns.is-mobile.mb-0
-          .column.is-3
-            input.input.is-family-monospace type="text"
-          .column
-            input.input.is-family-monospace type="text"
-          .column.is-1
-            button.button
-              i.fas.fa-trash
-        .columns.is-mobile.mb-0
-          .column.is-3
-            input.input.is-family-monospace type="text"
-          .column
-            input.input.is-family-monospace type="text"
-          .column.is-1
-            button.button
-              i.fas.fa-trash
-        .columns.mb-0
-          .column.is-3
-            button.button
-              i.fas.fa-plus.mr-1
-              | Add new
+      = react_component("EnvVarFields", props: {\
+        title: "Environment variables",\
+        subtitle: "Variables for sensitive and environment-dependent values",\
+        fieldName: "runtime_env_variables",\
+        values: @repository.runtime_env_variables.map { |key, value| { key: key, value: value } } })
+      = react_component("EnvVarFields", props: {\
+        title: "Buildtime environment variables",\
+        subtitle: "Environment variables for Docker build. These values are being used by ARG and ENV Docker instructions",\
+        fieldName: "build_env_variables",\
+        values: @repository.build_env_variables.map { |key, value| { key: key, value: value } } })
 
-      .notification.mt-5
-        .mb-5
-          label.label Buildtime environment variables
-          small Environment variables for Docker build. These values are being used by ARG and ENV Docker instructions
-        .columns.is-mobile.mb-0
-          .column.is-3
-            small Key
-          .column.is-9
-            small Value
-        .columns.is-mobile.mb-0
-          .column.is-3
-            input.input.is-family-monospace type="text"
-          .column
-            input.input.is-family-monospace type="text"
-          .column.is-1
-            button.button
-              i.fas.fa-trash
-        .columns.is-mobile.mb-0
-          .column.is-3
-            input.input.is-family-monospace type="text"
-          .column
-            input.input.is-family-monospace type="text"
-          .column.is-1
-            button.button
-              i.fas.fa-trash
-
-      .notification.mt-5
-        .mb-5
-          label.label Processes
-          small Environment variables for Docker build. These values are being used by ARG and ENV Docker instructions
-        .columns.is-mobile.mb-0
-          .column.is-2
-            small Name
-          .column
-            small Command
-          .column.is-3
-            small Dockerfile path
-          .column.is-2
-            small Port
-        .columns.is-mobile.mb-0
-          .column.is-2
-            .has-text-centered.is-family-monospace web
-          .column
-            input.input.is-family-monospace type="text"
-          .column.is-3
-            input.input.is-family-monospace type="text"
-          .column.is-1
-            input.input.is-family-monospace type="text"
-          .column.is-1
-        .columns.is-mobile.mb-0
-          .column.is-2
-            input.input.is-family-monospace type="text"
-          .column
-            input.input.is-family-monospace type="text"
-          .column.is-3
-            input.input.is-family-monospace type="text"
-          .column.is-1
-            input.input.is-family-monospace type="text"
-          .column.is-1
-            button.button
-              i.fas.fa-trash
+      = react_component("ProcessesFields", props: {\
+        values: @repository.web_processes.map { |process| process.attributes.slice("id", "name", "command", "dockerfile", "expose_port") } })
 
       .notification.mt-5
         .mb-5
@@ -189,17 +38,18 @@
           .column.is-3
             small Schema load command
           .column
-            input.input.is-family-monospace type="text"
+            = form.input :schema_load_command, input_html: { placeholder: "bundle exec rails db:schema:load", class: "is-family-monospace" }, wrapper: false
         .columns.mb-0.is-vcentered
           .column.is-3
             small Database migration command
           .column
-            input.input.is-family-monospace type="text"
+            = form.input :migration_command, input_html: { placeholder: "bundle exec rails db:migrate", class: "is-family-monospace" }, wrapper: false
         .columns.mb-0.is-vcentered
           .column.is-3
             small Database seeds command
           .column
-            input.input.is-family-monospace type="text"
+            = form.input :seeds_command, input_html: { placeholder: "bundle exec rails db:seed", class: "is-family-monospace" }, wrapper: false
+
 
       .notification.mt-5
         .mb-5
@@ -207,15 +57,6 @@
           small Additional resources and programs, that is required for the project. Multiselect
 
         .columns.mb-0.is-vcentered
-          .column
-            .select.is-multiple
-              select multiple="multiple" name="repository[addon_ids][]" id="repository_addon_ids"
-                option selected="selected" value="1" PostgreSQL
-                option value="4" ClearDB (MySQL)
-                option value="2" Redis
-                option value="3" AWS S3
-                option value="5" MariaDB
-                option value="6" phpMyAdmin
-                option value="7" MailHog
-
+          .column.select.is-multiple
+            = form.input :addon_ids, collection: @addons, include_hidden: false, input_html: { multiple: true, class: "aaa" }, wrapper: false
     button.button.my-5.is-success Update repository

@@ -14,7 +14,6 @@ class ProjectInstancesController < ApplicationController
     @project = find_project
     @project_instance = @project.project_instance(id: params[:id])
     @project_instance_policy = ProjectInstancePolicy.new(current_user, @project_instance)
-    @features_accessor = Features::Accessor.new
 
     render :show, layout: "application_new"
   end
@@ -23,7 +22,6 @@ class ProjectInstancesController < ApplicationController
     @project = find_project
     @repositories = @project.project_record.repositories.active
     @project_instance = @project.project_record.project_instances.build
-    @features_accessor = Features::Accessor.new
     @billing = @project.billing
   end
 
@@ -37,7 +35,6 @@ class ProjectInstancesController < ApplicationController
     else
       @repositories = @project.project_record.repositories.active
       @project_instance = result.object.project_instance_record
-      @features_accessor = Features::Accessor.new
       @billing = @project.billing
       render :new
     end

@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :login_if_not
   before_action :set_paper_trail_whodunnit
 
-  helper_method :github_router, :gitlab_router, :controller_action_name
+  helper_method :github_router, :gitlab_router, :controller_action_name, :features_accessor
 
   private
 
@@ -44,5 +44,9 @@ class ApplicationController < ActionController::Base
 
   def controller_action_name
     "#{controller_name}##{action_name}"
+  end
+
+  def features_accessor
+    @_features_accessor ||= Features::Accessor.new
   end
 end
