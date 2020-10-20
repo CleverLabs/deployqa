@@ -47,4 +47,8 @@ class ProjectDomain
   def number_of_active_instances
     @project_record.project_instances.where.not(deployment_status: ProjectInstanceConstants::Statuses::ALL_NOT_ACTIVE).count
   end
+
+  def slack_enabled?
+    @project_record.slack_entity.present?
+  end
 end

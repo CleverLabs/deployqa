@@ -1,0 +1,25 @@
+.container.column.pt-5
+  .level
+    .level-left
+      h1.title.is-1
+        = @project.name
+        |  notifications 
+    .level-right
+      .buttons.is-grouped.level-item
+
+  article.tile.notification.is-child
+    .media.is-align-items-center
+      .media-left
+        p.image.is-64x64
+          i.fab.fa-slack style="width: 100%; height: 100%;"
+      .media-content
+          .content
+            - if @project.slack_enabled?
+              strong Slack notifications
+              p
+                | Slack is 
+                span.has-text-success enabled
+                |  and will notify about new instances and instances updates
+            - else
+              p
+                = link_to "Enable Slack notifications", omniauth_path("slack", project_id: @project.id), method: :post, class: "button"

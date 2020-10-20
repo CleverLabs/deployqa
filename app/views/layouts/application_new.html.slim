@@ -65,14 +65,14 @@ html
                 = link_to project_path(@project), class: ("is-active" if controller_action_name == "projects#show") do
                   i.fas.fa-cog.mr-1
                   | Configuration
-                - if controller_name.in?(["projects", "repositories", "project_user_roles", "billings"])
+                - if controller_name.in?(["projects", "repositories", "project_user_roles", "billings", "notifications"])
                   ul.menu-list.mt-2.mb-0.mr-0
                     li
                       = link_to project_project_user_roles_path(@project), class: ("is-active" if controller_action_name == "project_user_roles#index") do
                         i.fas.fa-user-friends.mr-1
                         | Members
                     li
-                      = link_to project_path(@project) do
+                      = link_to project_notifications_path(@project), class: ("is-active" if controller_action_name == "notifications#index") do
                         i.fas.fa-bell.mr-1
                         | Notifications
                     - if ProjectPolicy.new(current_user, @project).billing?

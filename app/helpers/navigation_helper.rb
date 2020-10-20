@@ -42,6 +42,10 @@ module NavigationHelper
     "billings#index" => {
       text_and_link: [proc { ["Project configuration", project_path(@project)] }],
       last_text_and_link: proc { ["Billing", project_billings_path(@project)] }
+    },
+    "notifications#index" => {
+      text_and_link: [proc { ["Project configuration", project_path(@project)] }],
+      last_text_and_link: proc { ["Notifications", project_notifications_path(@project)] }
     }
   }.freeze
   # rubocop:enable Rails/HelperInstanceVariable
