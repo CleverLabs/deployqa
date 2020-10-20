@@ -1,8 +1,10 @@
 = render "project_instances/head" do
-  .has-text-weight-bold.mb-4 Environment Variables
   = simple_form_for :project_instance, url: project_project_instance_configuration_path(@project, @project_instance), method: :patch do |form|
     - @project_instance.configurations.each do |configuration|
-      = form.simple_fields_for :configurations do |configurations_form|
-        = configurations_form.input configuration.application_name, as: :text, input_html: { value: configuration.env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 8 }
+      = react_component("EnvVarFields", props: {\
+        title: "Environment variables for #{configuration.application_name}",\
+        subtitle: "Variables for sensitive and environment-dependent values",\
+        fieldName: "project_instance[configurations][#{configuration.application_name}]",\
+        values: configuration.env_variables.map { |key, value| { key: key, value: value } } })
 
     = form.button :submit, I18n.t("project_instances.edit_configuration.update.#{@project_instance.deployment_status}"), class: "button is-primary mt-3"

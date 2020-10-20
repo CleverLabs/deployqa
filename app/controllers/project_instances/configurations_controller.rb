@@ -36,7 +36,7 @@ module ProjectInstances
 
     def configurations_to_update
       configurations_params.to_h.transform_values do |env_variables|
-        { env_variables: Hash[env_variables.split("\n").map { |line| line.tr("\r", "").split("=") }] }
+        { env_variables: Hash[env_variables.values.map { |key_value| [key_value["key"], key_value["value"]] }].compact }
       end
     end
   end

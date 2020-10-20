@@ -48,7 +48,7 @@ const EnvVarFields: FunctionComponent<Props> = (props: Props) => {
       }
 
       {!envs.length &&
-        <input name={`repository[${props.fieldName}][0]`} value="" type="hidden" />
+        <input name={`${props.fieldName}[0]`} value="" type="hidden" />
       }
 
       {
@@ -57,7 +57,7 @@ const EnvVarFields: FunctionComponent<Props> = (props: Props) => {
             <div className="column is-3">
               <input
                 className="input is-family-monospace"
-                name={`repository[${props.fieldName}][${envVar.index}][key]`}
+                name={`${props.fieldName}[${envVar.index}][key]`}
                 defaultValue={envVar.defaultValue?.key}
                 placeholder="name"
                 autoComplete="hidden"
@@ -66,7 +66,7 @@ const EnvVarFields: FunctionComponent<Props> = (props: Props) => {
             <div className="column">
               <input
                 className="input is-family-monospace"
-                name={`repository[${props.fieldName}][${envVar.index}][value]`}
+                name={`${props.fieldName}[${envVar.index}][value]`}
                 defaultValue={envVar.defaultValue?.value}
                 placeholder="value"
                 autoComplete="hidden"

@@ -19,12 +19,12 @@
       = react_component("EnvVarFields", props: {\
         title: "Environment variables",\
         subtitle: "Variables for sensitive and environment-dependent values",\
-        fieldName: "runtime_env_variables",\
+        fieldName: "repository[runtime_env_variables]",\
         values: @repository.runtime_env_variables.map { |key, value| { key: key, value: value } } })
       = react_component("EnvVarFields", props: {\
         title: "Buildtime environment variables",\
         subtitle: "Environment variables for Docker build. These values are being used by ARG and ENV Docker instructions",\
-        fieldName: "build_env_variables",\
+        fieldName: "repository[build_env_variables]",\
         values: @repository.build_env_variables.map { |key, value| { key: key, value: value } } })
 
       = react_component("ProcessesFields", props: {\
