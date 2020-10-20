@@ -1,17 +1,32 @@
-.container
-  = render partial: "shared/breadcrumb", locals: {\
-      text_link_hash: {\
-        "Projects" => projects_path,
-        "\"#{@project.name}\" configuration" => project_path(@project),
-        "Billing" => nil\
-      },
-      class: "mt-4" }
+.container.column.pt-5
+  .level
+    .level-left
+      h1.title.is-1
+        = @project.name
+        |  billing 
+    .level-right
+      .buttons.is-grouped.level-item
 
-  .d-flex.justify-content-between.mt-5
-    h3 Current month
+  .mt-5.pb-5
+    p
+      | Currently you are using 
+      span.has-text-weight-bold = @project.billing.plan_name
+      |  plan. Active until 
+      = @project.billing.active_until.to_date
+    p
+      span.has-text-weight-bold = format_price_per_hours @project.billing.pricing_by_types.fetch(:run_cents)
+      |  for running process, 
+      span.has-text-weight-bold = format_price_per_hours @project.billing.pricing_by_types.fetch(:sleep_cents)
+      |  for sleeping process, 
+      span.has-text-weight-bold = format_price_per_hours @project.billing.pricing_by_types.fetch(:build_cents)
+      |  for process's build time.
 
-  .mt-4
-    table.table
+
+  .mt-5.mb-3
+    h4.title.is-4 Current month estimated usage
+
+  .mb-5
+    table.table.is-fullwidth.table-list-primary
       thead
         tr
           th Instance Name
@@ -25,16 +40,16 @@
             td = link_to lifecycle.project_instance_name, project_project_instance_path(@project, lifecycle.project_instance_id), target: :_blank
             td
               = cost_humanize(lifecycle.costs[:run])
-              .text-secondary.small.d-inline = cost_explanation(lifecycle, :run)
+              .heading = cost_explanation(lifecycle, :run)
             td
               = cost_humanize(lifecycle.costs[:build])
-              .text-secondary.small.d-inline = cost_explanation(lifecycle, :build)
+              .heading = cost_explanation(lifecycle, :build)
             td
               = cost_humanize(lifecycle.costs[:sleep])
-              .text-secondary.small.d-inline = cost_explanation(lifecycle, :sleep)
+              .heading = cost_explanation(lifecycle, :sleep)
             td
               = cost_humanize(lifecycle.costs[:run] + lifecycle.costs[:build] + lifecycle.costs[:sleep])
 
-    p.text-right
-      | Total:    
+    p.has-text-weight-bold.is-pulled-right.mr-5.mb-5
+      | Total this month:    
       = cost_humanize @total_cost

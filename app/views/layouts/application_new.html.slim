@@ -65,7 +65,7 @@ html
                 = link_to project_path(@project), class: ("is-active" if controller_action_name == "projects#show") do
                   i.fas.fa-cog.mr-1
                   | Configuration
-                - if controller_name.in?(["projects", "repositories", "project_user_roles"])
+                - if controller_name.in?(["projects", "repositories", "project_user_roles", "billings"])
                   ul.menu-list.mt-2.mb-0.mr-0
                     li
                       = link_to project_project_user_roles_path(@project), class: ("is-active" if controller_action_name == "project_user_roles#index") do
@@ -75,10 +75,11 @@ html
                       = link_to project_path(@project) do
                         i.fas.fa-bell.mr-1
                         | Notifications
-                    li
-                      = link_to project_path(@project) do
-                        i.fas.fa-dollar-sign.mr-1
-                        | Billing
+                    - if ProjectPolicy.new(current_user, @project).billing?
+                      li
+                        = link_to project_billings_path(@project), class: ("is-active" if controller_action_name == "billings#index") do
+                          i.fas.fa-dollar-sign.mr-1
+                          | Billing
 
       .main-content
         nav.navbar.is-spaced aria-label=("main navigation") role="navigation" 

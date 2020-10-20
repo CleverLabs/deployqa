@@ -18,7 +18,6 @@ class ProjectsController < ApplicationController
   def show
     @project = find_project
     @repositories = @project.project_record.repositories.order(:name)
-    @roles = @project.project_record.project_user_roles.includes(:user)
     @project_github_entity = GithubEntity.find_by(owner: @project.project_record) if @project.integration_type == ProjectsConstants::Providers::GITHUB
 
     render :show, layout: "application_new"
