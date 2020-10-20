@@ -9,15 +9,18 @@ html
 
     meta charset="utf-8"
     meta http-equiv="Content-Type" content="text/html; charset=utf-8"
-    meta name="viewport" content="width=device-width, initial-scale=1.0"
+    meta name="viewport" content="width=device-width, initial-scale=1"
 
-    link href="https://fonts.googleapis.com/css?family=Titillium+Web:300,300i,400,400i,700,700i&display=swap" rel="stylesheet"
-
-    = stylesheet_pack_tag 'old_application', media: 'all', 'data-turbolinks-track': 'reload'
-    = javascript_pack_tag 'old_application', media: 'all', 'data-turbolinks-track': 'reload'
+    link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"
 
     - if Rails.env.production?
       = render partial: "shared/rollbar"
       = render partial: "layouts/google_analytics"
+    = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload', async: true
+
   body
+    - if Rails.env.production?
+      = render partial: "layouts/google_tag_manager"
+
     = yield

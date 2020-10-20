@@ -1,10 +1,18 @@
 .container
-  .login-wrapper.d-flex.justify-content-center
-    .login-block.d-flex.justify-content-center.align-items-center
-      h2.logo = image_pack_tag 'media/images/logos/deployqa-with-word.svg'
+  - if flash.notice
+    .columns.is-centered.mt-5
+      .column
+        .notification.is-info = flash.notice
+  .columns.is-centered.mt-5
+    .column.is-one-quarter
+      .notification.tile.is-child
+        h1
+          img src="/static/images/stagydev_logo.svg" alt="stagy logo"
 
-      - if flash.notice
-        .alert.alert-info = flash.notice
 
-      = link_to "Log in with GitHub", omniauth_path("github"), method: :post, class: "btn"
-      = link_to "Log in with GitLab", omniauth_path("gitlab"), method: :post, class: "btn mt-2"
+        = link_to omniauth_path("github"), method: :post, class: "button is-primary is-fullwidth mt-2" do
+          i.fab.fa-github.mr-1
+          | Log in with GitHub
+        = link_to omniauth_path("gitlab"), method: :post, class: "button is-primary is-fullwidth mt-2" do
+          i.fab.fa-gitlab.mr-1
+          | Log in with GitLab
