@@ -35,6 +35,7 @@ html
           .navbar-item.has-dropdown.is-hoverable
             a.navbar-link = current_user.full_name
             .navbar-dropdown style="left: initial; right: 0px;"
+              = link_to "Projects", projects_path, class: "navbar-item"
               = link_to "User preferences", user_path(current_user.actual_user), class: "navbar-item"
               = link_to "Log out", sessions_path, method: :delete, class: "navbar-item"
 

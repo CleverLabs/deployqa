@@ -1,21 +1,19 @@
 # frozen_string_literal: true
 
 class ProjectInstancesController < ApplicationController
+  layout "application_new"
+
   def index
     @project = find_project
     hidden_statuses = params[:show_all] ? ProjectInstanceConstants::Statuses::ALL_HIDDEN : ProjectInstanceConstants::Statuses::ALL_NOT_ACTIVE
     @project_instances = @project.project_record.project_instances.where.not(deployment_status: hidden_statuses).order(updated_at: :desc)
     @new_instance_allowed = ProjectPolicy.new(current_user, @project).show_create_instance_page?
-
-    render :index, layout: "application_new"
   end
 
   def show
     @project = find_project
     @project_instance = @project.project_instance(id: params[:id])
     @project_instance_policy = ProjectInstancePolicy.new(current_user, @project_instance)
-
-    render :show, layout: "application_new"
   end
 
   def new
