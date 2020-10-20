@@ -29,7 +29,8 @@ html
       #navbarMenu.navbar-menu
         .navbar-start
           .navbar-item
-            = image_pack_tag 'media/images/logos/stagydev_logo.svg', size: "135x44"
+            = link_to "/" do
+              = image_pack_tag 'media/images/logos/stagydev_logo.svg', size: "135x44"
         .navbar-end
           .navbar-item.has-dropdown.is-hoverable
             a.navbar-link = current_user.full_name

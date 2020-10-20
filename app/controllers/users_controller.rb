@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
+  layout "projectless_layout"
+
   def show
     @user = find_user
     @github_auth = @user.user_references.find { |reference| reference.auth_provider == OmniauthConstants::GITHUB }
