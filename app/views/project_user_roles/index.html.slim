@@ -1,0 +1,45 @@
+.container.column.pt-5
+  .level
+    .level-left
+      h1.title.is-1
+        = @project.name
+        |  members 
+    .level-right
+      .buttons.is-grouped.level-item
+        button.button.is-success.is-outlined.open-modal-link aria-expanded="false" data-target="addNewMemberModal" role="button"
+          i.fas.fa-plus.mr-1
+          | Add new user
+
+
+  table.table.is-fullwidth.is-hoverable.table-list-primary
+    thead
+      tr
+        th Name
+        th Role
+        th
+    tbody
+      - @roles.each do |project_user_role|
+        tr
+          td.has-text-weight-bold = project_user_role.user.full_name
+          td = project_user_role.role.humanize
+          td
+            = link_to project_project_user_role_path(@project, project_user_role), method: :delete, data: { confirm: "Are you sure want to remove #{project_user_role.user.full_name} from project?" }, class: "button is-small is-danger is-outlined" do
+              i.fas.fa-times.mr-1
+              | Remove
+
+#addNewMemberModal.modal
+  .modal-background
+  .modal-card
+    header.modal-card-head
+      p.modal-card-title Add new member to the project
+      button.delete.modal-close-icon aria-label="close"
+    section.modal-card-body
+      = simple_form_for :project_user_role, url: project_project_user_roles_path(@project), defaults: { label: false } do |form|
+        .field
+          = form.label :email, class: "label"
+          = form.input :email, wrapper: false
+        .field
+          = form.label :role, class: "label"
+          = form.input :role, collection: humanized_constants(ProjectUserRoleConstants::ROLES), selected: ProjectUserRoleConstants::REGULAR_USER, wrapper: false
+        .field
+          = form.button :submit, "Add user", class: "button is-primary"

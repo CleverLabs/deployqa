@@ -54,7 +54,7 @@ Rails.application.routes.draw do
     resources :repositories, only: %i[new create edit update]
     resources :billings, only: %i[index]
     resources :repository_statuses, only: %i[update]
-    resources :project_user_roles, only: %i[destroy create]
+    resources :project_user_roles, only: %i[index destroy create]
 
     nested do
       scope module: :gitlab_integration, path: "gitlab", as: "gitlab" do

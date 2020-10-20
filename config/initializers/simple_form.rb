@@ -6,6 +6,7 @@ SimpleForm.setup do |config|
   # config.default_wrapper = :aaaa
 
   config.wrappers :default, tag: "div", class: "field", error_class: "has-error" do |b|
+    b.optional    :label, class: "label", wrap_with: { tag: nil }
     b.use         :placeholder
     b.optional    :maxlength
     b.optional    :pattern
@@ -16,7 +17,6 @@ SimpleForm.setup do |config|
       ba.use :input, class: "input"
       ba.optional :hint, wrap_with: { tag: "p", class: "help" }
     end
-    b.optional :label, class: "label", wrap_with: { tag: nil }
 
     #
     #   %label.checkbox

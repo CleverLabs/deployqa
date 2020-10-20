@@ -34,6 +34,10 @@ module NavigationHelper
     "repositories#edit" => {
       text_and_link: [proc { ["Project configuration", project_path(@project)] }],
       last_text_and_link: proc { ["#{@repository.name} repository", project_project_instances_path(@project)] }
+    },
+    "project_user_roles#index" => {
+      text_and_link: [proc { ["Project configuration", project_path(@project)] }],
+      last_text_and_link: proc { ["Members", project_project_user_roles_path(@project)] }
     }
   }.freeze
   # rubocop:enable Rails/HelperInstanceVariable

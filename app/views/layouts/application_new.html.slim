@@ -65,14 +65,20 @@ html
                 = link_to project_path(@project), class: ("is-active" if controller_action_name == "projects#show") do
                   i.fas.fa-cog.mr-1
                   | Configuration
-
-          - if AdminPanelPolicy.new(current_user, :no_record).show?
-            p.menu-label
-              | Admin
-            ul.menu-list
-              li = link_to "Admin dashboard", admin_dashboard_path
-              li = link_to "Sidekiq", sidekiq_web_path
-
+                - if controller_name.in?(["projects", "repositories", "project_user_roles"])
+                  ul.menu-list.mt-2.mb-0.mr-0
+                    li
+                      = link_to project_project_user_roles_path(@project), class: ("is-active" if controller_action_name == "project_user_roles#index") do
+                        i.fas.fa-user-friends.mr-1
+                        | Members
+                    li
+                      = link_to project_path(@project) do
+                        i.fas.fa-bell.mr-1
+                        | Notifications
+                    li
+                      = link_to project_path(@project) do
+                        i.fas.fa-dollar-sign.mr-1
+                        | Billing
 
       .main-content
         nav.navbar.is-spaced aria-label=("main navigation") role="navigation" 
@@ -92,5 +98,9 @@ html
                 .navbar-dropdown style="left: initial; right: 0px;"
                   = link_to "User preferences", user_path(current_user.actual_user), class: "navbar-item"
                   = link_to "Log out", sessions_path, method: :delete, class: "navbar-item"
+                  - if AdminPanelPolicy.new(current_user, :no_record).show?
+                    hr.navbar-divider
+                    = link_to "Admin dashboard", admin_dashboard_path, class: "navbar-item"
+                    = link_to "Sidekiq", sidekiq_web_path, class: "navbar-item"
 
         = yield
