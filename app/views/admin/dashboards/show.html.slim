@@ -1,59 +1,62 @@
-.container
-  .mt-5
-    h1 Admin dashboard
+.container.mt-5.column
+  h1.title.is-1 Admin dashboard
   .mt-5
     p.mb-1
       | Number of running instances: 
-      = @active_instances.to_a.size
+      strong = @active_instances.to_a.size
     p.mb-1
       | Active builds: 
-      = @active_builds_count
+      strong = @active_builds_count
     p.mb-1
       | Projects count: 
-      = @projects_names.size
+      strong = @projects_names.size
     p.mb-1
       | Users count: 
-      = @users_count
+      strong = @users_count
 
   - if @new_users.present?
     .mt-5
-      h4.text-danger New users!
-      .row
+      h5.title.is-5.has-text-danger New users!
+      div
         - @new_users.each do |user|
-          .col-6.col-md-3.text-danger = user.full_name
+          p.has-text-danger = user.full_name
 
   - if @new_waiting_emails.present?
     .mt-5
-      h4 New emails in waiting list!
-      .row
+      h5.title.is-5 New emails in waiting list!
+      div
         - @new_waiting_emails.each do |waiting_list|
-          .col-6.col-md-3.text-danger = waiting_list.email
+          p.has-text-danger = waiting_list.email
 
   .mt-5
-    h4 Instances with failed build for last 2 days
+    h5.title.is-5 Instances with failed build for last 2 days
     - if @instances_with_failed_build_for_last_2_days.empty?
-      .text-success No failed instances!
-    .row
-      - @instances_with_failed_build_for_last_2_days.each do |project_instance|
-        = link_to "#{project_instance.project.name}##{project_instance.name}", project_project_instance_path(project_instance.project_id, project_instance), class: "text-danger col-6 col-md-3"
+      .has-text-success No failed instances!
+    - else
+      .columns
+        - @instances_with_failed_build_for_last_2_days.each do |project_instance|
+          = link_to "#{project_instance.project.name}##{project_instance.name}", project_project_instance_path(project_instance.project_id, project_instance), class: "has-text-danger column"
 
   .mt-5
-    h4 Instances with active builds for last 2 days
+    h5.title.is-5 Instances with active builds for last 2 days
     - if @instances_with_active_builds_for_last_2_days.empty?
-      .text-success No active builds
-    .row
+      .has-text-success No active builds
+    .field.is-grouped.is-grouped-multiline
       - @instances_with_active_builds_for_last_2_days.each do |project_instance|
-        = link_to "#{project_instance.project.name}##{project_instance.name}", project_project_instance_path(project_instance.project_id, project_instance), class: "col-6 col-md-3"
+        .control
+          .tags.has-addons
+            span.tag = link_to "#{project_instance.project.name}##{project_instance.name}", project_project_instance_path(project_instance.project_id, project_instance)
+            span.tag class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
 
   .mt-5
-    h4 Running instances
-    .row
+    h5.title.is-5 Running instances
+    .tags
       - @active_instances.each do |project_instance|
-        - color = project_instance.deployment_status == ProjectInstanceConstants::Statuses::SLEEPING ? "text-muted" : ""
-        = link_to "#{project_instance.project_name}##{project_instance.name}", project_project_instance_path(project_instance.project_id, project_instance), class: "col-6 col-md-3 #{color}"
+        - color = project_instance.deployment_status == ProjectInstanceConstants::Statuses::SLEEPING ? "has-text-grey" : ""
+        span.tag = link_to "#{project_instance.project_name}##{project_instance.name}", project_project_instance_path(project_instance.project_id, project_instance), class: "column #{color}"
 
   .mt-5
-    h4 Projects
-    .row
+    h5.title.is-5 Projects
+    div
       - @projects_names.each do |project_name|
-        .col-12 = project_name
+        p = project_name

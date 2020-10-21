@@ -3,6 +3,8 @@
 # rubocop:disable Metrics/AbcSize, Layout/LineLength
 module Admin
   class DashboardsController < ApplicationController
+    layout "projectless_layout"
+
     def show
       AdminPanelPolicy.new(current_user, :no_record).authorize!(:show?)
 

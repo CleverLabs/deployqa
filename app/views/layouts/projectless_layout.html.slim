@@ -38,5 +38,9 @@ html
               = link_to "Projects", projects_path, class: "navbar-item"
               = link_to "User preferences", user_path(current_user.actual_user), class: "navbar-item"
               = link_to "Log out", sessions_path, method: :delete, class: "navbar-item"
+              - if AdminPanelPolicy.new(current_user, :no_record).show?
+                hr.navbar-divider
+                = link_to "Admin dashboard", admin_dashboard_path, class: "navbar-item"
+                = link_to "Sidekiq", sidekiq_web_path, class: "navbar-item"
 
     = yield

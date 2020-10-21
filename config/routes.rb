@@ -38,7 +38,6 @@ Rails.application.routes.draw do
     resources :gitlab_integrations, only: %i[create]
   end
 
-  resource :dashboards, only: %i[show]
   resources :projects, only: %i[index new show create] do
     resources :project_instances, only: %i[index show new create destroy] do
       resource :deploy, only: %i[show create], module: :project_instances
