@@ -2,6 +2,8 @@
 
 module GitlabIntegration
   class ProjectsController < ApplicationController
+    layout "projectless_layout"
+
     def new
       @project = Project.new
       @names = GitlabIntegration::ProjectPage.new(current_user).build_project_names
@@ -14,6 +16,7 @@ module GitlabIntegration
       if result.ok?
         redirect_to project_path(@project)
       else
+        @names = GitlabIntegration::ProjectPage.new(current_user).build_project_names
         render :new
       end
     end

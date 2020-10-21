@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class ProjectsController < ApplicationController
+  layout "projectless_layout"
+
   def index
     @projects = find_projects
     @installing_project = Project.new(integration_type: ProjectsConstants::Providers::GITHUB) if project_installing?
-
-    render :index, layout: "projectless_layout"
   end
 
   def new

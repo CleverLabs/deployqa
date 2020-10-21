@@ -1,16 +1,10 @@
-.container
-  h1.mt-4 New project
-  = render partial: "shared/breadcrumb", locals: {\
-      text_link_hash: {\
-        "Projects" => projects_path,
-        "Create" => nil\
-      },
-      class: "mt-4" }
+.container.column.pt-5
+  h1.title.is-1 New project
 
   .mt-4
     = simple_form_for @project do |form|
       - if @project.errors.any?
         p = @project.errors.full_messages
-      = form.input :name
+      = form.input :name, placeholder: "Project name"
       = form.input_field :integration_type, as: :hidden, value: @provider
-      = form.button :submit, class: "btn btn-primary"
+      = form.button :submit, class: "button is-primary"

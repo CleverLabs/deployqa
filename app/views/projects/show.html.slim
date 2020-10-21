@@ -40,7 +40,7 @@
               i.fas.fa-cog.mr-1
               | Configure 
             - if repository.build_type != RepositoryConstants::PRIVATE_GEM
-              = link_to project_repository_status_path(@project, repository, status: RepositoryConstants::ACTIVE), method: :patch, class: "button is-small" do
+              = link_to project_repository_status_path(@project, repository, status: RepositoryConstants::INACTIVE), method: :patch, class: "button is-small" do
                 i.fas.fa-times.mr-1.has-text-danger
                 | Disable
 

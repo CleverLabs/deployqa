@@ -35,9 +35,9 @@ module GitlabIntegration
     end
 
     def gitlab_repositories
-      return [] if project.gitlab_repositories_info.blank?
+      return [] if project.project_record.gitlab_repositories_info.blank?
 
-      project.gitlab_repositories_info.data
+      project.project_record.gitlab_repositories_info.data
     end
   end
 end

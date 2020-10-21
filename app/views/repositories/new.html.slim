@@ -1,28 +1,80 @@
-.container
-  = render partial: "shared/breadcrumb", locals: {\
-      text_link_hash: {\
-        "Projects" => projects_path,
-        "\"#{@project.name}\" configuration" => project_path(@project),
-        "New repository" => nil\
-      },
-      class: "mt-4" }
+.container.column.pt-5.big-bottom-margin
+  h1.title.is-1 New repository
+  h3.subtitle Repository runtime configuration
 
-  h1.mt-4 New Configuration
-  .mt-4
-    = simple_form_for @repository, url: project_repositories_path(@project) do |form|
-      - if @errors.any?
-        p.text-danger = @errors.full_messages.join(", ")
-      = form.input :path, label: "Full git SSH link", input_html: { placeholder: "git@github.com:rails/rails.git" }
-      = form.input :build_type, collection: RepositoryConstants::BUILD_TYPES, label: "Build type", include_hidden: false
-      .row
-        .col-6
-          = form.input :runtime_env_variables, input_html: { value: @repository.runtime_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
-        .col-6
-          = form.input :build_env_variables, input_html: { value: @repository.build_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
-      .form-group.deployment_configuration_private_key
-        label for="deployment_configuration_private_key" Add this SSH key to your repository
-        #deployment_configuration_private_key.card.text-white.bg-info.mb-3
-          .card-body
-            p.card-text.word-break-all = @project.public_key
+  = simple_form_for @repository, url: project_repositories_path(@project), defaults: { label: false } do |form|
+    - if @errors&.any?
+      .notification.is-danger = @errors.full_messages.join(", ")
 
-      = form.button :submit, class: "btn btn-primary"
+    .notification.mt-5
+      .columns.is-mobile
+        .column.is-5
+          label.label.mb-0 Full Git SSH link
+          small Link to your repository in SSH format
+        .column.is-7
+          = form.input :path, input_html: { placeholder: "git@github.com:rails/rails.git" }
+
+    .notification.mt-5
+      .columns.is-mobile
+        .column
+          label.label.mb-0 Add this SSH key to your repository
+          .is-family-monospace.wrap-text-anywhere = @project.project_record.public_key
+
+    .notification.mt-5
+      .columns.is-mobile
+        .column.is-5
+          label.label.mb-0 Build type
+          small Build environment for your repository
+        .column.is-7
+          = form.input :build_type, collection: humanized_constants(RepositoryConstants::BUILD_TYPES), include_hidden: false, include_blank: false
+
+    #privateGemForm.notification.mt-5 
+      div
+        label.label Private Gem
+        small Stagy is now able to use this private gem during build
+
+    #dockerForm 
+      = react_component("EnvVarFields", props: {\
+        title: "Environment variables",\
+        subtitle: "Variables for sensitive and environment-dependent values",\
+        fieldName: "repository[runtime_env_variables]",\
+        values: @repository.runtime_env_variables.map { |key, value| { key: key, value: value } } })
+      = react_component("EnvVarFields", props: {\
+        title: "Buildtime environment variables",\
+        subtitle: "Environment variables for Docker build. These values are being used by ARG and ENV Docker instructions",\
+        fieldName: "repository[build_env_variables]",\
+        values: @repository.build_env_variables.map { |key, value| { key: key, value: value } } })
+
+      = react_component("ProcessesFields", props: {\
+        values: @repository.web_processes.map { |process| process.attributes.slice("id", "name", "command", "dockerfile", "expose_port") } })
+
+      .notification.mt-5
+        .mb-5
+          label.label Database commands
+          small Schema load, migration and seeds commands for relational database. These commands will be executed inside container before instance start
+        .columns.mb-0.is-vcentered
+          .column.is-3
+            small Schema load command
+          .column
+            = form.input :schema_load_command, input_html: { placeholder: "bundle exec rails db:schema:load", class: "is-family-monospace" }, wrapper: false
+        .columns.mb-0.is-vcentered
+          .column.is-3
+            small Database migration command
+          .column
+            = form.input :migration_command, input_html: { placeholder: "bundle exec rails db:migrate", class: "is-family-monospace" }, wrapper: false
+        .columns.mb-0.is-vcentered
+          .column.is-3
+            small Database seeds command
+          .column
+            = form.input :seeds_command, input_html: { placeholder: "bundle exec rails db:seed", class: "is-family-monospace" }, wrapper: false
+
+
+      .notification.mt-5
+        .mb-5
+          label.label Addons
+          small Additional resources and programs, that is required for the project. Multiselect
+
+        .columns.mb-0.is-vcentered
+          .column.select.is-multiple
+            = form.input :addon_ids, collection: @addons, include_hidden: false, input_html: { multiple: true, class: "aaa" }, wrapper: false
+    button.button.my-5.is-success Update repository

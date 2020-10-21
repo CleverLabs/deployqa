@@ -1,50 +1,81 @@
-.container
-  = render partial: "shared/breadcrumb", locals: {\
-      text_link_hash: {\
-        "Projects" => projects_path,
-        "\"#{@page.project.name}\" configuration" => project_path(@page.project),
-        "New repository" => nil\
-      },
-          class: "mt-4" }
+.container.column.pt-5.big-bottom-margin
+  h1.title.is-1 New repository
+  h3.subtitle Repository runtime configuration
 
-  h1.mt-4 New repository
   - if @page.gitlab_repositories_collection.present?
-    .mt-4
-      = simple_form_for @repository, url: project_gitlab_repositories_path(@page.project) do |f|
-        = f.input :integration_id, collection: @page.gitlab_repositories_collection, label: "GitLab repository", include_blank: false
+    = simple_form_for @repository, url: project_gitlab_repositories_path(@page.project), defaults: { label: false } do |form|
+      - if @errors&.any?
+        .notification.is-danger = @errors.full_messages.join(", ")
 
-        = f.input :build_type, collection: RepositoryConstants::BUILD_TYPES, label: "Build type", include_hidden: false
-        .row
-          .col-6
-            = f.input :runtime_env_variables, input_html: { value: @repository.runtime_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
-          .col-6
-            = f.input :build_env_variables, input_html: { value: @repository.build_env_variables.map { |key, value| "#{key}=#{value}" }.join("\n"), placeholder: "KEY=value\nANOTHER_KEY=value", rows: 5 }
+      .notification.mt-5
+        .columns.is-mobile
+          .column.is-5
+            label.label.mb-0 GitLab repository
+            small Select needed GitLab repository
+          .column.is-7
+            = form.input :integration_id, collection: @page.gitlab_repositories_collection, include_blank: false
 
-        h4.mt-5 Processes
-        .row
-          = f.simple_fields_for :web_processes_attributes do |web_processes|
-            - processes = @repository.web_processes.to_a
-            .col-6
-              = web_processes.input :id, as: :hidden, input_html: {name: "repository[web_processes_attributes][0][id]", value: processes.first&.id}
-              = web_processes.input :name, as: :hidden, input_html: {name: "repository[web_processes_attributes][0][name]", value: processes.first&.name || "web"}
-              = web_processes.input :command, label: "Web command", required: false, input_html: {name: "repository[web_processes_attributes][0][command]", value: processes.first&.command}
-            .col-6
-              = web_processes.input :name, as: :hidden, input_html: {name: "repository[web_processes_attributes][1][id]", value: processes.second&.id}
-              = web_processes.input :name, as: :hidden, input_html: {name: "repository[web_processes_attributes][1][name]", value: processes.second&.name || "worker"}
-              = web_processes.input :command, label: "Worker command", required: false, input_html: {name: "repository[web_processes_attributes][1][command]", value: processes.second&.command}
+      .notification.mt-5
+        .columns.is-mobile
+          .column.is-5
+            label.label.mb-0 Build type
+            small Build environment for your repository
+          .column.is-7
+            = form.input :build_type, collection: humanized_constants(RepositoryConstants::BUILD_TYPES), include_hidden: false, include_blank: false
 
-        .row
-          .col-6
-            = f.input :seeds_command, input_html: { placeholder: "example: bundle exec rails db:seed" }
+      #privateGemForm.notification.mt-5 
+        div
+          label.label Private Gem
+          small Stagy is now able to use this private gem during build
 
-        h4.mt-5 Addons
-        = f.input :addon_ids, collection: @page.addons, label: "Selected addons", include_hidden: false, input_html: { multiple: true }
+      #dockerForm 
+        = react_component("EnvVarFields", props: {\
+          title: "Environment variables",\
+          subtitle: "Variables for sensitive and environment-dependent values",\
+          fieldName: "repository[runtime_env_variables]",\
+          values: @repository.runtime_env_variables.map { |key, value| { key: key, value: value } } })
+        = react_component("EnvVarFields", props: {\
+          title: "Buildtime environment variables",\
+          subtitle: "Environment variables for Docker build. These values are being used by ARG and ENV Docker instructions",\
+          fieldName: "repository[build_env_variables]",\
+          values: @repository.build_env_variables.map { |key, value| { key: key, value: value } } })
 
-        h4.mt-5 Heroku configuration
-        = f.input :heroku_buildpacks, label: "Heroku buildpack (optional)"
+        = react_component("ProcessesFields", props: {\
+          values: @repository.web_processes.map { |process| process.attributes.slice("id", "name", "command", "dockerfile", "expose_port") } })
 
-        .mt-5
-        = f.button :submit, class: "btn btn-primary"
+        .notification.mt-5
+          .mb-5
+            label.label Database commands
+            small Schema load, migration and seeds commands for relational database. These commands will be executed inside container before instance start
+          .columns.mb-0.is-vcentered
+            .column.is-3
+              small Schema load command
+            .column
+              = form.input :schema_load_command, input_html: { placeholder: "bundle exec rails db:schema:load", class: "is-family-monospace" }, wrapper: false
+          .columns.mb-0.is-vcentered
+            .column.is-3
+              small Database migration command
+            .column
+              = form.input :migration_command, input_html: { placeholder: "bundle exec rails db:migrate", class: "is-family-monospace" }, wrapper: false
+          .columns.mb-0.is-vcentered
+            .column.is-3
+              small Database seeds command
+            .column
+              = form.input :seeds_command, input_html: { placeholder: "bundle exec rails db:seed", class: "is-family-monospace" }, wrapper: false
+
+
+        .notification.mt-5
+          .mb-5
+            label.label Addons
+            small Additional resources and programs, that is required for the project. Multiselect
+
+          .columns.mb-0.is-vcentered
+            .column.select.is-multiple
+              = form.input :addon_ids, collection: @addons, include_hidden: false, input_html: { multiple: true, class: "aaa" }, wrapper: false
+      button.button.my-5.is-success Update repository
 
   - else
-    h2.mt-4 No available repositories
+    .notification.mt-5
+      .columns.is-mobile
+        .column
+          label.label.mb-0 No available repositories

@@ -1,19 +1,23 @@
 # frozen_string_literal: true
 
 class RepositoriesController < ApplicationController
+  layout "application_new"
+
   def new
     @project = find_project
     @repository = @project.repositories.build
+    @addons = Addon.pluck(:name, :id)
   end
 
   def create
     @project = find_project
     @repository = @project.repositories.build
-    form = RepositoryForm.new(repository_params.merge(project: @project))
+    form = RepositoryForm.new(repository_params.merge(project: @project.project_record))
 
     if @repository.update(form.attributes)
       redirect_to project_path(@project)
     else
+      @addons = Addon.pluck(:name, :id)
       render :new
     end
   end
@@ -22,8 +26,6 @@ class RepositoriesController < ApplicationController
     @project = find_project
     @repository = @project.repositories.find(params[:id])
     @addons = Addon.pluck(:name, :id)
-
-    render :edit, layout: "application_new"
   end
 
   def update
@@ -42,7 +44,6 @@ class RepositoriesController < ApplicationController
 
   def find_project
     authorize ProjectDomain.by_id(params[:project_id]), :edit?, policy_class: ProjectPolicy
-    # authorize Project.find(params[:project_id]), :edit?, policy_class: ProjectPolicy
   end
 
   def repository_params
@@ -58,7 +59,7 @@ class RepositoriesController < ApplicationController
     form = RepositoryForm.new(repository_params.merge(project: @project.project_record, integration_id: @repository.integration_id, status: @repository.status))
     destroy_deleted_web_processes(form)
     if @project.integration_type == ProjectsConstants::Providers::VIA_SSH
-      @repository.update(form.attributes)
+      @repository.update(form.attributes.except(:name, :path))
     else
       @repository.update(
         form.attributes.slice(:runtime_env_variables, :build_env_variables, :addon_ids, :web_processes_attributes, :build_type, :status, :seeds_command, :schema_load_command, :migration_command)

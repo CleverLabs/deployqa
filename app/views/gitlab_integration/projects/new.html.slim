@@ -1,15 +1,12 @@
-.container
-  h1.mt-4 New project
-  = render partial: "shared/breadcrumb", locals: {\
-      text_link_hash: {\
-        "Projects" => projects_path,
-          "Create" => nil\
-      },
-          class: "mt-4" }
+.container.column.pt-5
+  h1.title.is-1 New project
 
   .mt-4
     = simple_form_for @project, url: gitlab_projects_path, method: :post do |form|
       - if @project.errors.any?
         p = @project.errors.full_messages
-      = form.input :integration_id, collection: @names, label: "Name of organization", include_blank: false
-      = form.button :submit, class: "btn btn-primary"
+      .field
+        = form.label :integration_id, "Name of organization:", class: "label"
+        = form.input :integration_id, collection: @names, include_blank: false
+      .field
+        = form.button :submit, class: "button is-primary"
