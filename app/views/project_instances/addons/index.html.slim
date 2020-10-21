@@ -1,9 +1,9 @@
 = render "project_instances/head" do
   - @addons_per_app.each do |app_name, addons|
     article.notification
-      h4.title.is-4.has-text-weight-normal = "Addons for '#{app_name}':"
+      label.label.mb-3 = "Addons for '#{app_name}':"
       - addons.each do |addon|
-        p.has-text-weight-bold.mb-1
+        p.mb-1
           - if addon["addon_type"] == "relational_db"
             i.fa-fw.fas.fa-database
           - if addon["addon_type"] == "key_value_db"
@@ -17,4 +17,4 @@
                   td
                     .is-family-monospace = "#{key}"
                   td
-                    .is-family-monospace = value
+                    .is-family-monospace.wrap-text-anywhere = value

@@ -1,4 +1,4 @@
-.container.pt-5
+.container.pt-5.column
   - if @projects.empty? && @installing_project.blank?
     - if ProjectPolicy.new(current_user, :project).create?
       .most-center

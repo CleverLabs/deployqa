@@ -21,7 +21,7 @@
                       p.heading =repository.name
                     .field-body
                       = configurations_form.input repository.name, input_html: { value: "master", placeholder: "Git branch" }, wrapper_html: { class: "w-50" }
-          - if !features_accessor.show_heroku_button?(@project)
+          - if features_accessor.show_heroku_button?(@project)
             .field
               = form.input :deploy_via_heroku, as: :boolean, label: "Deploy to Heroku (legacy)", input_html: { checked: false }
           .field

@@ -8,7 +8,7 @@
       - else
         = link_to "Show all", project_project_instances_path(@project, show_all: true), class: "level-item"
       = link_to "New instance", new_project_project_instance_path(@project), class: "button is-primary level-item", disabled: !@new_instance_allowed
-  table.table.is-fullwidth.is-hoverable.table-list-primary
+  table.table.is-fullwidth.is-hoverable.table-list-primary.is-hidden-touch
     thead
       tr
         th Name
@@ -42,3 +42,21 @@
                     = link_to "Terminate", project_project_instance_path(@project, project_instance), method: :delete, class: "dropdown-item"
                   - if ProjectInstancePolicy.new(current_user, project_instance).redeploy?
                     = link_to "Redeploy", project_project_instance_redeploy_path(@project, project_instance), method: :post, class: "dropdown-item"
+
+  table.table.is-fullwidth.is-hoverable.table-list-primary.is-hidden-desktop
+    thead
+      tr
+        th Name
+        th Created
+    tbody
+      - @project_instances.each do |project_instance|
+        tr
+          td
+            .title.is-5.has-text-weight-bold.mb-2 = link_to project_instance.name, project_project_instance_path(@project, project_instance)
+            span.tag.has-text-weight-bold class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
+
+          td
+            p.has-text-weight-bold.mb-2 = project_instance.build_actions.sort_by(&:created_at).first.author.full_name
+            p.heading
+              = distance_of_time_in_words(Time.zone.now - project_instance.created_at)
+              |  ago

@@ -57,6 +57,9 @@ a[disabled] {
   pointer-events: none;
 }
 
+.wrap-text-anywhere {
+  overflow-wrap: anywhere;
+}
 
 
 .table-list-primary { 
@@ -151,6 +154,7 @@ a[disabled] {
 .projects-list {
   display: none;
   position: absolute;
+  z-index: 100;
   padding: 1rem;
   width: 300px;
   max-height: 500px;
