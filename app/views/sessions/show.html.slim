@@ -7,7 +7,8 @@
     .column.is-one-quarter
       .notification.tile.is-child
         h1
-          img src="/static/images/stagydev_logo.svg" alt="stagy logo"
+          = link_to "/" do
+            img src="/static/images/stagydev_logo.svg" alt="stagy logo"
 
 
         = link_to omniauth_path("github"), method: :post, class: "button is-primary is-fullwidth mt-2" do

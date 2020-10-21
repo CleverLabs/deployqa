@@ -18,7 +18,7 @@
     #dockerForm 
       = react_component("EnvVarFields", props: {\
         title: "Environment variables",\
-        subtitle: "Variables for sensitive and environment-dependent values",\
+        subtitle: "Variables for sensitive and environment-dependent values. You can use variable substitution",\
         fieldName: "repository[runtime_env_variables]",\
         values: @repository.runtime_env_variables.map { |key, value| { key: key, value: value } } })
       = react_component("EnvVarFields", props: {\
