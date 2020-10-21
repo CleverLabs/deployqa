@@ -10,6 +10,7 @@ module SshIntegration
     def call
       ActiveRecord::Base.transaction do
         project = Project.create!(project_params)
+        BillingDomain.create!(project: ProjectDomain.new(record: project))
         perform_plugins_callback(project)
         create_project_user_role(project)
         ReturnValue.new(object: project, status: project.errors.any? ? :error : :ok)

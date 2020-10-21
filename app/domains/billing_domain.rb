@@ -12,7 +12,8 @@ class BillingDomain
       application_plan: application_plan,
       sleep_cents: application_plan.sleep_cents,
       run_cents: application_plan.run_cents,
-      build_cents: application_plan.build_cents
+      build_cents: application_plan.build_cents,
+      active_until: Time.zone.today + 1.month
     )
 
     new(billing_info, project)

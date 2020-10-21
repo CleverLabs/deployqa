@@ -10,7 +10,7 @@ module GitlabIntegration
     def call
       ActiveRecord::Base.transaction do
         project = Project.create!(project_params)
-        BillingDomain.create!(project: project)
+        BillingDomain.create!(project: ProjectDomain.new(record: project))
         perform_plugins_callback(project)
         create_project_user_role(project)
         create_gitlab_repositories_info(project)
