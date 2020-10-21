@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class RepositoriesController < ApplicationController
-  layout "application_new"
-
   def new
     @project = find_project
     @repository = @project.repositories.build
@@ -36,7 +34,7 @@ class RepositoriesController < ApplicationController
       redirect_to project_path(@project)
     else
       @addons = Addon.pluck(:name, :id)
-      render :edit, layout: "application_new"
+      render :edit
     end
   end
 

@@ -2,8 +2,6 @@
 
 module GitlabIntegration
   class RepositoriesController < ::ApplicationController
-    layout "application_new"
-
     def new
       @project = find_project
       @addons = Addon.pluck(:name, :id)

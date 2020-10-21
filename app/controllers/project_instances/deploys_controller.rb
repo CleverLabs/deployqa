@@ -2,8 +2,6 @@
 
 module ProjectInstances
   class DeploysController < ApplicationController
-    layout "application_new"
-
     def show
       @project = find_project(action: :show_create_instance_page?)
       @project_instance = find_project_instance(@project)

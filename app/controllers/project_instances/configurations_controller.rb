@@ -2,8 +2,6 @@
 
 module ProjectInstances
   class ConfigurationsController < ApplicationController
-    layout "application_new"
-
     def edit
       @project = find_project
       @project_instance = find_project_instance(@project)

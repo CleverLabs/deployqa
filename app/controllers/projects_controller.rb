@@ -20,7 +20,7 @@ class ProjectsController < ApplicationController
     @repositories = @project.project_record.repositories.order(:name)
     @project_github_entity = GithubEntity.find_by(owner: @project.project_record) if @project.integration_type == ProjectsConstants::Providers::GITHUB
 
-    render :show, layout: "application_new"
+    render :show, layout: "application"
   end
 
   def create

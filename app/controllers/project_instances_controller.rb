@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ProjectInstancesController < ApplicationController
-  layout "application_new"
-
   def index
     @project = find_project
     hidden_statuses = params[:show_all] ? ProjectInstanceConstants::Statuses::ALL_HIDDEN : ProjectInstanceConstants::Statuses::ALL_NOT_ACTIVE

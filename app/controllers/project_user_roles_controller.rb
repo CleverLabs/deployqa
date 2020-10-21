@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ProjectUserRolesController < ApplicationController
-  layout "application_new"
-
   def index
     @project = ProjectDomain.new(record: find_project)
     @roles = @project.project_record.project_user_roles.includes(:user)

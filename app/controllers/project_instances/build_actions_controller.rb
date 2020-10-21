@@ -2,8 +2,6 @@
 
 module ProjectInstances
   class BuildActionsController < ApplicationController
-    layout "application_new"
-
     def show
       @project = find_project
       @project_instance = @project.project_instance(id: params[:project_instance_id])
