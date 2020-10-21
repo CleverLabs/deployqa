@@ -15,6 +15,10 @@ module NavigationHelper
       text_and_link: [proc { ["Instances", project_project_instances_path(@project)] }],
       last_text_and_link: proc { ["Create new instance", new_project_project_instance_path(@project)] }
     },
+    "deploys#show" => {
+      text_and_link: [proc { ["Instances", project_project_instances_path(@project)] }],
+      last_text_and_link: proc { ["Create new instance for #{@project_instance.attached_repo_path}##{@project_instance.attached_pull_request_number}", new_project_project_instance_path(@project)] }
+    },
     "configurations#edit" => {
       text_and_link: [proc { ["Instances", project_project_instances_path(@project)] }],
       last_text_and_link: proc { [@project_instance.name, project_project_instance_path(@project, @project_instance)] }

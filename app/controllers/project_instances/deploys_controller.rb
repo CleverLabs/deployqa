@@ -2,9 +2,12 @@
 
 module ProjectInstances
   class DeploysController < ApplicationController
+    layout "application_new"
+
     def show
       @project = find_project(action: :show_create_instance_page?)
       @project_instance = find_project_instance(@project)
+      @billing = @project.billing
       @repositories = find_available_repositories
 
       return redirect_to project_project_instance_path(@project, @project_instance) unless deploy_allowed?

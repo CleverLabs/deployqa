@@ -2,8 +2,10 @@
 
 SimpleForm.setup do |config|
   # config.generate_additional_classes_for = ["field"]
-  config.input_class = "input"
-  # config.default_wrapper = :aaaa
+  config.input_class = nil
+  # config.boolean_label_class = "checkbox"
+  # config.boolean_style = :inline
+  # config.item_wrapper_tag = :div
 
   config.wrappers :default, tag: "div", class: "field", error_class: "has-error" do |b|
     b.optional    :label, class: "label", wrap_with: { tag: nil }
