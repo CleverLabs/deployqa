@@ -12,7 +12,7 @@
           td = build_action.action.to_s.humanize
           td
             p.has-text-weight-bold.mb-2 = build_action.author.full_name
-            p.heading
+            p.heading.has-tooltip data-tippy-content=build_action.created_at data-tippy-placement="left"
               = distance_of_time_in_words(Time.zone.now - build_action.created_at)
               |  ago
           td

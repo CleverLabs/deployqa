@@ -51,6 +51,7 @@ $family-secondary: Sora,sans-serif;
 $body-background-color: #FCFCFC;
 $table-cell-padding: 1em 1.25em;
 @import "~bulma/bulma.sass";
+// @import 'tippy.js/dist/tippy.css';
 
 a[disabled] {
   opacity: .5;

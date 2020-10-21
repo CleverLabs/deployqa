@@ -7,6 +7,9 @@ import '@fortawesome/fontawesome-free/js/brands'
 import * as Rails from 'rails-ujs'
 const Turbolinks = require('turbolinks')
 
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
+
 
 import ReactOnRails from 'react-on-rails';
 import EnvVarFields from '../bundles/RepositoryForm/components/EnvVarFields';
@@ -139,6 +142,8 @@ const handler = () => {
       })
     }
   }
+
+  tippy('.has-tooltip');
 };
 
 
