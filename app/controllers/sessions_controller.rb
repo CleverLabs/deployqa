@@ -4,7 +4,9 @@ class SessionsController < ApplicationController
   layout "sessions"
   skip_before_action :login_if_not, only: %i[show create]
 
-  def show; end
+  def show
+    redirect_to projects_path if authenticated?
+  end
 
   def create
     result = current_user ? connect_user : user_from_omniauth

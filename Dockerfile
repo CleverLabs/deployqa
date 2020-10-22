@@ -17,4 +17,4 @@ ADD yarn.lock $APP_ROOT
 RUN yarn
 
 ADD . $APP_ROOT
-RUN bundle exec rake assets:precompile
+RUN NODE_ENV=production bundle exec rake assets:precompile
