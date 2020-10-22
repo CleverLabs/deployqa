@@ -29,7 +29,7 @@
               = distance_of_time_in_words(Time.zone.now - project_instance.created_at)
               |  ago
           td
-            span.tag.has-text-weight-bold class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
+            span.tag.has-text-weight-bold class=status_badge_class(project_instance.deployment_status) = project_instance.deployment_status
           td
             .dropdown.is-hoverable
               .dropdown-trigger
@@ -53,7 +53,7 @@
         tr
           td
             .title.is-5.has-text-weight-bold.mb-2 = link_to project_instance.name, project_project_instance_path(@project, project_instance)
-            span.tag.has-text-weight-bold class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
+            span.tag.has-text-weight-bold class=status_badge_class(project_instance.deployment_status) = project_instance.deployment_status
 
           td
             p.has-text-weight-bold.mb-2 = project_instance.build_actions.sort_by(&:created_at).first.author.full_name

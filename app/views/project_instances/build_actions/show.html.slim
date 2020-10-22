@@ -1,7 +1,7 @@
 = render "project_instances/head" do
   .mb-3.has-text-right
     p
-      span.tag.has-text-weight-bold class=action_status_badge_class_2(@build_action.status) = @build_action.status
+      span.tag.has-text-weight-bold class=action_status_badge_class(@build_action.status) = @build_action.status
       |  
       span.has-text-weight-bold = @build_action.action.to_s.humanize
       |  by 

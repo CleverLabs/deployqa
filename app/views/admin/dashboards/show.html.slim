@@ -46,7 +46,7 @@
         .control
           .tags.has-addons
             span.tag = link_to "#{project_instance.project.name}##{project_instance.name}", project_project_instance_path(project_instance.project_id, project_instance)
-            span.tag class=status_badge_class_2(project_instance.deployment_status) = project_instance.deployment_status
+            span.tag class=status_badge_class(project_instance.deployment_status) = project_instance.deployment_status
 
   .mt-5
     h5.title.is-5 Running instances

@@ -2,7 +2,7 @@
   .level
     .level-left
       h3.title.is-3.mb-0.mr-5.level-item = @project_instance.name
-      span.level-item.tag.mr-5.has-text-weight-bold class=status_badge_class_2(@project_instance.deployment_status) = @project_instance.deployment_status
+      span.level-item.tag.mr-5.has-text-weight-bold class=status_badge_class(@project_instance.deployment_status) = @project_instance.deployment_status
       - pull_request_url = GitProviders::Url::PullMergeRequest.new(@project_instance, @project.integration_type).call
     .level-right
       - if pull_request_url
