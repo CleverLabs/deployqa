@@ -24,6 +24,8 @@ module Billing
         case action
         when BuildActionConstants::CREATE_INSTANCE, BuildActionConstants::RECREATE_INSTANCE
           @lifecycle.add_state(:run, action_end_time, nil, configurations)
+        when BuildActionConstants::UPDATE_INSTANCE
+          @lifecycle.add_state(:run, action_end_time, nil, configurations)
         when BuildActionConstants::DESTROY_INSTANCE
           @lifecycle.end_last_active_state(action_end_time)
         when BuildActionConstants::SLEEP_INSTANCE
