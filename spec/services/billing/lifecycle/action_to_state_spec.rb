@@ -54,6 +54,7 @@ describe Billing::Lifecycle::ActionToState do
     context "with successful 'update_instance' build action" do
       it "adds state" do
         expect(lifecycle).to receive(:add_state).with(:build, successful_update_instance.start_time, successful_update_instance.end_time, successful_update_instance.configurations)
+        expect(lifecycle).to receive(:add_state).with(:run, successful_update_instance.end_time, nil, successful_update_instance.configurations)
         action_to_instance.call(successful_update_instance)
       end
     end
